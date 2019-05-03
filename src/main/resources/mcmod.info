@@ -1,0 +1,15 @@
+[
+{
+  "modid": "arienteworld",
+  "name": "Ariente World",
+  "description": "Ariente World: a tech mod with a twist",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["McJty"],
+  "credits": "McJty",
+  "logoFile": "",
+  "screenshots": []
+}
+]

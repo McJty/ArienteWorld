@@ -1,0 +1,82 @@
+package mcjty.arienteworld;
+
+
+import mcjty.arienteworld.setup.ModSetup;
+import mcjty.hologui.api.IHoloGuiHandler;
+import mcjty.lib.base.ModBase;
+import mcjty.lib.proxy.IProxy;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+
+
+@Mod(modid = ArienteWorld.MODID, name = ArienteWorld.MODNAME,
+        dependencies =
+                "required-after:mcjtylib_ng@[" + ArienteWorld.MIN_MCJTYLIB_VER + ",);" +
+                "required-after:hologui@[" + ArienteWorld.MIN_HOLOGUI_VER + ",);" +
+                "required-after:ariente@[" + ArienteWorld.MIN_ARIENTE_VER + ",);" +
+                "after:forge@[" + ArienteWorld.MIN_FORGE11_VER + ",)",
+        acceptedMinecraftVersions = "[1.12,1.13)",
+        version = ArienteWorld.VERSION)
+public class ArienteWorld implements ModBase {
+    public static final String MODID = "arienteworld";
+    public static final String MODNAME = "Ariente World";
+    public static final String VERSION = "0.0.11-alpha";
+    public static final String MIN_FORGE11_VER = "14.23.3.2694";
+    public static final String MIN_MCJTYLIB_VER = "3.5.0";
+    public static final String MIN_HOLOGUI_VER = "0.0.6-beta";
+    public static final String MIN_ARIENTE_VER = "0.0.11-alpha";
+
+    @SidedProxy(clientSide = "mcjty.arienteworld.setup.ClientProxy", serverSide = "mcjty.arienteworld.setup.ServerProxy")
+    public static IProxy proxy;
+    public static ModSetup setup = new ModSetup();
+
+    @Mod.Instance
+    public static ArienteWorld instance;
+
+    public static IHoloGuiHandler guiHandler;
+
+    public ArienteWorld() {
+        // This has to be done VERY early
+        FluidRegistry.enableUniversalBucket();
+    }
+
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event){
+        setup.preInit(event);
+        proxy.preInit(event);
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent e) {
+        setup.init(e);
+        proxy.init(e);
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent e) {
+        setup.postInit(e);
+        proxy.postInit(e);
+    }
+
+    @Mod.EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+    }
+
+
+    @Override
+    public String getModId() {
+        return ArienteWorld.MODID;
+    }
+
+    @Override
+    public void openManual(EntityPlayer player, int bookindex, String page) {
+        // @todo
+    }
+}
