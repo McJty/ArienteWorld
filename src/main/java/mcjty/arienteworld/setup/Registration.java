@@ -2,6 +2,7 @@ package mcjty.arienteworld.setup;
 
 
 import mcjty.arienteworld.ArienteWorld;
+import mcjty.arienteworld.biomes.ModBiomes;
 import mcjty.lib.McJtyRegister;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -10,6 +11,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber
 public class Registration {
@@ -26,6 +28,8 @@ public class Registration {
 
     @SubscribeEvent
     public static void registerBiomes(RegistryEvent.Register<Biome> event) {
+        IForgeRegistry<Biome> registry = event.getRegistry();
+        ModBiomes.registerBiomes(registry);
     }
 
     @SubscribeEvent

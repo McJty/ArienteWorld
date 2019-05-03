@@ -1,6 +1,9 @@
 package mcjty.arienteworld;
 
 
+import mcjty.ariente.api.IArienteWorld;
+import mcjty.arienteworld.apiimpl.ArienteWorldImplementation;
+import mcjty.arienteworld.commands.*;
 import mcjty.arienteworld.setup.ModSetup;
 import mcjty.hologui.api.IHoloGuiHandler;
 import mcjty.lib.base.ModBase;
@@ -9,10 +12,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 
 @Mod(modid = ArienteWorld.MODID, name = ArienteWorld.MODNAME,
@@ -38,6 +41,7 @@ public class ArienteWorld implements ModBase {
 
     @Mod.Instance
     public static ArienteWorld instance;
+    public static ArienteWorldImplementation arienteWorldImplementation = new ArienteWorldImplementation();
 
     public static IHoloGuiHandler guiHandler;
 
@@ -67,8 +71,28 @@ public class ArienteWorld implements ModBase {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandSaveCity());
+        event.registerServerCommand(new CommandVariant());
+        event.registerServerCommand(new CommandEditMode());
+        event.registerServerCommand(new CommandFindCity());
+        event.registerServerCommand(new CommandInfo());
+        event.registerServerCommand(new CommandPacify());
+        event.registerServerCommand(new CommandCityCard());
     }
 
+    @Mod.EventHandler
+    public void imcCallback(FMLInterModComms.IMCEvent event) {
+        for (FMLInterModComms.IMCMessage message : event.getMessages()) {
+            if (message.key.equalsIgnoreCase("getArienteWorld")) {
+                Optional<Function<IArienteWorld, Void>> value = message.getFunctionValue(IArienteWorld.class, Void.class);
+                if (value.isPresent()) {
+                    value.get().apply(arienteWorldImplementation);
+                } else {
+                    setup.getLogger().warn("Some mod didn't return a valid result with getArienteWorld!");
+                }
+            }
+        }
+    }
 
     @Override
     public String getModId() {
