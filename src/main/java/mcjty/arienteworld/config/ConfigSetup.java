@@ -22,15 +22,15 @@ public class ConfigSetup {
 
 
     public static String[] ASSETS = new String[] {
-            "/mcjty/arienteworld/citydata/city0_0.json",
-            "/mcjty/arienteworld/citydata/city0_1.json",
-            "/mcjty/arienteworld/citydata/city1_1.json",
-            "/mcjty/arienteworld/citydata/city1_2.json",
-            "/mcjty/arienteworld/citydata/city2_1.json",
-            "/mcjty/arienteworld/citydata/city3_1.json",
-            "/mcjty/arienteworld/citydata/city4_1.json",
-            "/mcjty/arienteworld/citydata/general.json",
-            "/mcjty/arienteworld/citydata/station.json",
+            "/assets/arienteworld/citydata/city0_0.json",
+            "/assets/arienteworld/citydata/city0_1.json",
+            "/assets/arienteworld/citydata/city1_1.json",
+            "/assets/arienteworld/citydata/city1_2.json",
+            "/assets/arienteworld/citydata/city2_1.json",
+            "/assets/arienteworld/citydata/city3_1.json",
+            "/assets/arienteworld/citydata/city4_1.json",
+            "/assets/arienteworld/citydata/general.json",
+            "/assets/arienteworld/citydata/station.json",
             "$ariente/userassets.json"
     };
 
