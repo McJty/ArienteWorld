@@ -1,6 +1,6 @@
 package mcjty.arienteworld.dimension;
 
-import mcjty.ariente.blocks.ModBlocks;
+import mcjty.arienteworld.ArienteStuff;
 import net.minecraft.block.BlockChorusFlower;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
@@ -87,7 +87,7 @@ public class IslandsTerrainGenerator {
                                     int k2 = i2 + i1 * 8;
                                     int l2 = l1 + k1 * 4;
                                     int i3 = j2 + j1 * 8;
-                                    primer.setBlockState(k2, l2+30, i3, ModBlocks.marble.getDefaultState()); // @todo offset
+                                    primer.setBlockState(k2, l2+30, i3, ArienteStuff.marble.getDefaultState()); // @todo offset
                                 }
 
                                 d15 += d16;
@@ -112,15 +112,15 @@ public class IslandsTerrainGenerator {
             for (int j = 0; j < 16; ++j) {
                 int k = 1;
                 int l = -1;
-                IBlockState iblockstate = ModBlocks.marble.getDefaultState();
-                IBlockState iblockstate1 = ModBlocks.marble.getDefaultState();
+                IBlockState iblockstate = ArienteStuff.marble.getDefaultState();
+                IBlockState iblockstate1 = ArienteStuff.marble.getDefaultState();
 
                 for (int i1 = 127; i1 >= 0; --i1) {
                     IBlockState iblockstate2 = primer.getBlockState(i, i1, j);
 
                     if (iblockstate2.getMaterial() == Material.AIR) {
                         l = -1;
-                    } else if (iblockstate2.getBlock() == ModBlocks.marble.getDefaultState()) {
+                    } else if (iblockstate2.getBlock() == ArienteStuff.marble.getDefaultState()) {
                         if (l == -1) {
                             l = 1;
 

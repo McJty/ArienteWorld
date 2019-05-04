@@ -1,6 +1,6 @@
 package mcjty.arienteworld.biomes;
 
-import mcjty.ariente.Ariente;
+import mcjty.arienteworld.ArienteWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -8,19 +8,19 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 public class ModBiomes {
 
-    @GameRegistry.ObjectHolder(Ariente.MODID + ":ariente_plains")
+    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_plains")
     public static BiomeArientePlains arientePlains;
 
-    @GameRegistry.ObjectHolder(Ariente.MODID + ":ariente_hills")
+    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_hills")
     public static BiomeArienteHills arienteHills;
 
-    @GameRegistry.ObjectHolder(Ariente.MODID + ":ariente_ocean")
+    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_ocean")
     public static BiomeArienteOcean arienteOcean;
 
-    @GameRegistry.ObjectHolder(Ariente.MODID + ":ariente_forest")
+    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_forest")
     public static BiomeArienteForest arienteForest;
 
-    @GameRegistry.ObjectHolder(Ariente.MODID + ":ariente_rough")
+    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_rough")
     public static BiomeArienteRough arienteRough;
 
 
@@ -60,7 +60,7 @@ public class ModBiomes {
     }
 
     private static void setupBiome(IForgeRegistry<Biome> registry, String name, Biome biome, BiomeDictionary.Type... types) {
-        biome.setRegistryName(Ariente.MODID, name);
+        biome.setRegistryName(ArienteWorld.MODID, name);
         registry.register(biome);
         BiomeDictionary.addTypes(biome, types);
     }

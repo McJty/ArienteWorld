@@ -1,8 +1,8 @@
 package mcjty.arienteworld.dimension;
 
-import mcjty.ariente.blocks.ModBlocks;
 import mcjty.ariente.blocks.decorative.MarbleBlock;
 import mcjty.ariente.blocks.decorative.MarbleColor;
+import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -28,8 +28,8 @@ public class ArienteCityGenerator {
         this.generator = generator;
         if (!initialized) {
             airChar = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
-            baseChar = (char) Block.BLOCK_STATE_IDS.get(ModBlocks.marble.getDefaultState());
-            fillerChar = (char) Block.BLOCK_STATE_IDS.get(ModBlocks.marble_bricks.getDefaultState().withProperty(MarbleBlock.COLOR, MarbleColor.BLACK));
+            baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
+            fillerChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_bricks.getDefaultState().withProperty(MarbleBlock.COLOR, MarbleColor.BLACK));
 
             initialized = true;
         }

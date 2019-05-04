@@ -3,6 +3,7 @@ package mcjty.arienteworld.setup;
 
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.biomes.ModBiomes;
+import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.lib.McJtyRegister;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -24,6 +25,7 @@ public class Registration {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         McJtyRegister.registerItems(ArienteWorld.instance, event.getRegistry());
+        ModBlocks.initOreDict();
     }
 
     @SubscribeEvent

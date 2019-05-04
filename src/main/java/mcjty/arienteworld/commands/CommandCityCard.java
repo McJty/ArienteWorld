@@ -1,11 +1,11 @@
 package mcjty.arienteworld.commands;
 
+import mcjty.ariente.items.KeyCardItem;
+import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.dimension.EditMode;
-import mcjty.ariente.items.KeyCardItem;
-import mcjty.ariente.items.ModItems;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -43,7 +43,7 @@ public class CommandCityCard implements ICommand {
             return;
         }
         CityAI cityAI = CityAISystem.getCityAISystem(server.getEntityWorld()).getCityAI(city.getCenter());
-        ItemStack stack = new ItemStack(ModItems.keyCardItem);
+        ItemStack stack = new ItemStack(ArienteStuff.keyCardItem);
         KeyCardItem.addSecurityTag(stack, cityAI.getStorageKeyId());
         if (!player.inventory.addItemStackToInventory(stack)) {
             player.entityDropItem(stack, 1.05f);

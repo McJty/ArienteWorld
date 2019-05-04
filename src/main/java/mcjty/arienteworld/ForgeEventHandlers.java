@@ -1,12 +1,6 @@
 package mcjty.arienteworld;
 
 import mcjty.ariente.api.IAlarmMode;
-import mcjty.ariente.blocks.ModBlocks;
-import mcjty.ariente.entities.levitator.FluxLevitatorEntity;
-import mcjty.ariente.items.ModItems;
-import mcjty.ariente.items.modules.ArmorUpgradeType;
-import mcjty.ariente.items.modules.ModuleSupport;
-import mcjty.ariente.sounds.FluxLevitatorSounds;
 import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.BuildingPart;
@@ -16,20 +10,12 @@ import mcjty.arienteworld.config.ConfigSetup;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.EditMode;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -59,39 +45,6 @@ public class ForgeEventHandlers {
         }
     }
 
-    @SubscribeEvent
-    public void onLivingFall(LivingFallEvent event) {
-        ItemStack feetStack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.FEET);
-        if (feetStack.getItem() == ModItems.powerSuitBoots) {
-            if (ModuleSupport.hasWorkingUpgrade(feetStack, ArmorUpgradeType.FEATHERFALLING)) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-
-    @SubscribeEvent
-    public void onDamage(LivingDamageEvent event) {
-        Entity entity = event.getEntity();
-        World world = entity.getEntityWorld();
-        if (!world.isRemote && entity instanceof EntityLivingBase) {
-            ItemStack chestStack = ((EntityLivingBase) entity).getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            if (chestStack.getItem() == ModItems.powerSuitChest) {
-                if (ModuleSupport.hasWorkingUpgrade(chestStack, ArmorUpgradeType.FORCEFIELD)) {
-                    float damage = event.getAmount();
-                    DamageSource source = event.getSource();
-                    if (source.isExplosion()) {
-                        event.setAmount(damage / 5);
-                    } else if (source.isProjectile()) {
-                        event.setCanceled(true);
-                    } else if (!source.isUnblockable()) {
-                        event.setAmount(damage / 2);
-                    }
-                }
-            }
-        }
-    }
-
 //    @SubscribeEvent
 //    public void onLivingEquipmentChange(LivingEquipmentChangeEvent event) {
 //        PowerSuitFeatureCache.checkCacheClean(event.getEntity().getEntityId(), event.getSlot(), event.getFrom(), event.getTo());
@@ -106,7 +59,7 @@ public class ForgeEventHandlers {
             if (te instanceof IAlarmMode) {
                 boolean highAlert = ((IAlarmMode) te).isHighAlert();
                 alertCity(world, pos, player, highAlert);
-            } else if (world.getBlockState(pos).getBlock() == ModBlocks.reinforcedMarble) {
+            } else if (world.getBlockState(pos).getBlock() == ArienteStuff.reinforcedMarble) {
                 alertCity(world, pos, player, true);
             }
         }
@@ -127,17 +80,6 @@ public class ForgeEventHandlers {
                     cityAI.alertCity(player);
                 }
                 cityAISystem.save();
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onEntityJoin(EntityJoinWorldEvent event) {
-        World world = event.getWorld();
-        if (world.isRemote) {
-            Entity entity = event.getEntity();
-            if (entity instanceof FluxLevitatorEntity) {
-                FluxLevitatorSounds.playMovingSoundClient((FluxLevitatorEntity) entity);
             }
         }
     }

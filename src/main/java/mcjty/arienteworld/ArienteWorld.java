@@ -28,6 +28,7 @@ import java.util.function.Function;
         version = ArienteWorld.VERSION)
 public class ArienteWorld implements ModBase {
     public static final String MODID = "arienteworld";
+    public static final String ARIENTE_MODID = "ariente";
     public static final String MODNAME = "Ariente World";
     public static final String VERSION = "0.0.11-alpha";
     public static final String MIN_FORGE11_VER = "14.23.3.2694";

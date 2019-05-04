@@ -1,10 +1,11 @@
 package mcjty.arienteworld.biomes;
 
+import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.biomes.features.WorldGenArianteVariantTree;
 import mcjty.arienteworld.biomes.features.WorldGenArienteFlowers;
 import mcjty.arienteworld.biomes.features.WorldGenArienteSmallTree;
 import mcjty.arienteworld.biomes.features.WorldGenBlueTree;
-import mcjty.ariente.blocks.ModBlocks;
+import mcjty.arienteworld.blocks.ModBlocks;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -103,11 +104,11 @@ public abstract class AbstractArienteBiome extends Biome {
 
                 if (iblockstate2.getMaterial() == Material.AIR) {
                     j = -1;
-                } else if (iblockstate2.getBlock() == ModBlocks.marble) {
+                } else if (iblockstate2.getBlock() == ArienteStuff.marble) {
                     if (j == -1) {
                         if (k <= 0) {
                             iblockstate = AIR;
-                            iblockstate1 = ModBlocks.marble.getDefaultState();
+                            iblockstate1 = ArienteStuff.marble.getDefaultState();
                         } else if (y >= i - 4 && y <= i + 1) {
                             iblockstate = this.topBlock;
                             iblockstate1 = this.fillerBlock;
@@ -127,7 +128,7 @@ public abstract class AbstractArienteBiome extends Biome {
                             chunkPrimerIn.setBlockState(dx, y, dz, iblockstate);
                         } else if (y < i - 7 - k) {
                             iblockstate = AIR;
-                            iblockstate1 = ModBlocks.marble.getDefaultState();
+                            iblockstate1 = ArienteStuff.marble.getDefaultState();
                             chunkPrimerIn.setBlockState(dx, y, dz, GRAVEL);
                         } else {
                             chunkPrimerIn.setBlockState(dx, y, dz, iblockstate1);

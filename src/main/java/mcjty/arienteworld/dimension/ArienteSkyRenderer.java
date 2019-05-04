@@ -1,6 +1,6 @@
 package mcjty.arienteworld.dimension;
 
-import mcjty.ariente.Ariente;
+import mcjty.arienteworld.ArienteWorld;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
@@ -21,9 +21,8 @@ import java.util.Random;
 
 public class ArienteSkyRenderer extends IRenderHandler {
 
-    private static final ResourceLocation MOON_PHASES_TEXTURES = new ResourceLocation(Ariente.MODID, "textures/sky/ariente_moon_phases.png");
-    private static final ResourceLocation SUN_TEXTURES = new ResourceLocation(Ariente.MODID, "textures/sky/ariente_sun.png");
-    private static final ResourceLocation CLOUDS_TEXTURES = new ResourceLocation("textures/environment/clouds.png");
+    private static final ResourceLocation MOON_PHASES_TEXTURES = new ResourceLocation(ArienteWorld.MODID, "textures/sky/ariente_moon_phases.png");
+    private static final ResourceLocation SUN_TEXTURES = new ResourceLocation(ArienteWorld.MODID, "textures/sky/ariente_sun.png");
 
     private boolean vboEnabled;
     private VertexBuffer starVBO;

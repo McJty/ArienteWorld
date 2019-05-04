@@ -3,8 +3,8 @@ package mcjty.arienteworld.cities;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import mcjty.ariente.Ariente;
 import mcjty.ariente.varia.Counter;
+import mcjty.arienteworld.ArienteWorld;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +46,7 @@ public class AssetRegistries {
         for (Character character : chars) {
             s += character;
         }
-        Ariente.setup.getLogger().info(prefix + s);
+        ArienteWorld.setup.getLogger().info(prefix + s);
     }
 
     private static void printMap(Map<Character, Set<String>> usersPerCharacter, List<Map.Entry<Character, Integer>> map) {
@@ -61,7 +61,7 @@ public class AssetRegistries {
             } else {
                 s += ", Used " + users.size() + " times";
             }
-            Ariente.setup.getLogger().info(s);
+            ArienteWorld.setup.getLogger().info(s);
         }
     }
 

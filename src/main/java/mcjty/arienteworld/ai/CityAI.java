@@ -2,7 +2,6 @@ package mcjty.arienteworld.ai;
 
 import mcjty.ariente.api.ICityAI;
 import mcjty.ariente.api.ICityEquipment;
-import mcjty.ariente.blocks.ModBlocks;
 import mcjty.ariente.blocks.aicore.AICoreTile;
 import mcjty.ariente.blocks.defense.ForceFieldTile;
 import mcjty.ariente.blocks.generators.NegariteGeneratorTile;
@@ -20,7 +19,6 @@ import mcjty.ariente.entities.soldier.SoldierBehaviourType;
 import mcjty.ariente.entities.soldier.SoldierEntity;
 import mcjty.ariente.items.BlueprintItem;
 import mcjty.ariente.items.KeyCardItem;
-import mcjty.ariente.items.ModItems;
 import mcjty.ariente.items.modules.ArmorUpgradeType;
 import mcjty.ariente.items.modules.ModuleSupport;
 import mcjty.ariente.power.PowerSenderSupport;
@@ -29,6 +27,8 @@ import mcjty.ariente.recipes.RecipeRegistry;
 import mcjty.ariente.security.SecuritySystem;
 import mcjty.ariente.varia.ChunkCoord;
 import mcjty.ariente.varia.WeightedRandom;
+import mcjty.arienteworld.ArienteStuff;
+import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityPlan;
 import mcjty.arienteworld.cities.CityTools;
@@ -136,7 +136,7 @@ public class CityAI implements ICityAI {
         if (!hasValidCoreExcept(world, pos)) {
             // There are no other valid AI cores. Spawn an item for the player
             // with the right security key
-            ItemStack stack = new ItemStack(ModItems.keyCardItem);
+            ItemStack stack = new ItemStack(ArienteStuff.keyCardItem);
             KeyCardItem.addSecurityTag(stack, getStorageKeyId());
             EntityItem entityitem = new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack);
             entityitem.setDefaultPickupDelay();
@@ -288,7 +288,7 @@ public class CityAI implements ICityAI {
                     levitator = entity.getEntityId();
 
                     SoldierEntity soldier = createSoldier(world, pos, path.direction, SoldierBehaviourType.SOLDIER_FIGHTER, false);
-                    soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ModItems.energySabre));
+                    soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
                     world.spawnEntity(soldier);
                     soldier.startRiding(entity);
                 }
@@ -310,7 +310,7 @@ public class CityAI implements ICityAI {
         for (int i = minOffset ; i <= maxOffset ; i++) {
             BlockPos pos = new BlockPos(c.getChunkX() * 16 + 8 + direction.getDirectionVec().getX() * i, 32, (c.getChunkZ() * 16) + 8 + direction.getDirectionVec().getZ() * i);
             IBlockState state = world.getBlockState(pos);
-            if (state.getBlock() == ModBlocks.fluxBeamBlock) {
+            if (state.getBlock() == ArienteStuff.fluxBeamBlock) {
                 return pos;
             }
         }
@@ -333,7 +333,7 @@ public class CityAI implements ICityAI {
         BlockPos p = start;
         while (!end.equals(p)) {
             IBlockState state = world.getBlockState(p);
-            if (state.getBlock() != ModBlocks.fluxBeamBlock) {
+            if (state.getBlock() != ArienteStuff.fluxBeamBlock) {
                 return false;
             }
             p = p.offset(facing.getOpposite());
@@ -565,7 +565,7 @@ public class CityAI implements ICityAI {
             EnumFacing facing = soldierPositions.get(pos);
             SoldierEntity entity = createSoldier(world, pos, facing, SoldierBehaviourType.SOLDIER_FIGHTER,
                     random.nextDouble() < plan.getMasterChance());
-            entity.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ModItems.energySabre));    // @todo need a lasergun
+            entity.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));    // @todo need a lasergun
 
             if (random.nextFloat() < plan.getPowerArmorChance()) {
                 entity.setItemStackToSlot(EntityEquipmentSlot.HEAD, createNiceHelmet());
@@ -578,7 +578,7 @@ public class CityAI implements ICityAI {
     }
 
     private ItemStack createNiceHelmet() {
-        ItemStack helmet = new ItemStack(ModItems.powerSuitHelmet);
+        ItemStack helmet = new ItemStack(ArienteStuff.powerSuitHelmet);
         NBTTagCompound compound = new NBTTagCompound();
         compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
         compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
@@ -588,7 +588,7 @@ public class CityAI implements ICityAI {
 
 
     private ItemStack createNiceBoots() {
-        ItemStack helmet = new ItemStack(ModItems.powerSuitBoots);
+        ItemStack helmet = new ItemStack(ArienteStuff.powerSuitBoots);
         NBTTagCompound compound = new NBTTagCompound();
         compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
         compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
@@ -598,7 +598,7 @@ public class CityAI implements ICityAI {
 
 
     private ItemStack createNiceChestplate(CityPlan plan) {
-        ItemStack helmet = new ItemStack(ModItems.powerSuitChest);
+        ItemStack helmet = new ItemStack(ArienteStuff.powerSuitChest);
         NBTTagCompound compound = new NBTTagCompound();
         compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
         compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
@@ -613,7 +613,7 @@ public class CityAI implements ICityAI {
 
 
     private ItemStack createNiceLegs() {
-        ItemStack helmet = new ItemStack(ModItems.powerSuitLegs);
+        ItemStack helmet = new ItemStack(ArienteStuff.powerSuitLegs);
         NBTTagCompound compound = new NBTTagCompound();
         compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
         compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
@@ -675,7 +675,7 @@ public class CityAI implements ICityAI {
             if (te instanceof NegariteGeneratorTile) {
                 NegariteGeneratorTile generator = (NegariteGeneratorTile) te;
                 if (generator.getStackInSlot(NegariteGeneratorTile.SLOT_NEGARITE_INPUT).isEmpty()) {
-                    generator.setInventorySlotContents(NegariteGeneratorTile.SLOT_NEGARITE_INPUT, new ItemStack(ModItems.negariteDust, 1));
+                    generator.setInventorySlotContents(NegariteGeneratorTile.SLOT_NEGARITE_INPUT, new ItemStack(ArienteStuff.negariteDust, 1));
                     generator.markDirtyClient();
                 }
             }
@@ -685,7 +685,7 @@ public class CityAI implements ICityAI {
             if (te instanceof PosiriteGeneratorTile) {
                 PosiriteGeneratorTile generator = (PosiriteGeneratorTile) te;
                 if (generator.getStackInSlot(PosiriteGeneratorTile.SLOT_POSIRITE_INPUT).isEmpty()) {
-                    generator.setInventorySlotContents(PosiriteGeneratorTile.SLOT_POSIRITE_INPUT, new ItemStack(ModItems.posiriteDust, 1));
+                    generator.setInventorySlotContents(PosiriteGeneratorTile.SLOT_POSIRITE_INPUT, new ItemStack(ArienteStuff.posiriteDust, 1));
                     generator.markDirtyClient();
                 }
             }
@@ -769,7 +769,7 @@ public class CityAI implements ICityAI {
     public void playerSpotted(EntityPlayer player) {
         // The scramble module helps protect against player allertness
         ItemStack helmet = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-        if (helmet.getItem() == ModItems.powerSuitHelmet) {
+        if (helmet.getItem() == ArienteStuff.powerSuitHelmet) {
             if (ModuleSupport.hasWorkingUpgrade(helmet, ArmorUpgradeType.SCRAMBLE)) {
                 return;
             }
@@ -1050,7 +1050,7 @@ public class CityAI implements ICityAI {
             BlockPos pos = entry.getKey();
             EnumFacing facing = entry.getValue();
             SoldierEntity soldier = createSoldier(world, pos, facing, SoldierBehaviourType.SOLDIER_GUARD, false);
-            soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ModItems.energySabre));
+            soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
     }
 
@@ -1059,7 +1059,7 @@ public class CityAI implements ICityAI {
             BlockPos pos = entry.getKey();
             EnumFacing facing = entry.getValue();
             SoldierEntity soldier = createSoldier(world, pos, facing, SoldierBehaviourType.SOLDIER_FIGHTER, true);
-            soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ModItems.energySabre));
+            soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
     }
 

@@ -1,6 +1,6 @@
 package mcjty.arienteworld.dimension;
 
-import mcjty.ariente.blocks.ModBlocks;
+import mcjty.arienteworld.ArienteStuff;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -219,7 +219,7 @@ public class IslandTerrainGenerator {
     }
 
     public void generate(int chunkX, int chunkZ, ChunkPrimer primer) {
-        IBlockState baseBlock = ModBlocks.marble.getDefaultState();
+        IBlockState baseBlock = ArienteStuff.marble.getDefaultState();
 
         byte b0 = 2;
         int k = b0 + 1;
@@ -301,7 +301,7 @@ public class IslandTerrainGenerator {
     }
 
     public final void genBiomeTerrain(Biome Biome, ChunkPrimer primer, int x, int z, double noise) {
-        IBlockState baseBlock = ModBlocks.marble.getDefaultState();
+        IBlockState baseBlock = ArienteStuff.marble.getDefaultState();
         Block baseLiquid = Blocks.WATER;
 
         IBlockState block = Biome.topBlock;

@@ -1,9 +1,9 @@
 package mcjty.arienteworld.oregen;
 
-import mcjty.ariente.blocks.ModBlocks;
 import mcjty.ariente.blocks.decorative.MarbleColor;
 import mcjty.ariente.blocks.decorative.TechType;
 import mcjty.ariente.blocks.utility.WarperTile;
+import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.state.IBlockState;
@@ -195,28 +195,28 @@ public class OverworldDungeonGen implements IWorldGenerator {
                                 break;
                             case 'a':
                                 setBlock(random, world, pos, 15,
-                                        ModBlocks.marble.getDefaultState().withProperty(COLOR, MarbleColor.BLACK),
-                                        ModBlocks.marble_bricks.getDefaultState().withProperty(COLOR, MarbleColor.BLACK),
-                                        ModBlocks.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.BLACK));
+                                        ArienteStuff.marble.getDefaultState().withProperty(COLOR, MarbleColor.BLACK),
+                                        ArienteStuff.marble_bricks.getDefaultState().withProperty(COLOR, MarbleColor.BLACK),
+                                        ArienteStuff.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.BLACK));
                                 break;
                             case 'f':
                                 if (!world.isAirBlock(pos)) {
                                     setBlock(random, world, pos, 15,
-                                            ModBlocks.marble.getDefaultState().withProperty(COLOR, MarbleColor.GRAY),
-                                            ModBlocks.marble_bricks.getDefaultState().withProperty(COLOR, MarbleColor.GRAY),
-                                            ModBlocks.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.GRAY));
+                                            ArienteStuff.marble.getDefaultState().withProperty(COLOR, MarbleColor.GRAY),
+                                            ArienteStuff.marble_bricks.getDefaultState().withProperty(COLOR, MarbleColor.GRAY),
+                                            ArienteStuff.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.GRAY));
                                 }
                                 break;
                             case 's':
-                                world.setBlockState(pos, ModBlocks.marbleSlabBlock.getDefaultState()
+                                world.setBlockState(pos, ArienteStuff.marbleSlabBlock.getDefaultState()
                                         .withProperty(HALF, BlockSlab.EnumBlockHalf.BOTTOM)
                                         .withProperty(COLOR, MarbleColor.BLACK), 2);
                                 break;
                             case 'x':
-                                world.setBlockState(pos, ModBlocks.blackmarble_techpat.getDefaultState().withProperty(TYPE, TechType.RED_LINES_GLOW), 2);
+                                world.setBlockState(pos, ArienteStuff.blackmarble_techpat.getDefaultState().withProperty(TYPE, TechType.RED_LINES_GLOW), 2);
                                 break;
                             case '#':
-                                world.setBlockState(pos, ModBlocks.warperBlock.getDefaultState(), 2);
+                                world.setBlockState(pos, ArienteStuff.warperBlock.getDefaultState(), 2);
                                 break;
                         }
                     }

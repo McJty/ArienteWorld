@@ -1,13 +1,13 @@
 package mcjty.arienteworld.dimension;
 
 import com.google.common.collect.ImmutableList;
-import mcjty.ariente.blocks.ModBlocks;
+import mcjty.ariente.api.ICityEquipment;
 import mcjty.ariente.blocks.utility.ElevatorTile;
+import mcjty.ariente.varia.ChunkCoord;
+import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
-import mcjty.ariente.api.ICityEquipment;
-import mcjty.ariente.varia.ChunkCoord;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -54,7 +54,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         this.worldObj = worldObj;
         long seed = worldObj.getSeed();
         this.random = new Random((seed + 516) * 314);
-        terraingen.setup(worldObj, random, ModBlocks.marble.getDefaultState());
+        terraingen.setup(worldObj, random, ArienteStuff.marble.getDefaultState());
         islandsGen.setup(worldObj, worldObj.getSeed());
 //        islandgen.setup(worldObj, random, this, 40);
 //        island2gen.setup(worldObj, new Random((seed + 314) * 516), this, 40);

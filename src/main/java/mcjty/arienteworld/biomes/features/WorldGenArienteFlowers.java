@@ -1,6 +1,6 @@
 package mcjty.arienteworld.biomes.features;
 
-import mcjty.ariente.blocks.ModBlocks;
+import mcjty.arienteworld.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;

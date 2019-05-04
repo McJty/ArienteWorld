@@ -3,6 +3,7 @@ package mcjty.arienteworld.setup;
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.ForgeEventHandlers;
 import mcjty.arienteworld.TerrainEventHandlers;
+import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.arienteworld.cities.AssetRegistries;
 import mcjty.arienteworld.config.ConfigSetup;
 import mcjty.arienteworld.dimension.DimensionRegister;
@@ -34,6 +35,7 @@ public class ModSetup extends DefaultModSetup {
         NetworkRegistry.INSTANCE.registerGuiHandler(ArienteWorld.instance, new GuiProxy());
 
         DimensionRegister.init();
+        ModBlocks.init();
         WorldGen.init();
 //        ArienteMessages.registerMessages("arienteWorld");
     }

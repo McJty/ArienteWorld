@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import mcjty.ariente.api.ICityEquipment;
+import mcjty.ariente.varia.ChunkCoord;
+import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
-import mcjty.ariente.blocks.ModBlocks;
 import mcjty.arienteworld.cities.*;
-import mcjty.ariente.varia.ChunkCoord;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -557,7 +557,7 @@ public class EditMode {
                     IBlockState state = world.getBlockState(pos);
                     PaletteIndex character;
 
-                    if (state.getBlock() == ModBlocks.invisibleDoorBlock) {
+                    if (state.getBlock() == ArienteStuff.invisibleDoorBlock) {
                         character = PALETTE_AIR;
                     } else {
                         character = mapping.get(state);

@@ -1,6 +1,6 @@
 package mcjty.arienteworld.config;
 
-import mcjty.ariente.Ariente;
+import mcjty.arienteworld.ArienteWorld;
 import mcjty.lib.thirteen.ConfigSpec;
 import net.minecraftforge.common.config.Configuration;
 
@@ -39,7 +39,7 @@ public class ConfigSetup {
     public static Configuration mainConfig;
 
     public static void init() {
-        mainConfig = new Configuration(new File(Ariente.setup.getModConfigDir().getPath(), "arienteworld.cfg"));
+        mainConfig = new Configuration(new File(ArienteWorld.setup.getModConfigDir().getPath(), "arienteworld.cfg"));
         SERVER_CONFIG = SERVER_BUILDER.build(mainConfig);
         CLIENT_CONFIG = CLIENT_BUILDER.build(mainConfig);
     }
