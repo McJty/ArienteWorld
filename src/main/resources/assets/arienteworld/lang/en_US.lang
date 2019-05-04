@@ -1,0 +1,15 @@
+#PARSE_ESCAPES
+
+tile.arienteworld.guard_dummy.name=Guard Dummy
+tile.arienteworld.soldier_dummy.name=Soldier Dummy
+
+tile.arienteworld.glowlog.name=Glowing Log
+tile.arienteworld.glowleaves.name=Glowing Leaves
+tile.arienteworld.bluelog.name=Blue Log
+tile.arienteworld.blueleaves.name=Blue Leaves
+tile.arienteworld.darkleaves.name=Dark Leaves
+tile.arienteworld.black_bush.name=Black Bush
+tile.arienteworld.dark_grass.name=Dark Grass
+tile.arienteworld.small_flower.name=Small Flower
+
+itemGroup.arienteworld=Ariente World

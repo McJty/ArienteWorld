@@ -2,7 +2,7 @@ package mcjty.arienteworld.apiimpl;
 
 import mcjty.ariente.api.IArienteWorld;
 import mcjty.ariente.api.ICityAISystem;
-import mcjty.ariente.varia.ChunkCoord;
+import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.config.LootConfiguration;

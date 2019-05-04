@@ -3,7 +3,7 @@ package mcjty.arienteworld.dimension;
 import com.google.common.collect.ImmutableList;
 import mcjty.ariente.api.ICityEquipment;
 import mcjty.ariente.blocks.utility.ElevatorTile;
-import mcjty.ariente.varia.ChunkCoord;
+import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;

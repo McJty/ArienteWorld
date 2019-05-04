@@ -1,7 +1,7 @@
 package mcjty.arienteworld.dimension;
 
 import mcjty.ariente.blocks.decorative.*;
-import mcjty.ariente.varia.ChunkCoord;
+import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.*;
 import mcjty.lib.blocks.BaseBlock;

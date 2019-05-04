@@ -1,7 +1,7 @@
 package mcjty.arienteworld.ai;
 
 import mcjty.ariente.api.ICityAISystem;
-import mcjty.ariente.varia.ChunkCoord;
+import mcjty.lib.varia.ChunkCoord;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

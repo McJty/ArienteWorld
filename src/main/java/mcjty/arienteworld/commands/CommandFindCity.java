@@ -1,6 +1,6 @@
 package mcjty.arienteworld.commands;
 
-import mcjty.ariente.varia.ChunkCoord;
+import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
 import net.minecraft.command.CommandException;

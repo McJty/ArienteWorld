@@ -1,6 +1,6 @@
 package mcjty.arienteworld.cities;
 
-import mcjty.ariente.varia.ChunkCoord;
+import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.ChunkHeightmap;
 
