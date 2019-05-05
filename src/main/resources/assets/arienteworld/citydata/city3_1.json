@@ -12973,7 +12973,7 @@
       },
       {
         "char": "P ",
-        "block": "ariente:soldier_dummy@3"
+        "block": "arienteworld:soldier_dummy@3"
       },
       {
         "char": "m ",
@@ -12981,7 +12981,7 @@
       },
       {
         "char": "L ",
-        "block": "ariente:guard_dummy@2"
+        "block": "arienteworld:guard_dummy@2"
       },
       {
         "char": "ka",
@@ -13005,11 +13005,11 @@
       },
       {
         "char": "D ",
-        "block": "ariente:master_soldier_dummy@1"
+        "block": "arienteworld:master_soldier_dummy@1"
       },
       {
         "char": "ca",
-        "block": "ariente:master_soldier_dummy"
+        "block": "arienteworld:master_soldier_dummy"
       },
       {
         "char": "a ",
@@ -13045,7 +13045,7 @@
       },
       {
         "char": "Q ",
-        "block": "ariente:guard_dummy"
+        "block": "arienteworld:guard_dummy"
       },
       {
         "char": "0 ",
@@ -13069,7 +13069,7 @@
       },
       {
         "char": "I ",
-        "block": "ariente:soldier_dummy@1"
+        "block": "arienteworld:soldier_dummy@1"
       },
       {
         "char": "ha",
@@ -13081,7 +13081,7 @@
       },
       {
         "char": "E ",
-        "block": "ariente:guard_dummy@3"
+        "block": "arienteworld:guard_dummy@3"
       },
       {
         "char": "da",
@@ -13117,7 +13117,7 @@
       },
       {
         "char": "5 ",
-        "block": "ariente:master_soldier_dummy@3"
+        "block": "arienteworld:master_soldier_dummy@3"
       },
       {
         "char": "s ",
@@ -13145,7 +13145,7 @@
       },
       {
         "char": "J ",
-        "block": "ariente:guard_dummy@1"
+        "block": "arienteworld:guard_dummy@1"
       },
       {
         "char": "ia",
@@ -13157,7 +13157,7 @@
       },
       {
         "char": "F ",
-        "block": "ariente:soldier_dummy"
+        "block": "arienteworld:soldier_dummy"
       },
       {
         "char": "ea",
@@ -13205,7 +13205,7 @@
       },
       {
         "char": "O ",
-        "block": "ariente:soldier_dummy@2"
+        "block": "arienteworld:soldier_dummy@2"
       },
       {
         "char": "l ",

@@ -191,15 +191,15 @@
       },
       {
         "char": "d ",
-        "block": "ariente:guard_dummy@1"
+        "block": "arienteworld:guard_dummy@1"
       },
       {
         "char": "c ",
-        "block": "ariente:soldier_dummy@3"
+        "block": "arienteworld:soldier_dummy@3"
       },
       {
         "char": "b ",
-        "block": "ariente:guard_dummy@3"
+        "block": "arienteworld:guard_dummy@3"
       }
     ]
   }

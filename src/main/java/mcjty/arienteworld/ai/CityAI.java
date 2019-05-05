@@ -266,7 +266,6 @@ public class CityAI implements ICityAI {
 
                     EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, path.direction, center, SoldierBehaviourType.SOLDIER_FIGHTER, false);
                     soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
-                    world.spawnEntity(soldier);
                     soldier.startRiding(entity);
                 }
             }

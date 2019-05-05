@@ -1846,7 +1846,7 @@
     "palette": [
       {
         "char": "A ",
-        "block": "ariente:guard_dummy@2"
+        "block": "arienteworld:guard_dummy@2"
       },
       {
         "char": "  ",
@@ -1894,7 +1894,7 @@
       },
       {
         "char": "H ",
-        "block": "ariente:soldier_dummy"
+        "block": "arienteworld:soldier_dummy"
       },
       {
         "char": "g ",
@@ -1902,7 +1902,7 @@
       },
       {
         "char": "F ",
-        "block": "ariente:soldier_dummy@2"
+        "block": "arienteworld:soldier_dummy@2"
       },
       {
         "char": "e ",
@@ -1966,7 +1966,7 @@
       },
       {
         "char": "I ",
-        "block": "ariente:soldier_dummy@1"
+        "block": "arienteworld:soldier_dummy@1"
       },
       {
         "char": "h ",
@@ -1974,7 +1974,7 @@
       },
       {
         "char": "G ",
-        "block": "ariente:soldier_dummy@3"
+        "block": "arienteworld:soldier_dummy@3"
       },
       {
         "char": "f ",

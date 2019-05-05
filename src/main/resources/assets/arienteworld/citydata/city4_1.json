@@ -6380,7 +6380,7 @@
     "palette": [
       {
         "char": "y ",
-        "block": "ariente:soldier_dummy@2"
+        "block": "arienteworld:soldier_dummy@2"
       },
       {
         "char": "X ",
@@ -6388,7 +6388,7 @@
       },
       {
         "char": "u ",
-        "block": "ariente:soldier_dummy@3"
+        "block": "arienteworld:soldier_dummy@3"
       },
       {
         "char": "T ",
@@ -6400,7 +6400,7 @@
       },
       {
         "char": "P ",
-        "block": "ariente:guard_dummy@3"
+        "block": "arienteworld:guard_dummy@3"
       },
       {
         "char": "m ",
@@ -6416,7 +6416,7 @@
       },
       {
         "char": "H ",
-        "block": "ariente:guard_dummy@1"
+        "block": "arienteworld:guard_dummy@1"
       },
       {
         "char": "e ",
@@ -6432,11 +6432,11 @@
       },
       {
         "char": "z ",
-        "block": "ariente:soldier_dummy@1"
+        "block": "arienteworld:soldier_dummy@1"
       },
       {
         "char": "v ",
-        "block": "ariente:soldier_dummy"
+        "block": "arienteworld:soldier_dummy"
       },
       {
         "char": "U ",
@@ -6488,7 +6488,7 @@
       },
       {
         "char": "w ",
-        "block": "ariente:guard_dummy@2"
+        "block": "arienteworld:guard_dummy@2"
       },
       {
         "char": "V ",
