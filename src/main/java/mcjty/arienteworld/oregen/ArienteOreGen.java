@@ -1,6 +1,6 @@
 package mcjty.arienteworld.oregen;
 
-import mcjty.ariente.blocks.decorative.MarbleColor;
+import mcjty.ariente.api.MarbleColor;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import net.minecraft.block.Block;

@@ -1,6 +1,7 @@
 package mcjty.arienteworld.setup;
 
 import mcjty.ariente.api.IArienteMod;
+import mcjty.ariente.api.IArienteSystem;
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.ForgeEventHandlers;
 import mcjty.arienteworld.TerrainEventHandlers;
@@ -28,7 +29,7 @@ import java.io.UncheckedIOException;
 
 public class ModSetup extends DefaultModSetup {
 
-    public static IArienteMod arienteMod;
+    public static IArienteSystem arienteSystem;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -53,7 +54,7 @@ public class ModSetup extends DefaultModSetup {
         for (ModContainer container : Loader.instance().getModList()) {
             if (ArienteWorld.ARIENTE_MODID.equals(container.getModId())) {
                 if (container.getMod() instanceof IArienteMod) {
-                    arienteMod = (IArienteMod) container.getMod();
+                    arienteSystem = ((IArienteMod) container.getMod()).getSystem();
                 } else {
                     Logging.logError("Cannot find a valid Ariente mod!");
                 }

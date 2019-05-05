@@ -1,22 +1,6 @@
 package mcjty.arienteworld.ai;
 
 import mcjty.ariente.api.*;
-import mcjty.ariente.blocks.aicore.AICoreTile;
-import mcjty.ariente.blocks.defense.ForceFieldTile;
-import mcjty.ariente.blocks.generators.NegariteGeneratorTile;
-import mcjty.ariente.blocks.generators.PosiriteGeneratorTile;
-import mcjty.ariente.blocks.utility.AlarmTile;
-import mcjty.ariente.blocks.utility.wireless.RedstoneChannels;
-import mcjty.ariente.blocks.utility.wireless.SignalChannelTileEntity;
-import mcjty.ariente.entities.drone.DroneEntity;
-import mcjty.ariente.entities.drone.SentinelDroneEntity;
-import mcjty.ariente.entities.levitator.FluxLevitatorEntity;
-import mcjty.ariente.entities.soldier.SoldierEntity;
-import mcjty.ariente.items.KeyCardItem;
-import mcjty.ariente.items.modules.ArmorUpgradeType;
-import mcjty.ariente.items.modules.ModuleSupport;
-import mcjty.ariente.power.PowerSenderSupport;
-import mcjty.ariente.security.SecuritySystem;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.arienteworld.cities.City;
@@ -129,7 +113,7 @@ public class CityAI implements ICityAI {
             // There are no other valid AI cores. Spawn an item for the player
             // with the right security key
             ItemStack stack = new ItemStack(ArienteStuff.keyCardItem);
-            KeyCardItem.addSecurityTag(stack, getStorageKeyId());
+            ModSetup.arienteSystem.addSecurity(stack, getStorageKeyId());
             EntityItem entityitem = new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack);
             entityitem.setDefaultPickupDelay();
             world.spawnEntity(entityitem);
@@ -253,7 +237,7 @@ public class CityAI implements ICityAI {
             } else {
                 LevitatorPath path = findValidBeam(world);
                 if (path != null) {
-                    List<? extends ISoldier> entities = ModSetup.arienteMod.getSystem().getSoldiersWithinAABB(world, new AxisAlignedBB(path.end).grow(15));
+                    List<? extends ISoldier> entities = ModSetup.arienteSystem.getSoldiersWithinAABB(world, new AxisAlignedBB(path.end).grow(15));
                     if (entities.size() > 2) {
                         // Too many already
                         return;
@@ -262,24 +246,25 @@ public class CityAI implements ICityAI {
 
                     BlockPos pos = path.start;
                     IBlockState state = world.getBlockState(pos);
-                    BlockRailBase.EnumRailDirection dir = FluxLevitatorEntity.getBeamDirection(state);
+                    BlockRailBase.EnumRailDirection dir = ModSetup.arienteSystem.getBeamDirection(state);
                     double d0 = 0.0D;
 
                     if (dir.isAscending()) {
                         d0 = 0.5D;
                     }
 
-                    FluxLevitatorEntity entity = new FluxLevitatorEntity(world, pos.getX() + 0.5D, pos.getY() + 0.0625D + d0, pos.getZ() + 0.5D);
+                    Entity entity = ModSetup.arienteSystem.createFluxLevitatorEntity(world, pos.getX() + 0.5D, pos.getY() + 0.0625D + d0, pos.getZ() + 0.5D);
+                    IFluxLevitatorEntity levitator = (IFluxLevitatorEntity) entity;
                     if (path.direction == EnumFacing.SOUTH || path.direction == EnumFacing.EAST) {
-                        entity.changeSpeed(-50);
+                        levitator.changeSpeed(-50);
                     } else {
-                        entity.changeSpeed(50);
+                        levitator.changeSpeed(50);
                     }
-                    entity.setDesiredDestination(path.end);
+                    levitator.setDesiredDestination(path.end);
                     world.spawnEntity(entity);
-                    levitator = entity.getEntityId();
+                    this.levitator = entity.getEntityId();
 
-                    EntityLivingBase soldier = ModSetup.arienteMod.getSystem().createSoldier(world, pos, path.direction, center, SoldierBehaviourType.SOLDIER_FIGHTER, false);
+                    EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, path.direction, center, SoldierBehaviourType.SOLDIER_FIGHTER, false);
                     soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
                     world.spawnEntity(soldier);
                     soldier.startRiding(entity);
@@ -331,7 +316,7 @@ public class CityAI implements ICityAI {
             }
             p = p.offset(facing.getOpposite());
         }
-        List<? extends IFluxLevitatorEntity> entities = ModSetup.arienteMod.getSystem().getLevitatorsWithinAABB(world, new AxisAlignedBB(start).union(new AxisAlignedBB(end)));
+        List<? extends IFluxLevitatorEntity> entities = ModSetup.arienteSystem.getLevitatorsWithinAABB(world, new AxisAlignedBB(start).union(new AxisAlignedBB(end)));
         return entities.isEmpty();
     }
 
@@ -556,7 +541,7 @@ public class CityAI implements ICityAI {
             System.out.println("CityAI.spawnSoldier at " + pos);
 
             EnumFacing facing = soldierPositions.get(pos);
-            EntityLivingBase entity = ModSetup.arienteMod.getSystem().createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER,
+            EntityLivingBase entity = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER,
                     random.nextDouble() < plan.getMasterChance());
             entity.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));    // @todo need a lasergun
 
@@ -625,7 +610,7 @@ public class CityAI implements ICityAI {
             }
         }
         if (foundId != -1) {
-            DroneEntity entity = new DroneEntity(world, center);
+            EntityLivingBase entity = ModSetup.arienteSystem.createDrone(world, center);
             int cx = center.getChunkX() * 16 + 8;
             int cy = height;
             int cz = center.getChunkZ() * 16 + 8;
@@ -665,22 +650,14 @@ public class CityAI implements ICityAI {
         // Handle power
         for (BlockPos pos : negariteGenerators) {
             TileEntity te = world.getTileEntity(pos);
-            if (te instanceof NegariteGeneratorTile) {
-                NegariteGeneratorTile generator = (NegariteGeneratorTile) te;
-                if (generator.getStackInSlot(NegariteGeneratorTile.SLOT_NEGARITE_INPUT).isEmpty()) {
-                    generator.setInventorySlotContents(NegariteGeneratorTile.SLOT_NEGARITE_INPUT, new ItemStack(ArienteStuff.negariteDust, 1));
-                    generator.markDirtyClient();
-                }
+            if (te instanceof IGenerator) {
+                ((IGenerator) te).feedDust(1);
             }
         }
         for (BlockPos pos : posiriteGenerators) {
             TileEntity te = world.getTileEntity(pos);
-            if (te instanceof PosiriteGeneratorTile) {
-                PosiriteGeneratorTile generator = (PosiriteGeneratorTile) te;
-                if (generator.getStackInSlot(PosiriteGeneratorTile.SLOT_POSIRITE_INPUT).isEmpty()) {
-                    generator.setInventorySlotContents(PosiriteGeneratorTile.SLOT_POSIRITE_INPUT, new ItemStack(ArienteStuff.posiriteDust, 1));
-                    generator.markDirtyClient();
-                }
+            if (te instanceof IGenerator) {
+                ((IGenerator) te).feedDust(1);
             }
         }
     }
@@ -763,7 +740,7 @@ public class CityAI implements ICityAI {
         // The scramble module helps protect against player allertness
         ItemStack helmet = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
         if (helmet.getItem() == ArienteStuff.powerSuitHelmet) {
-            if (ModuleSupport.hasWorkingUpgrade(helmet, ArmorUpgradeType.SCRAMBLE)) {
+            if (ModSetup.arienteSystem.hasWorkingUpgrade(helmet, ArmorUpgradeType.SCRAMBLE)) {
                 return;
             }
         }
@@ -814,15 +791,15 @@ public class CityAI implements ICityAI {
         int cntSoldier = 0;
 
         for (EntityLivingBase entity : entities) {
-            if (entity instanceof SentinelDroneEntity) {
+            if (entity instanceof ISentinel) {
                 if (cntSentinel < sentinels.length) {
                     sentinels[cntSentinel++] = entity.getEntityId();
                 }
-            } else if (entity instanceof SoldierEntity) {
+            } else if (entity instanceof ISoldier) {
                 if (cntSoldier < soldiers.length) {
                     soldiers[cntSoldier++] = entity.getEntityId();
                 }
-            } else if (entity instanceof DroneEntity) {
+            } else if (entity instanceof IDrone) {
                 if (cntDrone < drones.length) {
                     drones[cntDrone++] = entity.getEntityId();
                 }
@@ -843,9 +820,9 @@ public class CityAI implements ICityAI {
         }
 
         if (firstTime) {
-            keyId = SecuritySystem.getSecuritySystem(world).generateKeyId();
-            storageKeyId = SecuritySystem.getSecuritySystem(world).generateKeyId();
-            forcefieldId = SecuritySystem.getSecuritySystem(world).generateKeyId();
+            keyId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId();
+            storageKeyId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId();
+            forcefieldId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId();
         }
 
         City city = CityTools.getCity(center);
@@ -889,32 +866,34 @@ public class CityAI implements ICityAI {
                                     ((ICityEquipment) te).setup(this, world, firstTime);
                                 }
 
-                                if (firstTime && te instanceof SignalChannelTileEntity) {
-                                    int desired = ((SignalChannelTileEntity) te).getDesiredChannel();
+                                if (firstTime && te instanceof ISignalChannel) {
+                                    int desired = ((ISignalChannel) te).getDesiredChannel();
                                     if (!desiredToReal.containsKey(desired)) {
                                         // New channel is needed
-                                        RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
+                                        IRedstoneChannels redstoneChannels = ModSetup.arienteSystem.getRedstoneChannels(world);
                                         int newChannel = redstoneChannels.newChannel();
-                                        redstoneChannels.save();
                                         desiredToReal.put(desired, newChannel);
                                         System.out.println("Mapping channel " + desired + " to " + newChannel);
                                     }
                                     desired = desiredToReal.get(desired);
-                                    ((SignalChannelTileEntity) te).setChannel(desired);
+                                    ((ISignalChannel) te).setChannel(desired);
                                 }
 
-                                if (te instanceof AICoreTile) {
+                                if (te instanceof IAICoreTile) {
                                     aiCores.add(p);
-                                } else if (te instanceof ForceFieldTile) {
+                                } else if (te instanceof IForceFieldTile) {
                                     // We already have this as equipment but we need it separate
-                                    ((ForceFieldTile)te).setCityCenter(center);
+                                    ((IForceFieldTile)te).setCityCenter(center);
                                     forceFields.add(p);
-                                } else if (te instanceof AlarmTile) {
+                                } else if (te instanceof IAlarmTile) {
                                     alarms.add(p);
-                                } else if (te instanceof NegariteGeneratorTile) {
-                                    negariteGenerators.add(p);
-                                } else if (te instanceof PosiriteGeneratorTile) {
-                                    posiriteGenerators.add(p);
+                                } else if (te instanceof IGenerator) {
+                                    if (((IGenerator) te).supportsNegarite()) {
+                                        negariteGenerators.add(p);
+                                    }
+                                    if (((IGenerator) te).supportsPosirite()) {
+                                        posiriteGenerators.add(p);
+                                    }
                                 }
                             }
                         }
@@ -997,7 +976,7 @@ public class CityAI implements ICityAI {
         for (Map.Entry<BlockPos, EnumFacing> entry : guardPositions.entrySet()) {
             BlockPos pos = entry.getKey();
             EnumFacing facing = entry.getValue();
-            EntityLivingBase soldier = ModSetup.arienteMod.getSystem().createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_GUARD, false);
+            EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_GUARD, false);
             soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
     }
@@ -1006,7 +985,7 @@ public class CityAI implements ICityAI {
         for (Map.Entry<BlockPos, EnumFacing> entry : masterSoldierPositions.entrySet()) {
             BlockPos pos = entry.getKey();
             EnumFacing facing = entry.getValue();
-            EntityLivingBase soldier = ModSetup.arienteMod.getSystem().createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER, true);
+            EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER, true);
             soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
     }
@@ -1017,18 +996,18 @@ public class CityAI implements ICityAI {
 
         for (BlockPos p : negariteGenerators) {
             TileEntity te = world.getTileEntity(p);
-            if (te instanceof NegariteGeneratorTile) {
-                NegariteGeneratorTile generator = (NegariteGeneratorTile) te;
-                PowerSenderSupport.fixNetworks(world, p);
+            if (te instanceof GenericTileEntity) {
+                GenericTileEntity generator = (GenericTileEntity) te;
+                ModSetup.arienteSystem.fixNetworks(world, p);
                 generator.setRSMode(RedstoneMode.REDSTONE_IGNORED);
             }
         }
         for (BlockPos p : posiriteGenerators) {
             TileEntity te = world.getTileEntity(p);
-            if (te instanceof PosiriteGeneratorTile) {
+            if (te instanceof GenericTileEntity) {
                 posiriteGenerators.add(p);
-                PosiriteGeneratorTile generator = (PosiriteGeneratorTile) te;
-                PowerSenderSupport.fixNetworks(world, p);
+                GenericTileEntity generator = (GenericTileEntity) te;
+                ModSetup.arienteSystem.fixNetworks(world, p);
                 generator.setRSMode(RedstoneMode.REDSTONE_IGNORED);
             }
         }
@@ -1037,8 +1016,8 @@ public class CityAI implements ICityAI {
     public void setAlarmType(World world, AlarmType type) {
         for (BlockPos p : alarms) {
             TileEntity te = world.getTileEntity(p);
-            if (te instanceof AlarmTile) {
-                ((AlarmTile) te).setAlarmType(type);
+            if (te instanceof IAlarmTile) {
+                ((IAlarmTile) te).setAlarmType(type);
             }
         }
     }
@@ -1058,7 +1037,7 @@ public class CityAI implements ICityAI {
     }
 
     private void createSentinel(World world, int i, int height) {
-        SentinelDroneEntity entity = new SentinelDroneEntity(world, i, center);
+        EntityLivingBase entity = ModSetup.arienteSystem.createSentinel(world, i, center);
         int cx = center.getChunkX() * 16 + 8;
         int cy = height;
         int cz = center.getChunkZ() * 16 + 8;

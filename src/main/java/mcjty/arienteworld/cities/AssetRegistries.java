@@ -3,7 +3,7 @@ package mcjty.arienteworld.cities;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import mcjty.ariente.varia.Counter;
+import mcjty.arienteworld.varia.Counter;
 import mcjty.arienteworld.ArienteWorld;
 
 import java.io.*;

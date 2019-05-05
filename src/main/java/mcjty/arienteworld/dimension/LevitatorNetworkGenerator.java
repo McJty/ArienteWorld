@@ -1,16 +1,22 @@
 package mcjty.arienteworld.dimension;
 
-import mcjty.ariente.blocks.decorative.*;
-import mcjty.lib.varia.ChunkCoord;
+import mcjty.ariente.api.EnumFacingUpDown;
+import mcjty.ariente.api.MarbleColor;
+import mcjty.ariente.api.TechType;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.*;
 import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.varia.ChunkCoord;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
+
+import static mcjty.ariente.api.EnumFacingUpDown.FACING;
+import static mcjty.ariente.api.MarbleColor.COLOR;
+import static mcjty.ariente.api.TechType.TYPE;
 
 public class LevitatorNetworkGenerator {
 
@@ -36,19 +42,19 @@ public class LevitatorNetworkGenerator {
     private static void initialize() {
         if (!initialized) {
             airChar = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
-            blueMarble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(MarbleBlock.COLOR, MarbleColor.BLUE));
-            blackMarble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(MarbleBlock.COLOR, MarbleColor.BLACK));
+            blueMarble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.BLUE));
+            blackMarble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.BLACK));
             horizontalBeam = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.fluxBeamBlock.getDefaultState().withProperty(BaseBlock.FACING_HORIZ, EnumFacing.WEST));
             verticalBeam = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.fluxBeamBlock.getDefaultState().withProperty(BaseBlock.FACING_HORIZ, EnumFacing.NORTH));
-            slopeNorth = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.NORTH));
-            slopeSouth = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.SOUTH));
-            slopeWest = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.WEST));
-            slopeEast = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.EAST));
-            slopeNorthUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.NORTH_UP));
-            slopeSouthUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.SOUTH_UP));
-            slopeWestUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.WEST_UP));
-            slopeEastUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(SlopeBlock.FACING, EnumFacingUpDown.EAST_UP));
-            glowLines = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.blackmarble_techpat.getDefaultState().withProperty(BlackTechBlock.TYPE, TechType.LINES_GLOW));
+            slopeNorth = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.NORTH));
+            slopeSouth = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.SOUTH));
+            slopeWest = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.WEST));
+            slopeEast = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.EAST));
+            slopeNorthUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.NORTH_UP));
+            slopeSouthUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.SOUTH_UP));
+            slopeWestUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.WEST_UP));
+            slopeEastUp = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.slopeBlock.getDefaultState().withProperty(FACING, EnumFacingUpDown.EAST_UP));
+            glowLines = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.blackmarble_techpat.getDefaultState().withProperty(TYPE, TechType.LINES_GLOW));
             lampTop = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.flatLightBlock.getDefaultState().withProperty(BaseBlock.FACING, EnumFacing.DOWN));
             elevator = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.elevatorBlock.getDefaultState());
             levelMarker = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.levelMarkerBlock.getDefaultState());

@@ -2,13 +2,13 @@ package mcjty.arienteworld.dimension;
 
 import com.google.common.collect.ImmutableList;
 import mcjty.ariente.api.ICityEquipment;
-import mcjty.ariente.blocks.utility.ElevatorTile;
-import mcjty.lib.varia.ChunkCoord;
+import mcjty.ariente.api.IElevator;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.ChunkCoord;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
@@ -332,8 +332,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         if (stationLevitatorTodo.containsKey(coord)) {
             BlockPos levitatorPos = stationLevitatorTodo.get(coord);
             TileEntity te = worldObj.getTileEntity(levitatorPos);
-            if (te instanceof ElevatorTile) {
-                ElevatorTile elevatorTile = (ElevatorTile) te;
+            if (te instanceof IElevator) {
+                IElevator elevatorTile = (IElevator) te;
                 ChunkCoord center = CityTools.getNearestCityCenter(x, z);
                 elevatorTile.setHeight(CityTools.getLowestHeight(CityTools.getCity(center), this, x, z) - 30 + 5);
             }

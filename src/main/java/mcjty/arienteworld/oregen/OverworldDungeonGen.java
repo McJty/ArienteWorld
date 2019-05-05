@@ -1,8 +1,8 @@
 package mcjty.arienteworld.oregen;
 
-import mcjty.ariente.blocks.decorative.MarbleColor;
-import mcjty.ariente.blocks.decorative.TechType;
-import mcjty.ariente.blocks.utility.WarperTile;
+import mcjty.ariente.api.IWarper;
+import mcjty.ariente.api.MarbleColor;
+import mcjty.ariente.api.TechType;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import net.minecraft.block.BlockSlab;
@@ -17,8 +17,8 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
 
-import static mcjty.ariente.blocks.decorative.BlackTechBlock.TYPE;
-import static mcjty.ariente.blocks.decorative.MarbleBlock.COLOR;
+import static mcjty.ariente.api.MarbleColor.COLOR;
+import static mcjty.ariente.api.TechType.TYPE;
 import static net.minecraft.block.BlockSlab.HALF;
 
 public class OverworldDungeonGen implements IWorldGenerator {
@@ -150,7 +150,7 @@ public class OverworldDungeonGen implements IWorldGenerator {
                 for (int dy = -2 ; dy <= 2 ; dy++) {
                     for (int dz = -2 ; dz <= 2 ; dz++) {
                         TileEntity te = world.getTileEntity(pos.add(dx, dy, dz));
-                        if (te instanceof WarperTile) {
+                        if (te instanceof IWarper) {
                             return true;
                         }
                     }
