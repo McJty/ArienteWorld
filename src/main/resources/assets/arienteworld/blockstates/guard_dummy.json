@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "ariente:blocks/dummy/guard_dummy"
+      "all": "arienteworld:blocks/dummy/guard_dummy"
     }
   },
   "variants": {

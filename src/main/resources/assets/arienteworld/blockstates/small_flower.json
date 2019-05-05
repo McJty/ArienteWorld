@@ -3,7 +3,7 @@
     "defaults": {
         "model": "cross",
         "textures": {
-            "cross": "arienteworld:blocks/plants/blackbush"
+            "cross": "arienteworld:blocks/plants/smallflower"
         }
     },
     "variants": {

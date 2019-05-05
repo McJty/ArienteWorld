@@ -21,10 +21,14 @@ public class ArienteStuff {
     @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":powersuit_feet")
     public static Item powerSuitBoots;
 
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":dust_negarite")
-    public static Item negariteDust;
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":dust_posirite")
-    public static Item posiriteDust;
+    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":ingot_lithium")
+    public static Item lithiumIngot;
+    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":ingot_manganese")
+    public static Item manganeseIngot;
+    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":ingot_platinum")
+    public static Item platinumIngot;
+    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":ingot_silver")
+    public static Item silverIngot;
 
     @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":reinforced_marble")
     public static Block reinforcedMarble;
@@ -67,31 +71,4 @@ public class ArienteStuff {
 
     @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":slope")
     public static Block slopeBlock;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":lapisore")
-    public static Block lapisore;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":glowstoneore")
-    public static Block glowstoneore;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":lithiumore")
-    public static Block lithiumore;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":manganeseore")
-    public static Block manganeseore;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":siliconore")
-    public static Block siliconore;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":silverore")
-    public static Block silverore;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":platinumore")
-    public static Block platinumore;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":negarite")
-    public static Block negarite;
-
-    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":posirite")
-    public static Block posirite;
 }

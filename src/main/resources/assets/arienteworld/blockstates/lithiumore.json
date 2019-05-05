@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "arienteworld:blocks/plants/glowleaves"
+      "all": "arienteworld:blocks/ores/lithiumore"
     }
   },
   "variants": {

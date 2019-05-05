@@ -3,13 +3,13 @@
   "defaults": {
     "model": "cube",
     "textures": {
-      "particle": "ariente:blocks/plants/bluelog",
-      "down": "ariente:blocks/plants/bluelog_top",
-      "up": "ariente:blocks/plants/bluelog_top",
-      "north": "ariente:blocks/plants/bluelog",
-      "east": "ariente:blocks/plants/bluelog",
-      "south": "ariente:blocks/plants/bluelog",
-      "west": "ariente:blocks/plants/bluelog"
+      "particle": "arienteworld:blocks/plants/bluelog",
+      "down": "arienteworld:blocks/plants/bluelog_top",
+      "up": "arienteworld:blocks/plants/bluelog_top",
+      "north": "arienteworld:blocks/plants/bluelog",
+      "east": "arienteworld:blocks/plants/bluelog",
+      "south": "arienteworld:blocks/plants/bluelog",
+      "west": "arienteworld:blocks/plants/bluelog"
     }
   },
   "variants": {

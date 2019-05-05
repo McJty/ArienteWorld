@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "ariente:blocks/plants/darkleaves"
+      "all": "arienteworld:blocks/plants/darkleaves"
     }
   },
   "variants": {

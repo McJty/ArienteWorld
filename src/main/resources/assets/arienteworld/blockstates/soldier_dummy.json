@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "ariente:blocks/dummy/soldier_dummy"
+      "all": "arienteworld:blocks/dummy/soldier_dummy"
     }
   },
   "variants": {

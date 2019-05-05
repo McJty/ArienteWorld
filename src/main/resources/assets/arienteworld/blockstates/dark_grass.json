@@ -3,7 +3,7 @@
     "defaults": {
         "model": "cross",
         "textures": {
-            "cross": "ariente:blocks/plants/darkgrass"
+            "cross": "arienteworld:blocks/plants/darkgrass"
         }
     },
     "variants": {

@@ -3,7 +3,7 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "ariente:blocks/plants/blueleaves"
+      "all": "arienteworld:blocks/plants/blueleaves"
     }
   },
   "variants": {
