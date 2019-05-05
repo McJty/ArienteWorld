@@ -1,2 +1,2 @@
 Upcoming:
-- The 'dimension' part of Ariente
+- The 'dimension' part of Ariente is now a separate mod
