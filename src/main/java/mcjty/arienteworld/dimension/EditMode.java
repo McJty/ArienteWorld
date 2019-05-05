@@ -4,16 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import mcjty.ariente.api.ICityEquipment;
-import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.*;
+import mcjty.lib.varia.BlockPosTools;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -220,10 +221,10 @@ public class EditMode {
         }
 
         BlockPos pos = player.getPosition();
-        ChunkCoord coord = ChunkCoord.getChunkCoordFromPos(pos);
+        ChunkPos coord = BlockPosTools.getChunkCoordFromPos(pos);
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
-        int lowesty = CityTools.getLowestHeight(city, generator, coord.getChunkX(), coord.getChunkZ());
-        List<BuildingPart> parts = CityTools.getBuildingParts(city, coord.getChunkX(), coord.getChunkZ());
+        int lowesty = CityTools.getLowestHeight(city, generator, coord.x, coord.z);
+        List<BuildingPart> parts = CityTools.getBuildingParts(city, coord.x, coord.z);
 
         BuildingPart found = null;
         int partY = -1;
@@ -250,8 +251,8 @@ public class EditMode {
         int dimX = pattern.get(0).length();
         int dimZ = pattern.size();
 
-        cx = city.getCenter().getChunkX();
-        cz = city.getCenter().getChunkZ();
+        cx = city.getCenter().x;
+        cz = city.getCenter().z;
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
 
@@ -277,8 +278,8 @@ public class EditMode {
         int dimX = pattern.get(0).length();
         int dimZ = pattern.size();
 
-        cx = city.getCenter().getChunkX();
-        cz = city.getCenter().getChunkZ();
+        cx = city.getCenter().x;
+        cz = city.getCenter().z;
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
 
@@ -331,7 +332,7 @@ public class EditMode {
     }
 
     private static void loadCityOrStation(EntityPlayer player,
-                                          ChunkCoord center, CityPlan plan, int offset,
+                                          ChunkPos center, CityPlan plan, int offset,
                                           BiFunction<Integer, Integer, Integer> heightGetter,
                                           BiFunction<Integer, Integer, List<BuildingPart>> partsGetter,
                                           boolean doVoid) {
@@ -348,8 +349,8 @@ public class EditMode {
             }
         }
 
-        int cx = center.getChunkX();
-        int cz = center.getChunkZ();
+        int cx = center.x;
+        int cz = center.z;
 
         for (int dx = cx - dimX / 2 - 1 - offset; dx <= cx + dimX / 2 + 1 - offset; dx++) {
             for (int dz = cz - dimZ / 2 - 1 - offset; dz <= cz + dimZ / 2 + 1 - offset; dz++) {
@@ -458,7 +459,7 @@ public class EditMode {
     }
 
     private static void saveCityOrStation(EntityPlayer player,
-                                          ChunkCoord center, CityPlan plan, int offset,
+                                          ChunkPos center, CityPlan plan, int offset,
                                           BiFunction<Integer, Integer, Integer> heightGetter,
                                           BiFunction<Integer, Integer, List<BuildingPart>> partsGetter)
             throws FileNotFoundException {
@@ -481,8 +482,8 @@ public class EditMode {
 
         array.add(plan.writeToJSon());
 
-        int cx = center.getChunkX();
-        int cz = center.getChunkZ();
+        int cx = center.x;
+        int cz = center.z;
 
         Set<PaletteIndex> paletteUsage = new HashSet<>();
         Map<String, BuildingPart> editedParts = new HashMap<>();

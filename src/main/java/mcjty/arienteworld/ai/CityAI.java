@@ -13,7 +13,6 @@ import mcjty.arienteworld.setup.ModSetup;
 import mcjty.hologui.api.IHoloGuiEntity;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.varia.ChunkCoord;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.lib.varia.WeightedRandom;
 import net.minecraft.block.Block;
@@ -35,6 +34,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -46,7 +46,7 @@ import java.util.*;
 
 public class CityAI implements ICityAI {
 
-    private final ChunkCoord center;
+    private final ChunkPos center;
     private boolean initialized = false;
 
     private CityAISettings settings = null;
@@ -86,11 +86,11 @@ public class CityAI implements ICityAI {
 
     private static Random random = new Random();
 
-    public CityAI(ChunkCoord center) {
+    public CityAI(ChunkPos center) {
         this.center = center;
     }
 
-    public ChunkCoord getCenter() {
+    public ChunkPos getCenter() {
         return center;
     }
 
@@ -284,9 +284,9 @@ public class CityAI implements ICityAI {
         levitator = -1;
     }
 
-    private BlockPos isValidBeam(World world, ChunkCoord c, EnumFacing direction, int minOffset, int maxOffset) {
+    private BlockPos isValidBeam(World world, ChunkPos c, EnumFacing direction, int minOffset, int maxOffset) {
         for (int i = minOffset ; i <= maxOffset ; i++) {
-            BlockPos pos = new BlockPos(c.getChunkX() * 16 + 8 + direction.getDirectionVec().getX() * i, 32, (c.getChunkZ() * 16) + 8 + direction.getDirectionVec().getZ() * i);
+            BlockPos pos = new BlockPos(c.x * 16 + 8 + direction.getDirectionVec().getX() * i, 32, (c.z * 16) + 8 + direction.getDirectionVec().getZ() * i);
             IBlockState state = world.getBlockState(pos);
             if (state.getBlock() == ArienteStuff.fluxBeamBlock) {
                 return pos;
@@ -325,8 +325,8 @@ public class CityAI implements ICityAI {
         CityAISystem system = CityAISystem.getCityAISystem(world);
         List<LevitatorPath> positions = new ArrayList<>();
         for (EnumFacing facing : EnumFacing.HORIZONTALS) {
-            ChunkCoord otherCoord = new ChunkCoord(center.getChunkX() + facing.getDirectionVec().getX() * 16,
-                    center.getChunkZ() + facing.getDirectionVec().getZ() * 16);
+            ChunkPos otherCoord = new ChunkPos(center.x + facing.getDirectionVec().getX() * 16,
+                    center.z + facing.getDirectionVec().getZ() * 16);
             CityAI otherCity = system.getCityAI(otherCoord);
             if (otherCity != null && !otherCity.isDead(world)) {
                 BlockPos end = isValidBeam(world, center, facing, 1, 40);
@@ -402,7 +402,7 @@ public class CityAI implements ICityAI {
             EntityPlayerMP player = world.getMinecraftServer().getPlayerList().getPlayerByUUID(uuid);
             if (player != null && player.getEntityWorld().provider.getDimension() == world.provider.getDimension()) {
                 BlockPos pos = entry.getValue();    // Use the last known position
-                double sq = pos.distanceSq(new BlockPos(center.getChunkX() * 16 + 8, 50, center.getChunkZ() * 16 + 8));
+                double sq = pos.distanceSq(new BlockPos(center.x * 16 + 8, 50, center.z * 16 + 8));
                 if (sq < 80 * 80) {
                     players.add(pos);
                 }
@@ -425,7 +425,7 @@ public class CityAI implements ICityAI {
             City city = CityTools.getCity(center);
             CityPlan plan = city.getPlan();
             ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
-            int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.getChunkX(), center.getChunkZ());
+            int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
             int desiredMinimumCount = 0;
             int newWaveMaximum = 0;
@@ -611,9 +611,9 @@ public class CityAI implements ICityAI {
         }
         if (foundId != -1) {
             EntityLivingBase entity = ModSetup.arienteSystem.createDrone(world, center);
-            int cx = center.getChunkX() * 16 + 8;
+            int cx = center.x * 16 + 8;
             int cy = height;
-            int cz = center.getChunkZ() * 16 + 8;
+            int cz = center.z * 16 + 8;
             entity.setPosition(cx, cy, cz);
             world.spawnEntity(entity);
             drones[foundId] = entity.getEntityId();
@@ -637,7 +637,7 @@ public class CityAI implements ICityAI {
                 City city = CityTools.getCity(center);
                 CityPlan plan = city.getPlan();
                 ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
-                int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.getChunkX(), center.getChunkZ());
+                int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
                 for (int i = 0; i < sentinels.length; i++) {
 //                    System.out.println("revive: i = " + i);
                     createSentinel(world, i, droneHeight);
@@ -715,12 +715,12 @@ public class CityAI implements ICityAI {
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
         ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
-        int droneHeight = plan.getSentinelRelHeight() + CityTools.getLowestHeight(city, generator, center.getChunkX(), center.getChunkZ());
+        int droneHeight = plan.getSentinelRelHeight() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
         int angleI = (sentinelAngleOffset + sentinelId * 12 / sentinels.length) % 12;
-        int cx = center.getChunkX() * 16 + 8;
+        int cx = center.x * 16 + 8;
         int cy = droneHeight;
-        int cz = center.getChunkZ() * 16 + 8;
+        int cz = center.z * 16 + 8;
 
         float angle = angleI * 360.0f / 12;
         float distance = plan.getSentinelDistance();
@@ -780,7 +780,7 @@ public class CityAI implements ICityAI {
         int dimX = pattern.get(0).length() * 16 * 2;
         int dimZ = pattern.size() * 16 * 2;
 
-        BlockPos ctr = new BlockPos(this.center.getChunkX() * 16 + 8, 50, this.center.getChunkZ() * 16 + 8);
+        BlockPos ctr = new BlockPos(this.center.x * 16 + 8, 50, this.center.z * 16 + 8);
         List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(ctr).grow(dimX, 200, dimZ));
 
         if (sentinels == null) {
@@ -831,8 +831,8 @@ public class CityAI implements ICityAI {
         List<String> pattern = plan.getPlan();
         int dimX = pattern.get(0).length();
         int dimZ = pattern.size();
-        int cx = center.getChunkX();
-        int cz = center.getChunkZ();
+        int cx = center.x;
+        int cz = center.z;
 
         Map<Integer, Integer> desiredToReal = new HashMap<>();
 
@@ -954,7 +954,7 @@ public class CityAI implements ICityAI {
 
     private void createSettings(World world) {
         long seed = DimensionManager.getWorld(0).getSeed();
-        Random rnd = new Random(seed + center.getChunkX() * 567000003533L + center.getChunkZ() * 234516783139L);
+        Random rnd = new Random(seed + center.x * 567000003533L + center.z * 234516783139L);
         rnd.nextFloat();
         rnd.nextFloat();
         City city = CityTools.getCity(center);
@@ -1026,7 +1026,7 @@ public class CityAI implements ICityAI {
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
         ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
-        int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.getChunkX(), center.getChunkZ());
+        int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
         int numSentinels = settings.getNumSentinels();
         sentinels = new int[numSentinels];
@@ -1038,9 +1038,9 @@ public class CityAI implements ICityAI {
 
     private void createSentinel(World world, int i, int height) {
         EntityLivingBase entity = ModSetup.arienteSystem.createSentinel(world, i, center);
-        int cx = center.getChunkX() * 16 + 8;
+        int cx = center.x * 16 + 8;
         int cy = height;
-        int cz = center.getChunkZ() * 16 + 8;
+        int cz = center.z * 16 + 8;
         entity.setPosition(cx, cy, cz);
         world.spawnEntity(entity);
         sentinels[i] = entity.getEntityId();

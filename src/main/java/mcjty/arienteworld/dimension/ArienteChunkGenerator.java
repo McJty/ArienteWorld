@@ -8,13 +8,13 @@ import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.varia.ChunkCoord;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
@@ -45,10 +45,10 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     private IslandsTerrainGenerator islandsGen = new IslandsTerrainGenerator();
     private ArienteCityGenerator cityGenerator = new ArienteCityGenerator();
 
-    private static Map<ChunkCoord, BlockPos> stationLevitatorTodo = new HashMap<>();
+    private static Map<ChunkPos, BlockPos> stationLevitatorTodo = new HashMap<>();
 
-    private Map<ChunkCoord, ChunkPrimer> cachedPrimers = new HashMap<>();
-    private Map<ChunkCoord, ChunkHeightmap> cachedHeightmaps = new HashMap<>();
+    private Map<ChunkPos, ChunkPrimer> cachedPrimers = new HashMap<>();
+    private Map<ChunkPos, ChunkHeightmap> cachedHeightmaps = new HashMap<>();
 
     public ArienteChunkGenerator(World worldObj) {
         this.worldObj = worldObj;
@@ -64,7 +64,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
 
     // Get a heightmap for a chunk. If needed calculate (and cache) a primer
     public ChunkHeightmap getHeightmap(int chunkX, int chunkZ) {
-        ChunkCoord key = new ChunkCoord(chunkX, chunkZ);
+        ChunkPos key = new ChunkPos(chunkX, chunkZ);
         if (cachedHeightmaps.containsKey(key)) {
             return cachedHeightmaps.get(key);
         } else if (cachedPrimers.containsKey(key)) {
@@ -93,7 +93,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
 
     private ChunkPrimer getChunkPrimer(int chunkX, int chunkZ) {
         ChunkPrimer chunkprimer;
-        ChunkCoord key = new ChunkCoord(chunkX, chunkZ);
+        ChunkPos key = new ChunkPos(chunkX, chunkZ);
         if (cachedPrimers.containsKey(key)) {
             // We calculated a primer earlier. Reuse it
             chunkprimer = cachedPrimers.get(key);
@@ -120,7 +120,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
 
         if (CityTools.isCityChunk(x, z)) {
-            ChunkCoord center = CityTools.getNearestCityCenter(x, z);
+            ChunkPos center = CityTools.getNearestCityCenter(x, z);
             City city = CityTools.getCity(center);
             if (!city.getPlan().isUnderground()) {
                 int height = city.getHeight(this);
@@ -138,7 +138,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             for (int cx = -1 ; cx <= 1 ; cx++) {
                 for (int cz = -1 ; cz <= 1 ; cz++) {
                     if (CityTools.isCityChunk(x+cx, z+cz)) {
-                        ChunkCoord center = CityTools.getNearestCityCenter(x+cx, z+cz);
+                        ChunkPos center = CityTools.getNearestCityCenter(x+cx, z+cz);
                         City city = CityTools.getCity(center);
                         if (!city.getPlan().isUnderground()) {
                             height = city.getHeight(this);
@@ -289,8 +289,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         }
     }
 
-    public static void registerStationLevitatorTodo(ChunkCoord chunkCoord, BlockPos pos) {
-        stationLevitatorTodo.put(chunkCoord, pos);
+    public static void registerStationLevitatorTodo(ChunkPos ChunkPos, BlockPos pos) {
+        stationLevitatorTodo.put(ChunkPos, pos);
     }
 
     private void fixTileEntities(int x, int z) {
@@ -328,13 +328,13 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             }
         }
 
-        ChunkCoord coord = new ChunkCoord(x, z);
+        ChunkPos coord = new ChunkPos(x, z);
         if (stationLevitatorTodo.containsKey(coord)) {
             BlockPos levitatorPos = stationLevitatorTodo.get(coord);
             TileEntity te = worldObj.getTileEntity(levitatorPos);
             if (te instanceof IElevator) {
                 IElevator elevatorTile = (IElevator) te;
-                ChunkCoord center = CityTools.getNearestCityCenter(x, z);
+                ChunkPos center = CityTools.getNearestCityCenter(x, z);
                 elevatorTile.setHeight(CityTools.getLowestHeight(CityTools.getCity(center), this, x, z) - 30 + 5);
             }
             stationLevitatorTodo.remove(coord);

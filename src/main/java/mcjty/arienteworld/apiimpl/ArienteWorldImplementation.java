@@ -2,13 +2,13 @@ package mcjty.arienteworld.apiimpl;
 
 import mcjty.ariente.api.IArienteWorld;
 import mcjty.ariente.api.ICityAISystem;
-import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.config.LootConfiguration;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.oregen.OverworldDungeonGen;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
 public class ArienteWorldImplementation implements IArienteWorld {
@@ -24,8 +24,8 @@ public class ArienteWorldImplementation implements IArienteWorld {
     }
 
     @Override
-    public ChunkCoord getNearestCityCenter(ChunkCoord cityCenter) {
-        return CityTools.getNearestCityCenter(cityCenter.getChunkX(), cityCenter.getChunkZ());
+    public ChunkPos getNearestCityCenter(ChunkPos cityCenter) {
+        return CityTools.getNearestCityCenter(cityCenter.x, cityCenter.z);
     }
 
     @Override

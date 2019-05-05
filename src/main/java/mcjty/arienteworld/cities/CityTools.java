@@ -1,11 +1,12 @@
 package mcjty.arienteworld.cities;
 
-import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.ArienteCityGenerator;
+import mcjty.lib.varia.BlockPosTools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -16,12 +17,12 @@ import java.util.stream.Stream;
 
 public class CityTools {
 
-    private static final Map<ChunkCoord, City> cities = new HashMap<>();
+    private static final Map<ChunkPos, City> cities = new HashMap<>();
 
     // Mostly for editmode purposes
-    private static final Map<ChunkCoord, Map<String, Integer>> cachedVariantSelections = new HashMap<>();
+    private static final Map<ChunkPos, Map<String, Integer>> cachedVariantSelections = new HashMap<>();
 
-    public static City getCity(ChunkCoord center) {
+    public static City getCity(ChunkPos center) {
         if (!cities.containsKey(center)) {
             City city = new City(center, getRandomCityPlan(center), -1);
             cacheCity(center, city);
@@ -29,14 +30,14 @@ public class CityTools {
         return cities.get(center);
     }
 
-    private static void cacheCity(ChunkCoord center, City city) {
+    private static void cacheCity(ChunkPos center, City city) {
         cities.put(center, city);
     }
 
-    public static Map<String, Integer> getVariantSelections(ChunkCoord center) {
+    public static Map<String, Integer> getVariantSelections(ChunkPos center) {
         if (!cachedVariantSelections.containsKey(center)) {
             long seed = DimensionManager.getWorld(0).getSeed();
-            Random random = new Random(seed + center.getChunkZ() * 198491317L + center.getChunkX() * 776531419L);
+            Random random = new Random(seed + center.z * 198491317L + center.x * 776531419L);
             random.nextFloat();
             City city = getCity(center);
             Map<String, Integer> variants = new HashMap<>();
@@ -56,9 +57,9 @@ public class CityTools {
         return ((chunkX & 0xf) == 0) && ((chunkZ & 0xf) == 0);
     }
 
-    private static boolean isCityCenter(ChunkCoord c) {
-        int chunkX = c.getChunkX();
-        int chunkZ = c.getChunkZ();
+    private static boolean isCityCenter(ChunkPos c) {
+        int chunkX = c.x;
+        int chunkZ = c.z;
 //        if (Math.abs(chunkX) < 32 && Math.abs(chunkZ) < 32) {
 //            return false;
 //        }
@@ -88,7 +89,7 @@ public class CityTools {
 
     @Nullable
     public static CityIndex getCityIndex(int chunkX, int chunkZ) {
-        ChunkCoord center = getNearestCityCenter(chunkX, chunkZ);
+        ChunkPos center = getNearestCityCenter(chunkX, chunkZ);
         if (center == null) {
             return null;
         }
@@ -97,12 +98,12 @@ public class CityTools {
         return getCityIndex(chunkX, chunkZ, center, plan);
     }
 
-    public static CityIndex getCityIndex(int chunkX, int chunkZ, ChunkCoord center, CityPlan plan) {
+    public static CityIndex getCityIndex(int chunkX, int chunkZ, ChunkPos center, CityPlan plan) {
         List<String> pattern = plan.getPlan();
         int dimX = pattern.get(0).length();
         int dimZ = pattern.size();
-        int ox = (chunkX + dimX / 2) - center.getChunkX();
-        int oz = (chunkZ + dimZ / 2) - center.getChunkZ();
+        int ox = (chunkX + dimX / 2) - center.x;
+        int oz = (chunkZ + dimZ / 2) - center.z;
 
         if (ox >= 0 && ox < dimX && oz >= 0 && oz < dimZ) {
             return new CityIndex(dimX, dimZ, ox, oz);
@@ -112,9 +113,9 @@ public class CityTools {
     }
 
     // Return a random city plan. Use a valid city center as chunk coordinate parameter
-    private static CityPlan getRandomCityPlan(ChunkCoord c) {
-        int chunkX = c.getChunkX();
-        int chunkZ = c.getChunkZ();
+    private static CityPlan getRandomCityPlan(ChunkPos c) {
+        int chunkX = c.x;
+        int chunkZ = c.z;
         long seed = DimensionManager.getWorld(0).getSeed();
         Random random = new Random(seed + chunkX * 198491317L + chunkZ * 776531419L);
         random.nextFloat();
@@ -127,7 +128,7 @@ public class CityTools {
     }
 
     public static City getNearestCity(ArienteChunkGenerator generator, int chunkX, int chunkZ) {
-        ChunkCoord center = getNearestCityCenter(chunkX, chunkZ);
+        ChunkPos center = getNearestCityCenter(chunkX, chunkZ);
         if (center == null) {
             return null;
         }
@@ -141,10 +142,10 @@ public class CityTools {
     }
 
     @Nullable
-    public static ChunkCoord getNearestCityCenter(int chunkX, int chunkZ) {
+    public static ChunkPos getNearestCityCenter(int chunkX, int chunkZ) {
         int cx = (chunkX & ~0xf) + 8;
         int cz = (chunkZ & ~0xf) + 8;
-        ChunkCoord cc = new ChunkCoord(cx, cz);
+        ChunkPos cc = new ChunkPos(cx, cz);
         if (isCityCenter(cc)) {
             return cc;
         } else {
@@ -153,16 +154,16 @@ public class CityTools {
     }
 
     @Nonnull
-    public static ChunkCoord getNearestStationCenter(int chunkX, int chunkZ) {
+    public static ChunkPos getNearestStationCenter(int chunkX, int chunkZ) {
         int cx = (chunkX & ~0xf) + 8;
         int cz = (chunkZ & ~0xf) + 8;
-        return new ChunkCoord(cx, cz);
+        return new ChunkPos(cx, cz);
     }
 
     public static BlockPos getNearestTeleportationSpot(BlockPos overworldPos) {
-        ChunkCoord cc = ChunkCoord.getChunkCoordFromPos(overworldPos);
-        int chunkX = cc.getChunkX();
-        int chunkZ = cc.getChunkZ();
+        ChunkPos cc = BlockPosTools.getChunkCoordFromPos(overworldPos);
+        int chunkX = cc.x;
+        int chunkZ = cc.z;
         int cx = (chunkX & ~0xf);
         int cz = (chunkZ & ~0xf);
         MinecraftServer server = DimensionManager.getWorld(0).getMinecraftServer();
@@ -173,7 +174,7 @@ public class CityTools {
     }
 
     @Nonnull
-    public static Optional<ChunkCoord> getNearestCityCenterO(int chunkX, int chunkZ) {
+    public static Optional<ChunkPos> getNearestCityCenterO(int chunkX, int chunkZ) {
         return Optional.ofNullable(getNearestCityCenter(chunkX, chunkZ));
     }
 

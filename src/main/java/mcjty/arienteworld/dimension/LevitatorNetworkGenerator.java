@@ -6,11 +6,11 @@ import mcjty.ariente.api.TechType;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.*;
 import mcjty.lib.blocks.BaseBlock;
-import mcjty.lib.varia.ChunkCoord;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
 
@@ -97,7 +97,7 @@ public class LevitatorNetworkGenerator {
                     elevatorPos = createElevatorShaft(chunkX, chunkZ, primer, generator, lowest, startz);
                 }
                 if (elevatorPos != null) {
-                    ArienteChunkGenerator.registerStationLevitatorTodo(new ChunkCoord(chunkX, chunkZ), elevatorPos);
+                    ArienteChunkGenerator.registerStationLevitatorTodo(new ChunkPos(chunkX, chunkZ), elevatorPos);
                 }
             }
         } else if (candidateX) {
@@ -152,7 +152,7 @@ public class LevitatorNetworkGenerator {
     }
 
     private static BlockPos createElevatorShaft(int chunkX, int chunkZ, ChunkPrimer primer, ArienteChunkGenerator generator, int lowest, int startz) {
-        ChunkCoord center = CityTools.getNearestCityCenter(chunkX, chunkZ);
+        ChunkPos center = CityTools.getNearestCityCenter(chunkX, chunkZ);
         City city = CityTools.getCity(center);
         int cityBottom = CityTools.getLowestHeight(city, generator, chunkX, chunkZ);
 

@@ -1,23 +1,23 @@
 package mcjty.arienteworld.cities;
 
-import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.ChunkHeightmap;
+import net.minecraft.util.math.ChunkPos;
 
 public class City {
 
-    private final ChunkCoord center;
+    private final ChunkPos center;
     private final CityPlan plan;
     private int height;
 
-    public City(ChunkCoord center, CityPlan plan, int height) {
+    public City(ChunkPos center, CityPlan plan, int height) {
         this.center = center;
         this.plan = plan;
         this.height = height;
 
     }
 
-    public ChunkCoord getCenter() {
+    public ChunkPos getCenter() {
         return center;
     }
 
@@ -36,7 +36,7 @@ public class City {
             } else if (plan.isFloating()) {
                 height = 100;
             } else {
-                ChunkHeightmap heightmap = generator.getHeightmap(center.getChunkX(), center.getChunkZ());
+                ChunkHeightmap heightmap = generator.getHeightmap(center.x, center.z);
                 height = heightmap.getAverageHeight();
             }
         }

@@ -1,10 +1,10 @@
 package mcjty.arienteworld.ai;
 
 import mcjty.ariente.api.ICityAISystem;
-import mcjty.lib.varia.ChunkCoord;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -17,7 +17,7 @@ public class CityAISystem extends AbstractWorldData<CityAISystem> implements ICi
     private static final String NAME = "ArienteCityAI";
 
     // Indexed by city center
-    private Map<ChunkCoord, CityAI> cityAIMap = new HashMap<>();
+    private Map<ChunkPos, CityAI> cityAIMap = new HashMap<>();
 
     public CityAISystem(String name) {
         super(name);
@@ -29,7 +29,7 @@ public class CityAISystem extends AbstractWorldData<CityAISystem> implements ICi
     }
 
     @Override
-    public CityAI getCityAI(ChunkCoord coord) {
+    public CityAI getCityAI(ChunkPos coord) {
         if (!cityAIMap.containsKey(coord)) {
             CityAI cityAI = new CityAI(coord);
             cityAIMap.put(coord, cityAI);
@@ -56,7 +56,7 @@ public class CityAISystem extends AbstractWorldData<CityAISystem> implements ICi
             NBTTagCompound nbt = cityList.getCompoundTagAt(i);
             int chunkX = nbt.getInteger("chunkx");
             int chunkZ = nbt.getInteger("chunkz");
-            ChunkCoord coord = new ChunkCoord(chunkX, chunkZ);
+            ChunkPos coord = new ChunkPos(chunkX, chunkZ);
             CityAI ai = new CityAI(coord);
             ai.readFromNBT(nbt);
             cityAIMap.put(coord, ai);
@@ -66,10 +66,10 @@ public class CityAISystem extends AbstractWorldData<CityAISystem> implements ICi
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         NBTTagList cityList = new NBTTagList();
-        for (Map.Entry<ChunkCoord, CityAI> entry : cityAIMap.entrySet()) {
+        for (Map.Entry<ChunkPos, CityAI> entry : cityAIMap.entrySet()) {
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("chunkx", entry.getKey().getChunkX());
-            nbt.setInteger("chunkz", entry.getKey().getChunkZ());
+            nbt.setInteger("chunkx", entry.getKey().x);
+            nbt.setInteger("chunkz", entry.getKey().z);
             entry.getValue().writeToNBT(nbt);
             cityList.appendTag(nbt);
         }

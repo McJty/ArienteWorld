@@ -1,6 +1,5 @@
 package mcjty.arienteworld.commands;
 
-import mcjty.lib.varia.ChunkCoord;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
 import net.minecraft.command.CommandException;
@@ -9,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public class CommandFindCity implements ICommand {
         BlockPos start = player.getPosition();
         int cx = (start.getX() >> 4);
         int cz = (start.getZ() >> 4);
-        Optional<ChunkCoord> cityCenter;
+        Optional<ChunkPos> cityCenter;
         if (args.length > 0) {
             cityCenter = findNearbyCityCenter(cx, cz, args[0]);
         } else {
@@ -50,14 +50,14 @@ public class CommandFindCity implements ICommand {
         if (!cityCenter.isPresent()) {
             sender.sendMessage(new TextComponentString("No nearby city!"));
         } else {
-            sender.sendMessage(new TextComponentString("Nearest city at: " + cityCenter.get().getChunkX() * 16 + "," + cityCenter.get().getChunkZ() * 16));
+            sender.sendMessage(new TextComponentString("Nearest city at: " + cityCenter.get().x * 16 + "," + cityCenter.get().z * 16));
         }
     }
 
 
     @Nonnull
-    private Optional<ChunkCoord> findNearbyCityCenter(int cx, int cy, String cityType) {
-        Optional<ChunkCoord> center = findNearbyCityCenter(cx, cy);
+    private Optional<ChunkPos> findNearbyCityCenter(int cx, int cy, String cityType) {
+        Optional<ChunkPos> center = findNearbyCityCenter(cx, cy);
         if (center.isPresent() && isCityOfType(center.get(), cityType)) {
             return center;
         }
@@ -84,14 +84,14 @@ public class CommandFindCity implements ICommand {
         return Optional.empty();
     }
 
-    private static boolean isCityOfType(ChunkCoord coord, String cityType) {
+    private static boolean isCityOfType(ChunkPos coord, String cityType) {
         City city = CityTools.getCity(coord);
         return cityType.equals(city.getPlan().getName());
     }
 
     @Nonnull
-    private Optional<ChunkCoord> findNearbyCityCenter(int cx, int cz) {
-        Optional<ChunkCoord> cityCenter = CityTools.getNearestCityCenterO(cx, cz);
+    private Optional<ChunkPos> findNearbyCityCenter(int cx, int cz) {
+        Optional<ChunkPos> cityCenter = CityTools.getNearestCityCenterO(cx, cz);
         if (cityCenter.isPresent()) {
             return cityCenter;
         }
