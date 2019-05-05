@@ -1,2 +1,2 @@
-Upcoming:
+0.0.20-alpha:
 - The 'dimension' part of Ariente is now a separate mod
