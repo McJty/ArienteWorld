@@ -140,6 +140,9 @@ public class ModBlocks {
         OreDictionary.registerOre("oreSilicon", siliconore);
         OreDictionary.registerOre("oreManganese", manganeseore);
         OreDictionary.registerOre("oreLithium", lithiumore);
+        OreDictionary.registerOre("oreNegarite", negarite);
+        OreDictionary.registerOre("orePosirite", posirite);
+        OreDictionary.registerOre("glowstone", glowstoneore);
         OreDictionary.registerOre("logWood", glowlog);
         OreDictionary.registerOre("logWood", bluelog);
     }

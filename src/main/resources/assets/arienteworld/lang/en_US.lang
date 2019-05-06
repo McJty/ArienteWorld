@@ -12,15 +12,15 @@ tile.arienteworld.black_bush.name=Black Bush
 tile.arienteworld.dark_grass.name=Dark Grass
 tile.arienteworld.small_flower.name=Small Flower
 
-tile.ariente.lapisore.name=Lapis Ore
-tile.ariente.glowstoneore.name=Glowstone Ore
-tile.ariente.lithiumore.name=Lithium Ore
-tile.ariente.manganeseore.name=Manganese Ore
-tile.ariente.siliconore.name=Silicon Ore
-tile.ariente.silverore.name=Silver Ore
-tile.ariente.platinumore.name=Platinum Ore
-tile.ariente.posirite.name=Posirite Ore
-tile.ariente.negarite.name=Negarite Ore
+tile.arienteworld.lapisore.name=Lapis Ore
+tile.arienteworld.glowstoneore.name=Glowstone Ore
+tile.arienteworld.lithiumore.name=Lithium Ore
+tile.arienteworld.manganeseore.name=Manganese Ore
+tile.arienteworld.siliconore.name=Silicon Ore
+tile.arienteworld.silverore.name=Silver Ore
+tile.arienteworld.platinumore.name=Platinum Ore
+tile.arienteworld.posirite.name=Posirite Ore
+tile.arienteworld.negarite.name=Negarite Ore
 
 
 itemGroup.arienteworld=Ariente World
