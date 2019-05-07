@@ -137,7 +137,7 @@ public class CityAI implements ICityAI {
                 return false;
             }
             // Only tick for the first valid aicore
-            if (!tile.getPos().equals(core.getPos())) {
+            if (!tile.getPos().equals(core.getCorePos())) {
                 return false;
             }
 
