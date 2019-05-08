@@ -7,6 +7,9 @@ import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
+import mcjty.arienteworld.dimension.features.FeatureRegistry;
+import mcjty.arienteworld.dimension.features.FeatureTools;
+import mcjty.arienteworld.dimension.features.IFeature;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -37,8 +40,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     private Random random;
     private Biome[] biomesForGeneration;
 
-//    private List<Biome.SpawnListEntry> mobs = Lists.newArrayList(new Biome.SpawnListEntry(DroneEntity.class, 20, 1, 1));
     private List<Biome.SpawnListEntry> mobs = Collections.emptyList();
+    private Map<ChunkPos, Map<String, Double>> activeFeatureCache = new HashMap<>();
 
     private MapGenBase caveGenerator = new MapGenCaves();
     private ArienteTerrainGenerator terraingen = new ArienteTerrainGenerator();
@@ -86,6 +89,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         this.biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, chunkX * 4 - 2, chunkZ * 4 - 2, 10, 10);
         terraingen.generate(chunkX, chunkZ, chunkprimer, this.biomesForGeneration);
         islandsGen.setBlocksInChunk(chunkX, chunkZ, chunkprimer);
+
+        generateActiveFeatures(chunkprimer, chunkX, chunkZ, true, this.biomesForGeneration);
 
         return chunkprimer;
     }
@@ -236,12 +241,42 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         return cityGenerator;
     }
 
+    private Map<String, Double> getActiveFeatures(int chunkX, int chunkZ, Biome[] biomes) {
+        ChunkPos pos = new ChunkPos(chunkX, chunkZ);
+        if (!activeFeatureCache.containsKey(pos)) {
+            Map<String, Double> activeFeatures = FeatureTools.getActiveFeatures(biomes);
+            activeFeatureCache.put(pos, activeFeatures);
+        }
+        return activeFeatureCache.get(pos);
+    }
+
+    private void generateActiveFeatures(ChunkPrimer primer, int chunkX, int chunkZ, boolean base, Biome[] biomes) {
+        int size = 1;
+        for (int dx = -size ; dx <= size ; dx++) {
+            int cx = chunkX + dx;
+            for (int dz = -size; dz <= size; dz++) {
+                int cz = chunkZ + dz;
+                Map<String, Double> activeFeatures = getActiveFeatures(cx, cz, biomes);
+                for (Map.Entry<String, Double> pair : activeFeatures.entrySet()) {
+                    IFeature feature = FeatureRegistry.getFeature(pair.getKey());
+                    if (feature.isBase() == base) {
+                        if (FeatureTools.isFeatureCenter(feature, pair.getValue(), worldObj, cx, cz)) {
+                            feature.generate(worldObj, primer, chunkX, chunkZ, cx, cz);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public Chunk generateChunk(int x, int z) {
         ChunkPrimer chunkprimer = getChunkPrimer(x, z);
 
         this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
         terraingen.replaceBiomeBlocks(x, z, chunkprimer, biomesForGeneration);
+
+        generateActiveFeatures(chunkprimer, x, z, false, this.biomesForGeneration);
 
         fixForNearbyCity(chunkprimer, x, z);
 

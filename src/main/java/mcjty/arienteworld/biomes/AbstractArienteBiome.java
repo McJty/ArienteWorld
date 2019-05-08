@@ -19,7 +19,7 @@ import net.minecraft.world.gen.feature.WorldGenHugeTrees;
 
 import java.util.Random;
 
-public abstract class AbstractArienteBiome extends Biome {
+public abstract class AbstractArienteBiome extends Biome implements IArienteBiome {
 
     private static final IBlockState GLOW_TRUNK = ModBlocks.glowlog.getDefaultState();
     private static final IBlockState GLOW_LEAVES = ModBlocks.glowleaves.getDefaultState();

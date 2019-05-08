@@ -9,6 +9,7 @@ import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.arienteworld.cities.AssetRegistries;
 import mcjty.arienteworld.config.ConfigSetup;
 import mcjty.arienteworld.dimension.DimensionRegister;
+import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.oregen.WorldGen;
 import mcjty.arienteworld.oregen.WorldTickHandler;
 import mcjty.lib.compat.MainCompatHandler;
@@ -43,6 +44,7 @@ public class ModSetup extends DefaultModSetup {
         DimensionRegister.init();
         ModBlocks.init();
         WorldGen.init();
+        FeatureRegistry.init();
 //        ArienteMessages.registerMessages("arienteWorld");
     }
 

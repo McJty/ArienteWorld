@@ -1,0 +1,24 @@
+package mcjty.arienteworld.dimension.features;
+
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkPrimer;
+
+import java.util.Random;
+
+public interface IFeature {
+
+    String getId();
+
+    double getFactor(World world, int chunkX, int chunkZ);
+
+    Random getRandom(World world, int chunkX, int chunkZ);
+
+    /// Return true if this feature has to be done on the base terrain. Otherwise it will be done after biome decoration
+    boolean isBase();
+
+    /**
+     * Geneate this feature in the chunk at chunkX, chunkZ. The relative coordinates
+     * of the feature are given with dx, dz. So the center chunk of the feature will be at 0,0
+     */
+    void generate(World world, ChunkPrimer primer, int chunkX, int chunkZ, int dx, int dz);
+}
