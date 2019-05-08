@@ -198,20 +198,20 @@ public class CityAI implements ICityAI {
                 IFluxLevitatorEntity levitatorEntity = (IFluxLevitatorEntity) entity;
                 BlockPos desiredDestination = levitatorEntity.getDesiredDestination();
                 if (desiredDestination != null) {
-                    double distanceSq = levitatorEntity.getPosition().distanceSq(desiredDestination);
+                    double distanceSq = entity.getPosition().distanceSq(desiredDestination);
                     if (distanceSq < 5*5) {
                         // Arrived
                         dismountAndKill(levitatorEntity);
                     } else {
                         // Check if we actually moved since last time. If not we let the soldier get out and remove the flux levitator
                         if (levitatorPrevPos != null) {
-                            distanceSq = levitatorEntity.getPosition().distanceSq(levitatorPrevPos);
+                            distanceSq = entity.getPosition().distanceSq(levitatorPrevPos);
                             if (distanceSq <= 0.1) {
                                 dismountAndKill(levitatorEntity);
                             }
                         }
                     }
-                    levitatorPrevPos = levitatorEntity.getPosition();
+                    levitatorPrevPos = entity.getPosition();
                 } else {
                     dismountAndKill(levitatorEntity);
                 }
