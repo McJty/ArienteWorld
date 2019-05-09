@@ -1,3 +1,6 @@
+Upcoming
+- Worldgen enhancements: random biome dependend features on the terrain
+
 0.0.22-alpha:
 - Fixed another problem with generated flux levitators crashing
 
