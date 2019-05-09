@@ -1,5 +1,6 @@
 package mcjty.arienteworld.dimension.features;
 
+import mcjty.ariente.api.MarbleColor;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.dimension.GeneratorTools;
 import net.minecraft.block.state.IBlockState;
@@ -19,7 +20,7 @@ public class SpheresFeature implements IFeature {
     }
 
     private NoiseGeneratorPerlin getNoise(World world) {
-        if (featureNoise != null) {
+        if (featureNoise == null) {
             Random random = new Random(world.getSeed() * 257017164707L + 101754694003L);
             featureNoise = new NoiseGeneratorPerlin(random, 4);
         }
@@ -36,9 +37,9 @@ public class SpheresFeature implements IFeature {
         int radius = getRandomRadius(world, chunkX+dx, chunkZ+dz);
         int centery = getRandomHeight(world, chunkX+dx, chunkZ+dz);
 
-        IBlockState block = ArienteStuff.marble.getDefaultState();
-        int centerx = 8 + (chunkX+dx) * 16;
-        int centerz = 8 + (chunkZ+dz) * 16;
+        IBlockState block = ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLUE);
+        int centerx = 8 + (dx) * 16;
+        int centerz = 8 + (dz) * 16;
         double sqradius = radius * radius;
 
         for (int x = 0 ; x < 16 ; x++) {
@@ -59,23 +60,30 @@ public class SpheresFeature implements IFeature {
 
     @Override
     public double getFactor(World world, int chunkX, int chunkZ) {
-        return getNoise(world).getValue(chunkX / 50.0f, chunkZ / 50.0f);
+        double v = (getNoise(world).getValue(chunkX / 20.0f, chunkZ / 20.0f) - 1) / 70;
+        if (v < 0) {
+            return 0;
+        } else if (v > 1) {
+            return 1;
+        } else {
+            return v;
+        }
     }
 
     @Override
     public Random getRandom(World world, int chunkX, int chunkZ) {
-        return new Random((world.getSeed() + 516) * 314);
+        return new Random(world.getSeed() + chunkZ * 899809363L + chunkX * 256203221L);
     }
 
     private int getRandomRadius(World world, int chunkX, int chunkZ) {
-        Random random = getRandom(world, chunkX, chunkZ);
+        Random random = new Random(world.getSeed() + chunkZ * 256203221L + chunkX * 899809363L);
         random.nextFloat();
         random.nextFloat();
-        return random.nextInt(10)+10;
+        return random.nextInt(6)+6;
     }
 
     private int getRandomHeight(World world, int chunkX, int chunkZ) {
-        Random random = new Random((world.getSeed() + 314) * 517);
+        Random random = new Random(world.getSeed() + chunkZ * 256203221L + chunkX * 899809363L);
         random.nextFloat();
         return random.nextInt(60)+40;
     }

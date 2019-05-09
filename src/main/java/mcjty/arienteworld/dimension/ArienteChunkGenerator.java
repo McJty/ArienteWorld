@@ -261,7 +261,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                     IFeature feature = FeatureRegistry.getFeature(pair.getKey());
                     if (feature.isBase() == base) {
                         if (FeatureTools.isFeatureCenter(feature, pair.getValue(), worldObj, cx, cz)) {
-                            feature.generate(worldObj, primer, chunkX, chunkZ, cx, cz);
+                            feature.generate(worldObj, primer, chunkX, chunkZ, dx, dz);
                         }
                     }
                 }
