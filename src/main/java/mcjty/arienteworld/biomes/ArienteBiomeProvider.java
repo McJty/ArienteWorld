@@ -16,6 +16,7 @@ public class ArienteBiomeProvider extends BiomeProvider {
         getBiomesToSpawnIn().add(ModBiomes.arienteOcean);
         getBiomesToSpawnIn().add(ModBiomes.arienteForest);
         getBiomesToSpawnIn().add(ModBiomes.arienteRough);
+        getBiomesToSpawnIn().add(ModBiomes.arienteCity);
         makeLayers(world.getSeed());
     }
 

@@ -88,10 +88,10 @@ public class ArienteSkyRenderer extends IRenderHandler {
         bufferBuilderIn.begin(7, DefaultVertexFormats.POSITION);
 
         for (int i = 0; i < 1500; ++i) {
-            double d0 = (double) (random.nextFloat() * 2.0F - 1.0F);
-            double d1 = (double) (random.nextFloat() * 2.0F - 1.0F);
-            double d2 = (double) (random.nextFloat() * 2.0F - 1.0F);
-            double d3 = (double) (0.15F + random.nextFloat() * 0.1F);
+            double d0 = (random.nextFloat() * 2.0F - 1.0F);
+            double d1 = (random.nextFloat() * 2.0F - 1.0F);
+            double d2 = (random.nextFloat() * 2.0F - 1.0F);
+            double d3 = (0.15F + random.nextFloat() * 0.1F);
             double d4 = d0 * d0 + d1 * d1 + d2 * d2;
 
             if (d4 < 1.0D && d4 > 0.01D) {
@@ -114,8 +114,8 @@ public class ArienteSkyRenderer extends IRenderHandler {
 
                 for (int j = 0; j < 4; ++j) {
                     double d17 = 0.0D;
-                    double d18 = (double) ((j & 2) - 1) * d3;
-                    double d19 = (double) ((j + 1 & 2) - 1) * d3;
+                    double d18 = ((j & 2) - 1) * d3;
+                    double d19 = ((j + 1 & 2) - 1) * d3;
                     double d20 = 0.0D;
                     double d21 = d18 * d16 - d19 * d15;
                     double d22 = d19 * d16 + d18 * d15;

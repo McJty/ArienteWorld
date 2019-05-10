@@ -93,7 +93,12 @@ public class BuildingPart implements IAsset {
                     PalettedSlice vs = new PalettedSlice();
                     boolean empty = true;
                     for (int y = 0; y < slices.length; y++) {
-                        PaletteIndex c = getC(x, y, z);
+                        PaletteIndex c = null;
+                        try {
+                            c = getC(x, y, z);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         vs.getSlice().add(c);
                     }
                     // @todo: allow empty slices for other types of parts?

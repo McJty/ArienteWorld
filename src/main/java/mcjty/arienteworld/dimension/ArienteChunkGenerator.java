@@ -87,8 +87,13 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         ChunkPrimer chunkprimer = new ChunkPrimer();
 
         this.biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, chunkX * 4 - 2, chunkZ * 4 - 2, 10, 10);
-        terraingen.generate(chunkX, chunkZ, chunkprimer, this.biomesForGeneration);
-        islandsGen.setBlocksInChunk(chunkX, chunkZ, chunkprimer);
+
+        if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ, biomesForGeneration)) {
+            ArienteLandscapeCity.generate(chunkX, chunkZ, chunkprimer, cityGenerator);
+        } else {
+            terraingen.generate(chunkX, chunkZ, chunkprimer, this.biomesForGeneration);
+            islandsGen.setBlocksInChunk(chunkX, chunkZ, chunkprimer);
+        }
 
         generateActiveFeatures(chunkprimer, chunkX, chunkZ, true, this.biomesForGeneration);
 
@@ -278,7 +283,10 @@ public class ArienteChunkGenerator implements IChunkGenerator {
 
         generateActiveFeatures(chunkprimer, x, z, false, this.biomesForGeneration);
 
-        fixForNearbyCity(chunkprimer, x, z);
+        if (!ArienteLandscapeCity.isLandscapeCityChunk(x, z, this.biomesForGeneration)) {
+            // Don't do this for city chunks
+            fixForNearbyCity(chunkprimer, x, z);
+        }
 
         this.caveGenerator.generate(this.worldObj, x, z, chunkprimer);
         cityGenerator.generate(this.worldObj, x, z, chunkprimer);

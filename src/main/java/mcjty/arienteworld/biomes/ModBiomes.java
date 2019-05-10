@@ -23,6 +23,9 @@ public class ModBiomes {
     @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_rough")
     public static BiomeArienteRough arienteRough;
 
+    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_city")
+    public static BiomeArienteCity arienteCity;
+
 
     public static void registerBiomes(IForgeRegistry<Biome> registry) {
         setupBiome(registry, "ariente_plains", new BiomeArientePlains(
@@ -57,6 +60,13 @@ public class ModBiomes {
                         new Biome.BiomeProperties("Ariente Ocean")
                                 .setBaseHeight(-1.0F).setHeightVariation(0.1F)),
                 BiomeDictionary.Type.DEAD, BiomeDictionary.Type.OCEAN);
+        setupBiome(registry, "ariente_city", new BiomeArienteCity(
+                        new Biome.BiomeProperties("Ariente City")
+                                .setBaseHeight(0.125F)
+                                .setHeightVariation(0.05F)
+                                .setTemperature(0.8F)
+                                .setRainfall(0.4F)),
+                BiomeDictionary.Type.SPARSE);
     }
 
     private static void setupBiome(IForgeRegistry<Biome> registry, String name, Biome biome, BiomeDictionary.Type... types) {

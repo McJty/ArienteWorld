@@ -31,6 +31,7 @@ public class ConfigSetup {
             "/assets/arienteworld/citydata/city4_1.json",
             "/assets/arienteworld/citydata/general.json",
             "/assets/arienteworld/citydata/station.json",
+            "/assets/arienteworld/citydata/landscapecities.json",
             "$ariente/userassets.json"
     };
 

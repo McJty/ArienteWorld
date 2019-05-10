@@ -188,7 +188,20 @@ public class EditMode {
 
     public static void enableEditMode(EntityPlayer player) {
         // Restore city from parts
-        loadCity(player);
+        if (!loadCity(player)) {
+            // Check if it is a landscape city chunk
+            BlockPos start = player.getPosition();
+            int cx = (start.getX() >> 4);
+            int cz = (start.getZ() >> 4);
+            String part = ArienteLandscapeCity.getBuildingPart(cx, cz);
+            BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
+            int height = ArienteLandscapeCity.getBuildingHeight(cx, cz);
+            restorePart(buildingPart, player.getEntityWorld(), new BlockPos(cx * 16 + 8, height /*unused*/, cz * 16 + 8),
+                    height, AssetRegistries.PALETTES.get(ArienteLandscapeCity.CITY_PALETTE));
+
+//            player.sendMessage(new TextComponentString("No city or station can be found!"));
+            return;
+        }
 
         editMode = true;
         City city = getCurrentCity(player);
@@ -297,21 +310,20 @@ public class EditMode {
         }
     }
 
-    public static void loadCity(EntityPlayer player) {
+    public static boolean loadCity(EntityPlayer player) {
         BlockPos start = player.getPosition();
         int cx = (start.getX() >> 4);
         int cz = (start.getZ() >> 4);
 
         if (CityTools.isStationChunk(cx, cz) && start.getY() >= CityTools.getStationHeight() && start.getY() <= CityTools.getStationHeight() + 10 /* @todo */) {
             loadStation(player);
-            return;
+            return true;
         }
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
         City city = CityTools.getNearestCity(generator, cx, cz);
         if (city == null) {
-            player.sendMessage(new TextComponentString("No city or station can be found!"));
-            return;
+            return false;
         }
 
         CityPlan plan = city.getPlan();
@@ -319,6 +331,7 @@ public class EditMode {
         loadCityOrStation(player, city.getCenter(), plan, 0,
                 (x, z) -> CityTools.getLowestHeight(city, generator, x, z),
                 (x, z) -> CityTools.getBuildingParts(city, x, z), true);
+        return true;
     }
 
     public static void loadStation(EntityPlayer player) {
@@ -432,7 +445,13 @@ public class EditMode {
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
         City city = CityTools.getNearestCity(generator, cx, cz);
         if (city == null) {
-            player.sendMessage(new TextComponentString("No city or station can be found!"));
+            try {
+                saveLandscapeCityPart(player, generator, cx, cz);
+            } catch (FileNotFoundException e) {
+                player.sendMessage(new TextComponentString(TextFormatting.RED + "Error saving landscape city part!"));
+                e.printStackTrace();
+            }
+//            player.sendMessage(new TextComponentString("No city or station can be found!"));
             return;
         }
 
@@ -448,7 +467,17 @@ public class EditMode {
         }
     }
 
-    public static void saveStation(EntityPlayer player) throws FileNotFoundException {
+    private static void saveLandscapeCityPart(EntityPlayer player, ArienteChunkGenerator generator, int cx, int cz) throws FileNotFoundException {
+        CityPlan dummyPlan = new CityPlan("dummy");
+        dummyPlan.addPlan("a");
+        dummyPlan.setPalette(ArienteLandscapeCity.CITY_PALETTE);
+        saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
+                ArienteLandscapeCity::getBuildingHeight,
+                (x, z) -> Collections.singletonList(AssetRegistries.PARTS.get(ArienteLandscapeCity.getBuildingPart(x, z))));
+
+    }
+
+    private static void saveStation(EntityPlayer player) throws FileNotFoundException {
         BlockPos start = player.getPosition();
         int cx = (start.getX() >> 4);
         int cz = (start.getZ() >> 4);

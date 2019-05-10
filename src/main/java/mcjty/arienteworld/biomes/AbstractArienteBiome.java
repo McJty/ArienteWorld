@@ -77,6 +77,11 @@ public abstract class AbstractArienteBiome extends Biome implements IArienteBiom
     }
 
     @Override
+    public boolean isCityBiome() {
+        return false;
+    }
+
+    @Override
     public int getWaterColorMultiplier() {
         return 0x55ff88;
     }

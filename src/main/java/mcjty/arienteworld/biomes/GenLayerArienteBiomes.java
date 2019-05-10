@@ -11,7 +11,8 @@ public class GenLayerArienteBiomes extends GenLayer {
             ModBiomes.arienteHills,
             ModBiomes.arienteOcean,
             ModBiomes.arienteForest,
-            ModBiomes.arienteRough
+            ModBiomes.arienteRough,
+            ModBiomes.arienteCity
     });
 
     public GenLayerArienteBiomes(long l) {

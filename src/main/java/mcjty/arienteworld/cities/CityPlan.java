@@ -89,6 +89,10 @@ public class CityPlan implements IAsset {
         return plan;
     }
 
+    public void addPlan(String p) {
+        plan.add(p);
+    }
+
     public List<String> getCellar() {
         return cellar;
     }
@@ -103,6 +107,10 @@ public class CityPlan implements IAsset {
 
     public String getPalette() {
         return palette;
+    }
+
+    public void setPalette(String p) {
+        this.palette = p;
     }
 
     public int getMinSentinels() {

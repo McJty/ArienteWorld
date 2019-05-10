@@ -178,7 +178,6 @@ public class ArienteTerrainGenerator {
 
     public void generate(int chunkX, int chunkZ, ChunkPrimer primer, Biome[] biomesForGeneration) {
         generateHeightmap(chunkX * 4, 0, chunkZ * 4, biomesForGeneration);
-
         byte waterLevel = 63;
         for (int x4 = 0; x4 < 4; ++x4) {
             int l = x4 * 5;
