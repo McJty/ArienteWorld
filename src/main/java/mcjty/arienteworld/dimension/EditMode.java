@@ -187,24 +187,34 @@ public class EditMode {
     }
 
     public static void enableEditMode(EntityPlayer player) {
-        // Restore city from parts
-        if (!loadCity(player)) {
+
+        BlockPos start = player.getPosition();
+        int cx = (start.getX() >> 4);
+        int cz = (start.getZ() >> 4);
+
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
+        City city = CityTools.getNearestCity(generator, cx, cz);
+        if (city == null || !CityTools.isCityChunk(cx, cz)) {
             // Check if it is a landscape city chunk
-            BlockPos start = player.getPosition();
-            int cx = (start.getX() >> 4);
-            int cz = (start.getZ() >> 4);
             String part = ArienteLandscapeCity.getBuildingPart(cx, cz);
             BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
             int height = ArienteLandscapeCity.getBuildingHeight(cx, cz);
             restorePart(buildingPart, player.getEntityWorld(), new BlockPos(cx * 16 + 8, height /*unused*/, cz * 16 + 8),
                     height, AssetRegistries.PALETTES.get(ArienteLandscapeCity.CITY_PALETTE));
 
-//            player.sendMessage(new TextComponentString("No city or station can be found!"));
+            player.sendMessage(new TextComponentString("Editing: " + part));
             return;
         }
 
+        // Restore city from parts
+        if (!loadCity(player)) {
+            player.sendMessage(new TextComponentString(TextFormatting.RED + "Error enabling edit mode!"));
+            return;
+        }
+        player.sendMessage(new TextComponentString("Editing: " + city.getPlan().getName()));
+
         editMode = true;
-        City city = getCurrentCity(player);
+        city = getCurrentCity(player);
         if (city == null) {
             return;
         }
