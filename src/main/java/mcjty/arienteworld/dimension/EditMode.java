@@ -444,7 +444,7 @@ public class EditMode {
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
         City city = CityTools.getNearestCity(generator, cx, cz);
-        if (city == null) {
+        if (city == null || !CityTools.isCityChunk(cx, cz)) {
             try {
                 saveLandscapeCityPart(player, generator, cx, cz);
             } catch (FileNotFoundException e) {
@@ -471,6 +471,7 @@ public class EditMode {
         CityPlan dummyPlan = new CityPlan("dummy");
         dummyPlan.addPlan("a");
         dummyPlan.setPalette(ArienteLandscapeCity.CITY_PALETTE);
+        dummyPlan.addToPartPalette('a', ArienteLandscapeCity.getBuildingPart(cx, cz));
         saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
                 ArienteLandscapeCity::getBuildingHeight,
                 (x, z) -> Collections.singletonList(AssetRegistries.PARTS.get(ArienteLandscapeCity.getBuildingPart(x, z))));

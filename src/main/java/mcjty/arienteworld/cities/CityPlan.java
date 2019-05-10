@@ -73,6 +73,13 @@ public class CityPlan implements IAsset {
         return partPalette;
     }
 
+    public void addToPartPalette(Character c, String part) {
+        if (!partPalette.containsKey(c)) {
+            partPalette.put(c, new PartPalette());
+        }
+        partPalette.get(c).getPalette().add(part);
+    }
+
     public boolean isUnderground() {
         return underground;
     }
