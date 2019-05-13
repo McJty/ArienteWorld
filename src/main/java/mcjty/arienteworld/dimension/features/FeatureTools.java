@@ -15,9 +15,9 @@ public class FeatureTools {
         double factor = feature.getFactor(world, chunkX, chunkZ);
         Random random = feature.getRandom(world, chunkX, chunkZ);
         random.nextFloat();
-        double value = random.nextFloat() * strength;
+        double value = random.nextFloat();
 //        System.out.println((value < factor ? "YES" : "no ") + "  chunkX = " + chunkX + "," + chunkZ + "    factor=" + factor +", value=" + value);
-        return value < factor;
+        return value < factor * strength;
     }
 
     public static Map<String, Double> getActiveFeatures(Biome[] biomes) {

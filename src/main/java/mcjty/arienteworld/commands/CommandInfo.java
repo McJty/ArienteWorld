@@ -31,7 +31,7 @@ public class CommandInfo implements ICommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        EditMode.cityInfo((EntityPlayer) sender);
+        EditMode.dungeonInfo((EntityPlayer) sender);
     }
 
     @Override

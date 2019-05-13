@@ -76,7 +76,7 @@ public class ArienteCityGenerator {
             return;
         }
 
-        City city = CityTools.getNearestCity(generator, x, z);
+        City city = CityTools.getNearestDungeon(generator, x, z);
         if (city != null) {
             List<BuildingPart> parts = CityTools.getBuildingParts(city, x, z);
             if (!parts.isEmpty()) {
@@ -90,7 +90,7 @@ public class ArienteCityGenerator {
 
                 // Make pilars down if needed
                 if (!city.getPlan().isFloating()) {
-                    CityIndex cityIndex = CityTools.getCityIndex(x, z);
+                    CityIndex cityIndex = CityTools.getDungeonIndex(x, z);
                     assert cityIndex != null;
                     if (cityIndex.isTopLeft()) {
                         fillDown(primer, lowestY, 2, 2);

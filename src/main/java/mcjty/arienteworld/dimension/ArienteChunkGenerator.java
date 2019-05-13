@@ -125,8 +125,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         this.varianceBuffer = this.varianceNoise.getRegion(this.varianceBuffer, (x * 16), (z * 16), 16, 16, 1.0 / 16.0, 1.0 / 16.0, 1.0D);
         char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
 
-        if (CityTools.isCityChunk(x, z)) {
-            ChunkPos center = CityTools.getNearestCityCenter(x, z);
+        if (CityTools.isDungeonChunk(x, z)) {
+            ChunkPos center = CityTools.getNearestDungeonCenter(x, z);
             City city = CityTools.getCity(center);
             if (!city.getPlan().isUnderground()) {
                 int height = city.getHeight(this);
@@ -143,8 +143,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             int height = 0;
             for (int cx = -1 ; cx <= 1 ; cx++) {
                 for (int cz = -1 ; cz <= 1 ; cz++) {
-                    if (CityTools.isCityChunk(x+cx, z+cz)) {
-                        ChunkPos center = CityTools.getNearestCityCenter(x+cx, z+cz);
+                    if (CityTools.isDungeonChunk(x+cx, z+cz)) {
+                        ChunkPos center = CityTools.getNearestDungeonCenter(x+cx, z+cz);
                         City city = CityTools.getCity(center);
                         if (!city.getPlan().isUnderground()) {
                             height = city.getHeight(this);
@@ -318,7 +318,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         biome.decorate(this.worldObj, this.random, new BlockPos(i, 0, j));
         WorldEntitySpawner.performWorldGenSpawning(this.worldObj, biome, i + 8, j + 8, 16, 16, this.random);
 
-        if (CityTools.isCityChunk(x, z)) {
+        if (CityTools.isDungeonChunk(x, z)) {
             System.out.println("Fixing tile entities in chunk " + x + "," + z);
             fixTileEntities(x, z);
         }
@@ -337,7 +337,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     }
 
     private void fixTileEntities(int x, int z) {
-        City city = CityTools.getNearestCity(this, x, z);
+        City city = CityTools.getNearestDungeon(this, x, z);
         List<BuildingPart> parts = CityTools.getBuildingParts(city, x, z);
         int lowestY = CityTools.getLowestHeight(city, this, x, z);
         fixTileEntities(x, z, parts, lowestY);
@@ -377,7 +377,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             TileEntity te = worldObj.getTileEntity(levitatorPos);
             if (te instanceof IElevator) {
                 IElevator elevatorTile = (IElevator) te;
-                ChunkPos center = CityTools.getNearestCityCenter(x, z);
+                ChunkPos center = CityTools.getNearestDungeonCenter(x, z);
                 elevatorTile.setHeight(CityTools.getLowestHeight(CityTools.getCity(center), this, x, z) - 30 + 5);
             }
             stationLevitatorTodo.remove(coord);

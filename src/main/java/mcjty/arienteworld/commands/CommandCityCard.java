@@ -38,7 +38,7 @@ public class CommandCityCard implements ICommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         EntityPlayer player = (EntityPlayer) sender;
-        City city = EditMode.getCurrentCity(player);
+        City city = EditMode.getCurrentDungeon(player);
         if (city == null) {
             return;
         }

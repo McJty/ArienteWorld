@@ -24,7 +24,7 @@ public class CityTools {
 
     public static City getCity(ChunkPos center) {
         if (!cities.containsKey(center)) {
-            City city = new City(center, getRandomCityPlan(center), -1);
+            City city = new City(center, getRandomDungeonPlan(center), -1);
             cacheCity(center, city);
         }
         return cities.get(center);
@@ -77,8 +77,8 @@ public class CityTools {
         return true;
     }
 
-    public static boolean isCityChunk(int chunkX, int chunkZ) {
-        return getCityIndex(chunkX, chunkZ) != null;
+    public static boolean isDungeonChunk(int chunkX, int chunkZ) {
+        return getDungeonIndex(chunkX, chunkZ) != null;
     }
 
     public static boolean isStationChunk(int chunkX, int chunkZ) {
@@ -88,17 +88,17 @@ public class CityTools {
     }
 
     @Nullable
-    public static CityIndex getCityIndex(int chunkX, int chunkZ) {
-        ChunkPos center = getNearestCityCenter(chunkX, chunkZ);
+    public static CityIndex getDungeonIndex(int chunkX, int chunkZ) {
+        ChunkPos center = getNearestDungeonCenter(chunkX, chunkZ);
         if (center == null) {
             return null;
         }
         City city = getCity(center);
         CityPlan plan = city.getPlan();
-        return getCityIndex(chunkX, chunkZ, center, plan);
+        return getDungeonIndex(chunkX, chunkZ, center, plan);
     }
 
-    public static CityIndex getCityIndex(int chunkX, int chunkZ, ChunkPos center, CityPlan plan) {
+    public static CityIndex getDungeonIndex(int chunkX, int chunkZ, ChunkPos center, CityPlan plan) {
         List<String> pattern = plan.getPlan();
         int dimX = pattern.get(0).length();
         int dimZ = pattern.size();
@@ -113,7 +113,7 @@ public class CityTools {
     }
 
     // Return a random city plan. Use a valid city center as chunk coordinate parameter
-    private static CityPlan getRandomCityPlan(ChunkPos c) {
+    private static CityPlan getRandomDungeonPlan(ChunkPos c) {
         int chunkX = c.x;
         int chunkZ = c.z;
         long seed = DimensionManager.getWorld(0).getSeed();
@@ -127,22 +127,22 @@ public class CityTools {
         return plan;
     }
 
-    public static City getNearestCity(ArienteChunkGenerator generator, int chunkX, int chunkZ) {
-        ChunkPos center = getNearestCityCenter(chunkX, chunkZ);
+    public static City getNearestDungeon(ArienteChunkGenerator generator, int chunkX, int chunkZ) {
+        ChunkPos center = getNearestDungeonCenter(chunkX, chunkZ);
         if (center == null) {
             return null;
         }
         City city = cities.get(center);
         if (city == null) {
 //            ChunkHeightmap heightmap = generator.getHeightmap(center.getChunkX(), center.getChunkZ());
-            city = new City(center, getRandomCityPlan(center), -1);
+            city = new City(center, getRandomDungeonPlan(center), -1);
             cacheCity(center, city);
         }
         return city;
     }
 
     @Nullable
-    public static ChunkPos getNearestCityCenter(int chunkX, int chunkZ) {
+    public static ChunkPos getNearestDungeonCenter(int chunkX, int chunkZ) {
         int cx = (chunkX & ~0xf) + 8;
         int cz = (chunkZ & ~0xf) + 8;
         ChunkPos cc = new ChunkPos(cx, cz);
@@ -175,11 +175,11 @@ public class CityTools {
 
     @Nonnull
     public static Optional<ChunkPos> getNearestCityCenterO(int chunkX, int chunkZ) {
-        return Optional.ofNullable(getNearestCityCenter(chunkX, chunkZ));
+        return Optional.ofNullable(getNearestDungeonCenter(chunkX, chunkZ));
     }
 
     public static int getLowestHeight(City city, ArienteChunkGenerator generator, int x, int z) {
-        BuildingPart cellar = getPart(x, z, getCityIndex(x, z), city.getPlan(), city.getPlan().getCellar(), 13);
+        BuildingPart cellar = getPart(x, z, getDungeonIndex(x, z), city.getPlan(), city.getPlan().getCellar(), 13);
         if (cellar != null) {
             return city.getHeight(generator) - cellar.getSliceCount();
         } else {
@@ -200,7 +200,7 @@ public class CityTools {
     @Nullable
     public static BuildingPart getStationPart(int chunkX, int chunkZ) {
         CityPlan station = AssetRegistries.CITYPLANS.get("station");
-        CityIndex index = CityTools.getCityIndex(chunkX, chunkZ, CityTools.getNearestStationCenter(chunkX, chunkZ), station);
+        CityIndex index = CityTools.getDungeonIndex(chunkX, chunkZ, CityTools.getNearestStationCenter(chunkX, chunkZ), station);
         if (index == null) {
             return null;
         }
@@ -214,7 +214,7 @@ public class CityTools {
     @Nonnull
     public static List<PartPalette> getPartPalettes(City city, int x, int z) {
         List<PartPalette> parts = new ArrayList<>();
-        CityIndex cityIndex = getCityIndex(x, z);
+        CityIndex cityIndex = getDungeonIndex(x, z);
         CityPlan plan = city.getPlan();
 
         Stream.of(getPartPalette(x, z, cityIndex, plan, plan.getCellar(), 13),

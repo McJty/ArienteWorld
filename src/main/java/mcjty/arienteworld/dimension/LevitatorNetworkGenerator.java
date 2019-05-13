@@ -64,8 +64,8 @@ public class LevitatorNetworkGenerator {
 
 
     public static void generate(World world, int chunkX, int chunkZ, ChunkPrimer primer, ArienteChunkGenerator generator) {
-        if (CityTools.isCityChunk(chunkX, chunkZ)) {
-            City city = CityTools.getNearestCity(generator, chunkX, chunkZ);
+        if (CityTools.isDungeonChunk(chunkX, chunkZ)) {
+            City city = CityTools.getNearestDungeon(generator, chunkX, chunkZ);
             if (city != null && (city.getPlan().isUnderground() || city.getPlan().isFloating())) {
                 return;
             }
@@ -89,10 +89,10 @@ public class LevitatorNetworkGenerator {
                 int lowest = generator.getCityGenerator().generatePart(primer, station.getPalette(), part, Transform.ROTATE_NONE, 0, CityTools.getStationHeight(), 0);
 
                 BlockPos elevatorPos = null;
-                if (cx == 7 && cz == 9 && CityTools.isCityChunk(chunkX, chunkZ)) {
+                if (cx == 7 && cz == 9 && CityTools.isDungeonChunk(chunkX, chunkZ)) {
                     int startz = 12;
                     elevatorPos = createElevatorShaft(chunkX, chunkZ, primer, generator, lowest, startz);
-                } else if (cx == 7 && cz == 7 && CityTools.isCityChunk(chunkX, chunkZ) && !CityTools.isCityChunk(chunkX, chunkZ+2)) {
+                } else if (cx == 7 && cz == 7 && CityTools.isDungeonChunk(chunkX, chunkZ) && !CityTools.isDungeonChunk(chunkX, chunkZ+2)) {
                     int startz = 3;
                     elevatorPos = createElevatorShaft(chunkX, chunkZ, primer, generator, lowest, startz);
                 }
@@ -152,7 +152,7 @@ public class LevitatorNetworkGenerator {
     }
 
     private static BlockPos createElevatorShaft(int chunkX, int chunkZ, ChunkPrimer primer, ArienteChunkGenerator generator, int lowest, int startz) {
-        ChunkPos center = CityTools.getNearestCityCenter(chunkX, chunkZ);
+        ChunkPos center = CityTools.getNearestDungeonCenter(chunkX, chunkZ);
         City city = CityTools.getCity(center);
         int cityBottom = CityTools.getLowestHeight(city, generator, chunkX, chunkZ);
 

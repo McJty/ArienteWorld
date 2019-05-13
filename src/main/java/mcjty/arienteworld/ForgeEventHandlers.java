@@ -69,8 +69,8 @@ public class ForgeEventHandlers {
         int cx = pos.getX() >> 4;
         int cz = pos.getZ() >> 4;
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
-        if (CityTools.isCityChunk(cx, cz)) {
-            City city = CityTools.getNearestCity(generator, cx, cz);
+        if (CityTools.isDungeonChunk(cx, cz)) {
+            City city = CityTools.getNearestDungeon(generator, cx, cz);
             CityAISystem cityAISystem = CityAISystem.getCityAISystem(world);
             CityAI cityAI = cityAISystem.getCityAI(city.getCenter());
             if (cityAI != null) {
@@ -97,7 +97,7 @@ public class ForgeEventHandlers {
                 BlockPos pos = event.getPos();
                 int cx = pos.getX() >> 4;
                 int cz = pos.getZ() >> 4;
-                City city = CityTools.getNearestCity(generator, cx, cz);
+                City city = CityTools.getNearestDungeon(generator, cx, cz);
                 if (city != null) {
                     List<BuildingPart> parts = CityTools.getBuildingParts(city, cx, cz);
                     if (!parts.isEmpty()) {
@@ -135,7 +135,7 @@ public class ForgeEventHandlers {
                 BlockPos pos = event.getPos();
                 int cx = pos.getX() >> 4;
                 int cz = pos.getZ() >> 4;
-                City city = CityTools.getNearestCity(generator, cx, cz);
+                City city = CityTools.getNearestDungeon(generator, cx, cz);
                 if (city != null) {
                     List<BuildingPart> parts = CityTools.getBuildingParts(city, cx, cz);
                     if (!parts.isEmpty()) {

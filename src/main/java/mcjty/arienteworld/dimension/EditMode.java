@@ -19,6 +19,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,7 +35,7 @@ public class EditMode {
     public static boolean editMode = false;
 
     public static void setVariant(EntityPlayer player, String variant) {
-        City city = getCurrentCity(player);
+        City city = getCurrentDungeon(player);
         if (city == null) {
             player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "No city!"), false);
             return;
@@ -82,7 +83,7 @@ public class EditMode {
     }
 
     public static void getVariant(EntityPlayer player) {
-        City city = getCurrentCity(player);
+        City city = getCurrentDungeon(player);
         if (city == null) {
             player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "No city!"), false);
             return;
@@ -103,7 +104,7 @@ public class EditMode {
     }
 
     public static void listVariants(EntityPlayer player) {
-        City city = getCurrentCity(player);
+        City city = getCurrentDungeon(player);
         if (city == null) {
             player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "No city!"), false);
             return;
@@ -120,7 +121,7 @@ public class EditMode {
     public static void createVariant(EntityPlayer player, String variant, String maxS) {
         Integer max = Integer.parseInt(maxS);
 
-        City city = getCurrentCity(player);
+        City city = getCurrentDungeon(player);
         if (city == null) {
             player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "No city!"), false);
             return;
@@ -135,7 +136,7 @@ public class EditMode {
     public static void switchVariant(EntityPlayer player, String variant, String indexS) {
         Integer index = Integer.parseInt(indexS);
 
-        City city = getCurrentCity(player);
+        City city = getCurrentDungeon(player);
         if (city == null) {
             player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "No city!"), false);
             return;
@@ -193,8 +194,8 @@ public class EditMode {
         int cz = (start.getZ() >> 4);
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
-        City city = CityTools.getNearestCity(generator, cx, cz);
-        if (city == null || !CityTools.isCityChunk(cx, cz)) {
+        City city = CityTools.getNearestDungeon(generator, cx, cz);
+        if (city == null || !CityTools.isDungeonChunk(cx, cz)) {
             // Check if it is a landscape city chunk
             String part = ArienteLandscapeCity.getBuildingPart(cx, cz);
             BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
@@ -214,7 +215,7 @@ public class EditMode {
         player.sendMessage(new TextComponentString("Editing: " + city.getPlan().getName()));
 
         editMode = true;
-        city = getCurrentCity(player);
+        city = getCurrentDungeon(player);
         if (city == null) {
             return;
         }
@@ -223,13 +224,13 @@ public class EditMode {
         cityAI.enableEditMode(player.getEntityWorld());
     }
 
-    public static City getCurrentCity(EntityPlayer player) {
+    public static City getCurrentDungeon(EntityPlayer player) {
         BlockPos start = player.getPosition();
         int cx = (start.getX() >> 4);
         int cz = (start.getZ() >> 4);
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
-        City city = CityTools.getNearestCity(generator, cx, cz);
+        City city = CityTools.getNearestDungeon(generator, cx, cz);
         if (city == null) {
             player.sendMessage(new TextComponentString("No city can be found!"));
             return null;
@@ -237,9 +238,28 @@ public class EditMode {
         return city;
     }
 
-    public static void cityInfo(EntityPlayer player) {
-        City city = getCurrentCity(player);
+    public static void dungeonInfo(EntityPlayer player) {
+        BlockPos start = player.getPosition();
+        int cx = (start.getX() >> 4);
+        int cz = (start.getZ() >> 4);
+
+        City city = getCurrentDungeon(player);
+        if (city != null) {
+            if (!CityTools.isDungeonChunk(cx, cz)) {
+                city = null;
+            }
+        }
+
         if (city == null) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(cx, cz, null)) {
+                String part = ArienteLandscapeCity.getBuildingPart(cx, cz);
+                player.sendMessage(new TextComponentString("Building part: " + part));
+                if (ArienteLandscapeCity.isCityLevitatorChunk(cx, cz)) {
+                    Pair<String, Transform> pair = ArienteLandscapeCity.getCityLevitatorPart(cx, cz);
+                    player.sendMessage(new TextComponentString("City levitator part: " + pair.getLeft() + " (" +
+                            pair.getRight().name() + ")"));
+                }
+            }
             return;
         }
 
@@ -331,7 +351,7 @@ public class EditMode {
         }
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
-        City city = CityTools.getNearestCity(generator, cx, cz);
+        City city = CityTools.getNearestDungeon(generator, cx, cz);
         if (city == null) {
             return false;
         }
@@ -453,8 +473,8 @@ public class EditMode {
         }
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
-        City city = CityTools.getNearestCity(generator, cx, cz);
-        if (city == null || !CityTools.isCityChunk(cx, cz)) {
+        City city = CityTools.getNearestDungeon(generator, cx, cz);
+        if (city == null || !CityTools.isDungeonChunk(cx, cz)) {
             try {
                 saveLandscapeCityPart(player, generator, cx, cz);
             } catch (FileNotFoundException e) {

@@ -25,7 +25,7 @@ public class ArienteWorldImplementation implements IArienteWorld {
 
     @Override
     public ChunkPos getNearestCityCenter(ChunkPos cityCenter) {
-        return CityTools.getNearestCityCenter(cityCenter.x, cityCenter.z);
+        return CityTools.getNearestDungeonCenter(cityCenter.x, cityCenter.z);
     }
 
     @Override

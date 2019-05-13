@@ -42,7 +42,7 @@ public class CommandPacify implements ICommand {
         int cz = (start.getZ() >> 4);
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
-        City city = CityTools.getNearestCity(generator, cx, cz);
+        City city = CityTools.getNearestDungeon(generator, cx, cz);
         if (city != null) {
             CityAISystem cityAISystem = CityAISystem.getCityAISystem(player.getEntityWorld());
             CityAI cityAI = cityAISystem.getCityAI(city.getCenter());
