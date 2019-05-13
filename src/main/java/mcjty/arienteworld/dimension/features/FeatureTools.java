@@ -20,9 +20,6 @@ public class FeatureTools {
         return value < factor;
     }
 
-    public static void generate(IFeature feature) {
-    }
-
     public static Map<String, Double> getActiveFeatures(Biome[] biomes) {
         if (biomes.length == 0) {
             return Collections.emptyMap();

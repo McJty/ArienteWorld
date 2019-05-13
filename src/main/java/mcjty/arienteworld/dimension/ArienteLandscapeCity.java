@@ -1,5 +1,6 @@
 package mcjty.arienteworld.dimension;
 
+import mcjty.ariente.api.MarbleColor;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.biomes.IArienteBiome;
 import mcjty.arienteworld.cities.AssetRegistries;
@@ -67,7 +68,7 @@ public class ArienteLandscapeCity {
 
     public static void generate(int chunkX, int chunkZ, ChunkPrimer primer, ArienteCityGenerator cityGenerator) {
         char baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
-        char fillChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState());
+        char fillChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
         int height = getBuildingHeight(chunkX, chunkZ);
 
         for (int dx = 0 ; dx < 16 ; dx++) {
