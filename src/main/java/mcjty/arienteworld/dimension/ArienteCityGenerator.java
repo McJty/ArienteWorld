@@ -53,6 +53,8 @@ public class ArienteCityGenerator {
             addStates(Blocks.SPRUCE_STAIRS, rotatableChars);
             addStates(Blocks.STONE_STAIRS, rotatableChars);
             addStates(Blocks.LADDER, rotatableChars);
+            addStates(ArienteStuff.fluxBeamBlock, rotatableChars);
+            addStates(ArienteStuff.slopeBlock, rotatableChars);
         }
         return rotatableChars;
     }

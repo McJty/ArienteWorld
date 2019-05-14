@@ -5418,17 +5418,35 @@
         "a a a a a a a a a a a a a a a a "
       ],
       [
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "a a a a a a a f f a a a a a a a ",
+        "fafafafafafafafafafafafafafafafa",
+        "fafafafafafafafafafafafafafafafa",
+        "b b b b b b b b b b b b b b b b ",
+        ". . . . . . D D D D . . . . . . ",
+        ". . . . . . C C C C . . . . . . ",
+        "b b b b b b b b b b b b b b b b ",
+        "fafafafafafafafafafafafafafafafa",
+        "fafafafafafafafafafafafafafafafa",
+        "a a a a a a a f f a a a a a a a ",
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h "
+      ],
+      [
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "gagagagagaga. . . . gagagagagaga",
         ". . . . . . . . . . . . . . . . ",
+        "iaiaiaiaiaiaiaiaiaiaiaiaiaiaiaia",
+        "iaiaiaiaiaiaiaiaiaiaiaiaiaiaiaia",
         ". . . . . . . . . . . . . . . . ",
-        "a a a a a a a a a a a a a a a a ",
-        "a a a a a a a a a a a a a a a a ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
+        "jajajajajaja. . . . jajajajajaja",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
@@ -5441,30 +5459,12 @@
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "tauauauauaua. . . . uauauauauava",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . "
-      ],
-      [
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
+        "tauauauauaua. . . . uauauauauava",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
@@ -5477,12 +5477,12 @@
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "C C C C C C . . . . C C C C C C ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
+        "D D D D D D . . . . D D D D D D ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
@@ -5772,22 +5772,22 @@
         "a a a a a a a a a a a a a a a a "
       ],
       [
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "a a a a a a a f f a a a a a a a ",
+        "fafafafafafafafafafafafafafafafa",
+        "fafafafafafafafafafafafafafafafa",
+        "b b b b b b b b b b b b b b b b ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        "a a a a a a a a a a a a a a a a ",
-        "a a a a a a a a a a a a a a a a ",
-        ". . . . . . . a a . . . . . . . ",
-        ". . . . . . . a a . . . . . . . ",
-        ". . . . . . . a a . . . . . . . ",
-        ". . . . . . . a a . . . . . . . ",
-        ". . . . . . . a a . . . . . . . ",
-        ". . . . . . . a a . . . . . . . ",
-        ". . . . . . . a a . . . . . . . ",
-        ". . . . . . . a a . . . . . . . "
+        "b b b b b b b . . b b b b b b b ",
+        "fafafafafafab . . b fafafafafafa",
+        "fafafafafafab . . b fafafafafafa",
+        "a a a a fafab . . b fafafaa a a ",
+        "h h h a fafab . . b fafafaa h h ",
+        "h h h a fafab . . b fafafaa h h ",
+        "h h h a fafab . . b fafafaa h h "
       ],
       [
         ". . . . . . . . . . . . . . . . ",
@@ -5795,17 +5795,17 @@
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "gagagagagagagagagagagagagagagaga",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . "
+        "iaiaiaiaiaiaiaiaiaiaiaiaiaiaiaia",
+        "iaiaiaiaiaiaiaiaiaiaiaiaiaiaiaia",
+        ". . . . . . . lala. . . . . . . ",
+        "jajajajajaa . lala. a jajajajaja",
+        ". . . . . ka. lala. ma. . . . . ",
+        ". . . . . ka. lala. ma. . . . . ",
+        ". . . . . ka. lala. ma. . . . . ",
+        ". . . . . ka. lala. ma. . . . . ",
+        ". . . . . ka. lala. ma. . . . . "
       ],
       [
         ". . . . . . . . . . . . . . . . ",
@@ -5813,17 +5813,17 @@
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "nananananananananananananananana",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . "
+        "nananananaa . . . . a nanananana",
+        ". . . . . na. . . . na. . . . . ",
+        ". . . . . na. . . . na. . . . . ",
+        ". . . . . na. . . . na. . . . . ",
+        ". . . . . na. . . . na. . . . . ",
+        ". . . . . na. . . . na. . . . . "
       ],
       [
         ". . . . . . . . . . . . . . . . ",
@@ -5831,17 +5831,17 @@
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "C C C C C C C C C C C C C C C C ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . "
+        "D D D D D a . . . . a D D D D D ",
+        ". . . . . B . . . . E . . . . . ",
+        ". . . . . B . . . . E . . . . . ",
+        ". . . . . B . . . . E . . . . . ",
+        ". . . . . B . . . . E . . . . . ",
+        ". . . . . B . . . . E . . . . . "
       ],
       [
         ". . . . . . . . . . . . . . . . ",
@@ -5890,17 +5890,35 @@
         "a a a a a a a a a a a a a a a a "
       ],
       [
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "a a a a a a a f f a a a a h h h ",
+        "fafafafafafafafafafafafaa h h h ",
+        "fafafafafafafafafafafafaa h h h ",
+        "b b b b b b b b b b fafaa h h h ",
+        ". . . . . . . . . a fafaf h h h ",
+        ". . . . . . . . . a fafaf h h h ",
+        "b b b b b b b b b b fafaa h h h ",
+        "fafafafafafafafafafafafaa h h h ",
+        "fafafafafafafafafafafafaa h h h ",
+        "a a a a a a a f f a a a a h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h ",
+        "h h h h h h h h h h h h h h h h "
+      ],
+      [
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "gagagagagagagagagau . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "hahahahahahahahahaa . . . . . . ",
+        "iaiaiaiaiaiaiaiaiaa . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        "a a a a a a a a a . . . . . . . ",
-        "a a a a a a a a a . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
+        "jajajajajajajajajau . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
@@ -5913,30 +5931,12 @@
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "nananananananananau . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        ". . . . . . . . . a . . . . . . ",
+        ". . . . . . . . . a . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . "
-      ],
-      [
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
+        "nananananananananau . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
@@ -5949,12 +5949,12 @@
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        "C C C C C C C C C u . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
+        ". . . . . . . . . a . . . . . . ",
+        ". . . . . . . . . a . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
-        ". . . . . . . . . . . . . . . . ",
+        "D D D D D D D D D u . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
         ". . . . . . . . . . . . . . . . ",
@@ -6020,12 +6020,20 @@
         "block": "ariente:marble_slab@6"
       },
       {
+        "char": "sa",
+        "block": "ariente:blue_glass_fence"
+      },
+      {
         "char": "q ",
         "block": "ariente:ramp@2"
       },
       {
         "char": "P ",
         "block": "arienteworld:platinumore"
+      },
+      {
+        "char": "oa",
+        "block": "ariente:blue_glass_fence"
       },
       {
         "char": "m ",
@@ -6036,12 +6044,20 @@
         "block": "ariente:pattern@1"
       },
       {
+        "char": "ka",
+        "block": "ariente:slope@6"
+      },
+      {
         "char": "i ",
         "block": "ariente:blacktech@6"
       },
       {
         "char": "H ",
         "block": "ariente:marble_slab@3"
+      },
+      {
+        "char": "ga",
+        "block": "ariente:slope@4"
       },
       {
         "char": "e ",
@@ -6084,6 +6100,10 @@
         "block": "ariente:marble_smooth@6"
       },
       {
+        "char": "ta",
+        "block": "ariente:blue_glass_fence"
+      },
+      {
         "char": "r ",
         "block": "ariente:ramp"
       },
@@ -6096,6 +6116,10 @@
         "block": "ariente:tech_fence"
       },
       {
+        "char": "pa",
+        "block": "ariente:blue_glass_fence"
+      },
+      {
         "char": "n ",
         "block": "ariente:flatlight@5"
       },
@@ -6104,12 +6128,20 @@
         "block": "ariente:door_marker@3"
       },
       {
+        "char": "la",
+        "block": "ariente:flux_beam@3"
+      },
+      {
         "char": "j ",
         "block": "ariente:blacktech@3"
       },
       {
         "char": "I ",
         "block": "ariente:marble_slab@11"
+      },
+      {
+        "char": "ha",
+        "block": "ariente:flux_beam"
       },
       {
         "char": "f ",
@@ -6156,6 +6188,10 @@
         "block": "ariente:door_marker@2"
       },
       {
+        "char": "ua",
+        "block": "ariente:blue_glass_fence"
+      },
+      {
         "char": "s ",
         "block": "ariente:pattern"
       },
@@ -6168,6 +6204,10 @@
         "block": "ariente:tech_fence"
       },
       {
+        "char": "qa",
+        "block": "ariente:blue_glass_fence"
+      },
+      {
         "char": "o ",
         "block": "ariente:fluxglow"
       },
@@ -6176,12 +6216,20 @@
         "block": "ariente:level_marker"
       },
       {
+        "char": "ma",
+        "block": "ariente:slope@7"
+      },
+      {
         "char": "k ",
         "block": "ariente:blue_glass_fence"
       },
       {
         "char": "J ",
         "block": "ariente:door_marker"
+      },
+      {
+        "char": "ia",
+        "block": "ariente:flux_beam@1"
       },
       {
         "char": "g ",
@@ -6220,6 +6268,10 @@
         "block": "ariente:tech_fence"
       },
       {
+        "char": "va",
+        "block": "ariente:blue_glass_fence"
+      },
+      {
         "char": "t ",
         "block": "ariente:ramp@1"
       },
@@ -6230,6 +6282,10 @@
       {
         "char": "2 ",
         "block": "ariente:marble_pilar@6"
+      },
+      {
+        "char": "ra",
+        "block": "ariente:blue_glass_fence"
       },
       {
         "char": "p ",
@@ -6244,6 +6300,10 @@
         "block": "minecraft:air"
       },
       {
+        "char": "na",
+        "block": "ariente:blue_glass_fence"
+      },
+      {
         "char": "l ",
         "block": "ariente:blacktech"
       },
@@ -6252,12 +6312,20 @@
         "block": "ariente:door_marker@1"
       },
       {
+        "char": "ja",
+        "block": "ariente:slope@5"
+      },
+      {
         "char": "h ",
         "block": "ariente:marble@3"
       },
       {
         "char": "G ",
         "block": "ariente:glass_fence"
+      },
+      {
+        "char": "fa",
+        "block": "ariente:marble@6"
       },
       {
         "char": "d ",

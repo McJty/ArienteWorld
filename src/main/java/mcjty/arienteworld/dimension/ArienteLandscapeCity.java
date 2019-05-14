@@ -18,11 +18,11 @@ import java.util.*;
 
 public class ArienteLandscapeCity {
 
-    private static final int CITY_LEVEL = 70;    // @todo make variable?
-    private static final int NUM_PARKS = 4;
-    private static final int NUM_BUILDINGS = 10;
-    private static final int MAX_STRIP_LENGTH = 6;
-    private static final int CITYLEV_HEIGHT = 6;        // The height of city levitator section
+    public static final int CITY_LEVEL = 70;    // @todo make variable?
+    public static final int NUM_PARKS = 4;
+    public static final int NUM_BUILDINGS = 10;
+    public static final int MAX_STRIP_LENGTH = 6;
+    public static final int CITYLEV_HEIGHT = 6;        // The height of city levitator section
 
     public static final String CITY_PALETTE = "landscapecities";
 

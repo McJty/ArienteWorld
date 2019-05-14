@@ -501,12 +501,26 @@ public class EditMode {
         CityPlan dummyPlan = new CityPlan("dummy");
         dummyPlan.addPlan("a");
         dummyPlan.setPalette(ArienteLandscapeCity.CITY_PALETTE);
-        String buildingPart = ArienteLandscapeCity.getBuildingPart(cx, cz);
-        dummyPlan.addToPartPalette('a', buildingPart);
-        saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
-                ArienteLandscapeCity::getBuildingHeight,
-                (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart)) : Collections.emptyList());
-        player.sendMessage(new TextComponentString("Saved part: " + buildingPart));
+
+        boolean levitatorChunk = ArienteLandscapeCity.isCityLevitatorChunk(cx, cz);
+        int height = ArienteLandscapeCity.getBuildingHeight(cx, cz);
+        if (levitatorChunk && player.getPosition().getY() < height) {
+            // Save the station part instead of the building part
+            Pair<String, Transform> pair = ArienteLandscapeCity.getCityLevitatorPart(cx, cz);
+            String buildingPart = pair.getKey();
+            dummyPlan.addToPartPalette('a', buildingPart);
+            saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
+                    (x, z) -> height-ArienteLandscapeCity.CITYLEV_HEIGHT,
+                    (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart)) : Collections.emptyList());
+            player.sendMessage(new TextComponentString("Saved part: " + buildingPart));
+        } else {
+            String buildingPart = ArienteLandscapeCity.getBuildingPart(cx, cz);
+            dummyPlan.addToPartPalette('a', buildingPart);
+            saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
+                    ArienteLandscapeCity::getBuildingHeight,
+                    (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart)) : Collections.emptyList());
+            player.sendMessage(new TextComponentString("Saved part: " + buildingPart));
+        }
     }
 
     private static void saveStation(EntityPlayer player) throws FileNotFoundException {
