@@ -242,7 +242,6 @@ public class ArienteLandscapeCity {
         }
 
         String part = getBuildingPart(chunkX, chunkZ);
-        System.out.println("Gen " + chunkX + "," + chunkZ + " (" + part +", " + levitatorChunk + ")");
         if (levitatorChunk) {
             Pair<String, Transform> pair = getCityLevitatorPart(chunkX, chunkZ);
             cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get(pair.getKey()),
@@ -253,20 +252,17 @@ public class ArienteLandscapeCity {
             if (random.nextFloat() < .8) {
                 // Disable the building above this in most cases
                 part = null;
-                System.out.println("    DISABLE");
             } else {
                 // We generate a roofpart on top of which the building will come
                 cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get("citylev_roofpart"),
                         Transform.ROTATE_NONE, 0, height, 0);
                 height += CITYLEV_HEIGHT;
-                System.out.println("    ROOFPART");
             }
         }
 
         if (part != null) {
             cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get(part), Transform.ROTATE_NONE,
                     0, height, 0);
-            System.out.println("    BUILDING");
         }
     }
 

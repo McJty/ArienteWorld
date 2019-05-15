@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import mcjty.ariente.api.ICityEquipment;
 import mcjty.ariente.api.IElevator;
 import mcjty.arienteworld.ArienteStuff;
+import mcjty.arienteworld.cities.AssetRegistries;
 import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
@@ -328,6 +329,15 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             BuildingPart part = CityTools.getStationPart(x, z);
             if (part != null) {
                 fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight());
+            }
+        }
+
+        if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, biomesForGeneration)) {
+            if (!CityTools.isDungeonChunk(x, z)) {
+                int height = ArienteLandscapeCity.getBuildingHeight(x, z);
+                String part = ArienteLandscapeCity.getBuildingPart(x, z);
+                System.out.println("Fixing tile entities in building " + x + "," + z + " (" + part + ")");
+                fixTileEntities(x, z, Collections.singletonList(AssetRegistries.PARTS.get(part)), height);
             }
         }
     }
