@@ -15,4 +15,13 @@ public class PrimerTools {
         }
         Arrays.fill(primer.data, s, e, c);
     }
+
+    public static void fillChunk(ChunkPrimer primer, char baseChar, int start, int stop) {
+        for (int dx = 0 ; dx < 16 ; dx++) {
+            for (int dz = 0 ; dz < 16 ; dz++) {
+                int index = (dx << 12) | (dz << 8);
+                setBlockStateRange(primer, index + start, index + stop, baseChar);
+            }
+        }
+    }
 }
