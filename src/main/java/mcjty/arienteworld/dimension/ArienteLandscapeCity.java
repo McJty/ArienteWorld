@@ -232,6 +232,12 @@ public class ArienteLandscapeCity {
             return;
         }
 
+        // If there is a dungeon chunk adjacent to this we restrict to flat
+        boolean adjacentDungeon = CityTools.isDungeonChunk(chunkX-1, chunkZ) ||
+                CityTools.isDungeonChunk(chunkX+1, chunkZ) ||
+                CityTools.isDungeonChunk(chunkX, chunkZ-1) ||
+                CityTools.isDungeonChunk(chunkX, chunkZ+1);
+
         int height = getBuildingHeight(chunkX, chunkZ);
         boolean levitatorChunk = isCityLevitatorChunk(chunkX, chunkZ);
         if (levitatorChunk) {
@@ -247,11 +253,13 @@ public class ArienteLandscapeCity {
         // Sample the world above this to see if we have room for a building
         if (isChunkOccupied(primer, height+6, height + partHeight + (levitatorChunk ? CITYLEV_HEIGHT : 0))) {
             undergroundPark = true;
-            if (part.startsWith("building")) {
-                // Replace the building with a park section here
-                part = getParkPart(chunkX, chunkZ);
-            }
         }
+
+        if ((undergroundPark || adjacentDungeon) && part.startsWith("building")) {
+            // Replace the building with a park section here
+            part = getParkPart(chunkX, chunkZ);
+        }
+
 
         if (levitatorChunk) {
             Pair<String, Transform> pair = getCityLevitatorPart(chunkX, chunkZ);
