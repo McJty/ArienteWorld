@@ -1,6 +1,7 @@
 package mcjty.arienteworld.cities;
 
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
+import mcjty.arienteworld.dimension.ArienteLandscapeCity;
 import mcjty.arienteworld.dimension.ChunkHeightmap;
 import net.minecraft.util.math.ChunkPos;
 

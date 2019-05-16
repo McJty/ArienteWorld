@@ -7,6 +7,7 @@ import mcjty.arienteworld.cities.AssetRegistries;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.cities.Transform;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
@@ -18,8 +19,8 @@ import java.util.*;
 
 public class ArienteLandscapeCity {
 
-    public static final int CITY_LEVEL = 70;    // @todo make variable?
-    public static final int NUM_PARKS = 6;
+    public static final int CITY_LEVEL = 65;    // @todo make variable?
+    public static final int NUM_PARKS = 9;
     public static final int NUM_BUILDINGS = 10;
     public static final int MAX_STRIP_LENGTH = 6;
     public static final int CITYLEV_HEIGHT = 6;        // The height of city levitator section
@@ -178,6 +179,13 @@ public class ArienteLandscapeCity {
         }
     }
 
+    // Used when there is no room for a building
+    public static String getParkPart(int chunkX, int chunkZ) {
+        Random random = new Random(chunkX * 234516783139L + chunkZ * 567000003533L);
+        random.nextFloat();
+        return "park" + (random.nextInt(NUM_PARKS)+1);
+    }
+
     // Only relevant on city chunks. Returns the height of this city part (lower y for the building)
     public static int getBuildingHeight(int chunkX, int chunkZ) {
         Random random = new Random(chunkZ * 593441843L + chunkX * 217645177L);
@@ -221,7 +229,7 @@ public class ArienteLandscapeCity {
             for (int dx = 0 ; dx < 16 ; dx++) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
                     int index = (dx << 12) | (dz << 8);
-                    PrimerTools.setBlockStateRange(primer, index, index + CITY_LEVEL, baseChar);
+                    PrimerTools.setBlockStateRange(primer, index, index + CITY_LEVEL + CITYLEV_HEIGHT, baseChar);
                 }
             }
             return;
@@ -242,6 +250,15 @@ public class ArienteLandscapeCity {
         }
 
         String part = getBuildingPart(chunkX, chunkZ);
+        // Sample the world above this to see if we have room for a building
+        if (part.startsWith("building")) {
+            int partHeight = AssetRegistries.PARTS.get(part).getSliceCount();
+            if (isChunkOccupied(primer, height+1, height + partHeight + (levitatorChunk ? CITYLEV_HEIGHT : 0))) {
+                part = getParkPart(chunkX, chunkZ);
+            }
+        }
+
+
         if (levitatorChunk) {
             Pair<String, Transform> pair = getCityLevitatorPart(chunkX, chunkZ);
             cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get(pair.getKey()),
@@ -264,6 +281,24 @@ public class ArienteLandscapeCity {
             cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get(part), Transform.ROTATE_NONE,
                     0, height, 0);
         }
+    }
+
+    private static boolean isChunkOccupied(ChunkPrimer primer, int y1, int y2) {
+        char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
+
+        for (int dx = 0 ; dx < 16 ; dx += 2) {
+            for (int dz = 0 ; dz < 16 ; dz += 2) {
+                int index = (dx << 12) | (dz << 8);
+                int y = y1;
+                while (y <= y2) {
+                    if (primer.data[index + y] != air) {
+                        return true;
+                    }
+                    y += 2;
+                }
+            }
+        }
+        return false;
     }
 
     public static Pair<String, Transform> getCityLevitatorPart(int chunkX, int chunkZ) {
