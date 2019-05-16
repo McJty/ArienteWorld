@@ -631,6 +631,8 @@ public class EditMode {
                 for (int z = 0; z < 16; z++) {
                     pos.setPos(cx + x, cy, cz + z);
                     IBlockState state = world.getBlockState(pos);
+                    // Make sure the state doesn't contain any extended stuff
+                    state = state.getBlock().getStateFromMeta(state.getBlock().getMetaFromState(state));
                     PaletteIndex character;
 
                     if (state.getBlock() == ArienteStuff.invisibleDoorBlock) {

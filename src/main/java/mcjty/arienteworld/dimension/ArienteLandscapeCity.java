@@ -1,9 +1,11 @@
 package mcjty.arienteworld.dimension;
 
 import mcjty.ariente.api.MarbleColor;
+import mcjty.ariente.api.TechType;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.biomes.IArienteBiome;
 import mcjty.arienteworld.cities.AssetRegistries;
+import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.cities.Transform;
 import net.minecraft.block.Block;
@@ -249,15 +251,18 @@ public class ArienteLandscapeCity {
             }
         }
 
+        boolean undergroundPark = false;        // True if this park section is underground
         String part = getBuildingPart(chunkX, chunkZ);
+        int partHeight = AssetRegistries.PARTS.get(part).getSliceCount();
         // Sample the world above this to see if we have room for a building
-        if (part.startsWith("building")) {
-            int partHeight = AssetRegistries.PARTS.get(part).getSliceCount();
-            if (isChunkOccupied(primer, height+1, height + partHeight + (levitatorChunk ? CITYLEV_HEIGHT : 0))) {
+        if (isChunkOccupied(primer, height+6, height + partHeight + (levitatorChunk ? CITYLEV_HEIGHT : 0))) {
+            if (part.startsWith("building")) {
                 part = getParkPart(chunkX, chunkZ);
+                undergroundPark = true;
+            } else {
+                undergroundPark = true;
             }
         }
-
 
         if (levitatorChunk) {
             Pair<String, Transform> pair = getCityLevitatorPart(chunkX, chunkZ);
@@ -278,8 +283,28 @@ public class ArienteLandscapeCity {
         }
 
         if (part != null) {
-            cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get(part), Transform.ROTATE_NONE,
+            BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
+            cityGenerator.generatePart(primer, CITY_PALETTE, buildingPart, Transform.ROTATE_NONE,
                     0, height, 0);
+            if (undergroundPark) {
+                char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
+                char marble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
+                char tech = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.blackmarble_techpat.getDefaultState().withProperty(TechType.TYPE, TechType.LINES));
+                int layerHeight = CITY_LEVEL + CITYLEV_HEIGHT + 6;
+                for (int dx = 0 ; dx < 16 ; dx++) {
+                    for (int dz = 0; dz < 16; dz++) {
+                        int index = (dx << 12) | (dz << 8);
+                        PrimerTools.setBlockStateRangeSafe(primer, index + height + buildingPart.getSliceCount(), index + layerHeight, air);
+                        if (primer.data[index + layerHeight] != air) {
+                            if (dx == 6 || dx == 9 || dz == 6 || dz == 9) {
+                                primer.data[index + layerHeight] = tech;
+                            } else {
+                                primer.data[index + layerHeight] = marble;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
