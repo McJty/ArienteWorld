@@ -1,26 +1,27 @@
 package mcjty.arienteworld.dimension.features;
 
-import mcjty.ariente.api.MarbleColor;
-import mcjty.arienteworld.ArienteStuff;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockStainedGlass;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 
 import java.util.Random;
 
-public class SpheresFeature implements IFeature {
+public class BubbleFeature implements IFeature {
 
-    public static final String FEATURE_SPHERES = "spheres";
+    public static final String FEATURE_BUBBLES = "bubbles";
 
     private NoiseGeneratorPerlin featureNoise;
 
-    public SpheresFeature() {
+    public BubbleFeature() {
     }
 
     private NoiseGeneratorPerlin getNoise(World world) {
         if (featureNoise == null) {
-            Random random = new Random(world.getSeed() * 257017164707L + 101754694003L);
+            Random random = new Random(world.getSeed() * 911930311L + 911942051L);
             featureNoise = new NoiseGeneratorPerlin(random, 4);
         }
         return featureNoise;
@@ -28,20 +29,23 @@ public class SpheresFeature implements IFeature {
 
     @Override
     public String getId() {
-        return FEATURE_SPHERES;
+        return FEATURE_BUBBLES;
     }
 
     @Override
     public void generate(World world, ChunkPrimer primer, int chunkX, int chunkZ, int dx, int dz) {
-        Random random = new Random(world.getSeed() + (chunkZ+dz) * 256203221L + (chunkX+dx) * 899809363L);
+        Random random = new Random(world.getSeed() + (chunkZ+dz) * 838037023L + (chunkX+dx) * 899809363L);
         random.nextFloat();
         int radius = random.nextInt(6) + 6;
-        int centery = random.nextInt(60) + 40;
+        int centery = random.nextInt(7) + 60;
 
-        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLUE));
+//        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLUE));
+        char block = (char) Block.BLOCK_STATE_IDS.get(Blocks.STAINED_GLASS.getDefaultState().withProperty(BlockStainedGlass.COLOR, EnumDyeColor.BLUE));
+        char water = (char) Block.BLOCK_STATE_IDS.get(Blocks.WATER.getDefaultState());
         int centerx = 8 + (dx) * 16;
         int centerz = 8 + (dz) * 16;
         double sqradius = radius * radius;
+        double innerRadius = (((double) radius) - 1.5f) * (((double) radius) - 1.5f);
 
         for (int x = 0 ; x < 16 ; x++) {
             double dxdx = (x-centerx) * (x-centerx);
@@ -51,7 +55,9 @@ public class SpheresFeature implements IFeature {
                 for (int y = centery-radius ; y <= centery+radius ; y++) {
                     double dydy = (y-centery) * (y-centery);
                     double sqdist = dxdx + dydy + dzdz;
-                    if (sqdist <= sqradius) {
+                    if (sqdist < innerRadius) {
+                        primer.data[index + y] = water;
+                    } else if (sqdist <= sqradius) {
                         primer.data[index + y] = block;
                     }
                 }
@@ -73,7 +79,7 @@ public class SpheresFeature implements IFeature {
 
     @Override
     public Random getRandom(World world, int chunkX, int chunkZ) {
-        return new Random(world.getSeed() + chunkZ * 899809363L + chunkX * 256203221L);
+        return new Random(world.getSeed() + chunkZ * 899809363L + chunkX * 961712959L);
     }
 
     @Override

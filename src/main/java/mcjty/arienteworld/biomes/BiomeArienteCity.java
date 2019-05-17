@@ -1,8 +1,6 @@
 package mcjty.arienteworld.biomes;
 
-import mcjty.arienteworld.dimension.features.IFeature;
-import mcjty.arienteworld.dimension.features.SpheresFeature;
-import mcjty.arienteworld.dimension.features.SpikesFeature;
+import mcjty.arienteworld.dimension.features.*;
 import mcjty.arienteworld.setup.ModSetup;
 import net.minecraft.world.biome.Biome;
 
@@ -17,6 +15,8 @@ public class BiomeArienteCity extends AbstractArienteBiome {
     static {
         FEATURE_STRENGTHS.put(SpheresFeature.FEATURE_SPHERES, 0.0);
         FEATURE_STRENGTHS.put(SpikesFeature.FEATURE_SPIKES, 0.0);
+        FEATURE_STRENGTHS.put(BubbleFeature.FEATURE_BUBBLES, 0.0);
+        FEATURE_STRENGTHS.put(GlowBubbleFeature.FEATURE_GLOWBUBBLES, 0.0);
     }
 
     public BiomeArienteCity(BiomeProperties properties) {

@@ -11,6 +11,8 @@ public class FeatureRegistry {
     public static void init() {
         addFeature(new SpheresFeature());
         addFeature(new SpikesFeature());
+        addFeature(new BubbleFeature());
+        addFeature(new GlowBubbleFeature());
     }
 
     private static void addFeature(IFeature feature) {

@@ -71,4 +71,7 @@ public class ArienteStuff {
 
     @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":slope")
     public static Block slopeBlock;
+
+    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":fluxglow")
+    public static Block fluxGlow;
 }

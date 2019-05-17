@@ -1,8 +1,6 @@
 package mcjty.arienteworld.biomes;
 
-import mcjty.arienteworld.dimension.features.IFeature;
-import mcjty.arienteworld.dimension.features.SpheresFeature;
-import mcjty.arienteworld.dimension.features.SpikesFeature;
+import mcjty.arienteworld.dimension.features.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +12,8 @@ public class BiomeArienteOcean extends AbstractArienteBiome {
     static {
         FEATURE_STRENGTHS.put(SpheresFeature.FEATURE_SPHERES, 0.7);
         FEATURE_STRENGTHS.put(SpikesFeature.FEATURE_SPIKES, 0.0);
+        FEATURE_STRENGTHS.put(BubbleFeature.FEATURE_BUBBLES, 1.0);
+        FEATURE_STRENGTHS.put(GlowBubbleFeature.FEATURE_GLOWBUBBLES, 1.0);
     }
 
     public BiomeArienteOcean(BiomeProperties properties) {
