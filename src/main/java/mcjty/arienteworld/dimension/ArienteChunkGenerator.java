@@ -1,6 +1,7 @@
 package mcjty.arienteworld.dimension;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import mcjty.ariente.api.ICityEquipment;
 import mcjty.ariente.api.IElevator;
 import mcjty.ariente.api.IStorageTile;
@@ -13,12 +14,16 @@ import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.dimension.features.FeatureTools;
 import mcjty.arienteworld.dimension.features.IFeature;
+import mcjty.arienteworld.setup.ModSetup;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -43,7 +48,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     private Random random;
     private Biome[] biomesForGeneration;
 
-    private List<Biome.SpawnListEntry> mobs = Collections.emptyList();
+    private List<Biome.SpawnListEntry> mobs = null;
     private Map<ChunkPos, Map<String, Double>> activeFeatureCache = new HashMap<>();
 
     private MapGenBase caveGenerator = new MapGenCaves();
@@ -377,9 +382,18 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                     if (landscapeCity && te instanceof IStorageTile) {
                         IStorageTile storageTile = (IStorageTile) te;
                         CityAI.fillLoot(AssetRegistries.CITYPLANS.get("landscapecities"), storageTile);
-
                     } else if (te instanceof ICityEquipment && equipment.containsKey(p)) {
                         ((ICityEquipment)te).load(equipment.get(p));
+                    }
+
+                    if (te instanceof TileEntityMobSpawner && equipment.containsKey(p)) {
+                        TileEntityMobSpawner spawner = (TileEntityMobSpawner) te;
+                        MobSpawnerBaseLogic logic = spawner.getSpawnerBaseLogic();
+                        Map<String, Object> map = equipment.get(p);
+                        logic.setEntityId(new ResourceLocation((String)map.get("mob")));
+                        te.markDirty();
+                        IBlockState state = worldObj.getBlockState(p);
+                        worldObj.notifyBlockUpdate(p, state, state, 3);
                     }
                 }
             }
@@ -406,6 +420,11 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
         if (creatureType == EnumCreatureType.MONSTER){
+            if (mobs == null) {
+                mobs = Lists.newArrayList(
+                        new Biome.SpawnListEntry(ModSetup.arienteSystem.getSoldierClass(), 95, 4, 4),
+                        new Biome.SpawnListEntry(ModSetup.arienteSystem.getMasterSoldierClass(), 5, 1, 1));
+            }
             return mobs;
         }
         return ImmutableList.of();

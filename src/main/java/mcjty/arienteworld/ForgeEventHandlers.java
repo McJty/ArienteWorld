@@ -104,10 +104,10 @@ public class ForgeEventHandlers {
                         BuildingPart found = null;
                         int partY = -1;
                         int lowesty = CityTools.getLowestHeight(city, generator, cx, cz);
-                        for (int i = 0 ; i < parts.size() ; i++) {
-                            int count = parts.get(i).getSliceCount();
+                        for (BuildingPart part : parts) {
+                            int count = part.getSliceCount();
                             if (pos.getY() >= lowesty && pos.getY() < lowesty + count) {
-                                found = parts.get(i);
+                                found = part;
                                 partY = lowesty;
                                 break;
                             }
@@ -142,10 +142,10 @@ public class ForgeEventHandlers {
                         BuildingPart found = null;
                         int partY = -1;
                         int lowesty = CityTools.getLowestHeight(city, generator, cx, cz);
-                        for (int i = 0 ; i < parts.size() ; i++) {
-                            int count = parts.get(i).getSliceCount();
+                        for (BuildingPart part : parts) {
+                            int count = part.getSliceCount();
                             if (pos.getY() >= lowesty && pos.getY() < lowesty + count) {
-                                found = parts.get(i);
+                                found = part;
                                 partY = lowesty;
                                 break;
                             }

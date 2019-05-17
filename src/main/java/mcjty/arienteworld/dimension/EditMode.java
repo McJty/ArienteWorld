@@ -13,6 +13,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
@@ -659,6 +661,12 @@ public class EditMode {
                         if (saved != null) {
                             teData.put(new BlockPos(x, f, z), saved);
                         }
+                    } else if (te instanceof TileEntityMobSpawner) {
+                        TileEntityMobSpawner spawner = (TileEntityMobSpawner) te;
+                        ResourceLocation entityId = spawner.getSpawnerBaseLogic().getEntityId();
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("mob", entityId.toString());
+                        teData.put(new BlockPos(x, f, z), data);
                     }
                 }
             }

@@ -91,60 +91,60 @@ public abstract class AbstractArienteBiome extends Biome implements IArienteBiom
         return 0x224477;
     }
 
-    protected final void generateBlocks(World worldIn, Random rand, ChunkPrimer chunkPrimerIn, int x, int z, double noiseVal) {
-        int i = worldIn.getSeaLevel();
-        IBlockState iblockstate = this.topBlock;
-        IBlockState iblockstate1 = this.fillerBlock;
+    protected final void generateBlocks(World world, Random rand, ChunkPrimer primer, int x, int z, double noiseVal) {
+        int i = world.getSeaLevel();
+        IBlockState topState = this.topBlock;
+        IBlockState fillerState = this.fillerBlock;
         int j = -1;
         int k = (int) (noiseVal / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
         int dz = x & 15;    // swapped?
         int dx = z & 15;
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (int y = 255; y >= 0; --y) {
             if (y <= rand.nextInt(5)) {
-                chunkPrimerIn.setBlockState(dx, y, dz, BEDROCK);
+                primer.setBlockState(dx, y, dz, BEDROCK);
             } else {
-                IBlockState iblockstate2 = chunkPrimerIn.getBlockState(dx, y, dz);
+                IBlockState state = primer.getBlockState(dx, y, dz);
 
-                if (iblockstate2.getMaterial() == Material.AIR) {
+                if (state.getMaterial() == Material.AIR) {
                     j = -1;
-                } else if (iblockstate2.getBlock() == ArienteStuff.marble) {
+                } else if (state.getBlock() == ArienteStuff.marble) {
                     if (j == -1) {
                         if (k <= 0) {
-                            iblockstate = AIR;
-                            iblockstate1 = ArienteStuff.marble.getDefaultState();
+                            topState = AIR;
+                            fillerState = ArienteStuff.marble.getDefaultState();
                         } else if (y >= i - 4 && y <= i + 1) {
-                            iblockstate = this.topBlock;
-                            iblockstate1 = this.fillerBlock;
+                            topState = this.topBlock;
+                            fillerState = this.fillerBlock;
                         }
 
-                        if (y < i && (iblockstate == null || iblockstate.getMaterial() == Material.AIR)) {
-                            if (this.getTemperature(blockpos$mutableblockpos.setPos(x, y, z)) < 0.15F) {
-                                iblockstate = ICE;
+                        if (y < i && (topState == null || topState.getMaterial() == Material.AIR)) {
+                            if (this.getTemperature(pos.setPos(x, y, z)) < 0.15F) {
+                                topState = ICE;
                             } else {
-                                iblockstate = WATER;
+                                topState = WATER;
                             }
                         }
 
                         j = k;
 
                         if (y >= i - 1) {
-                            chunkPrimerIn.setBlockState(dx, y, dz, iblockstate);
+                            primer.setBlockState(dx, y, dz, topState);
                         } else if (y < i - 7 - k) {
-                            iblockstate = AIR;
-                            iblockstate1 = ArienteStuff.marble.getDefaultState();
-                            chunkPrimerIn.setBlockState(dx, y, dz, GRAVEL);
+                            topState = AIR;
+                            fillerState = ArienteStuff.marble.getDefaultState();
+                            primer.setBlockState(dx, y, dz, GRAVEL);
                         } else {
-                            chunkPrimerIn.setBlockState(dx, y, dz, iblockstate1);
+                            primer.setBlockState(dx, y, dz, fillerState);
                         }
                     } else if (j > 0) {
                         --j;
-                        chunkPrimerIn.setBlockState(dx, y, dz, iblockstate1);
+                        primer.setBlockState(dx, y, dz, fillerState);
 
-                        if (j == 0 && iblockstate1.getBlock() == Blocks.SAND && k > 1) {
+                        if (j == 0 && fillerState.getBlock() == Blocks.SAND && k > 1) {
                             j = rand.nextInt(4) + Math.max(0, y - 63);
-                            iblockstate1 = iblockstate1.getValue(BlockSand.VARIANT) == BlockSand.EnumType.RED_SAND ? RED_SANDSTONE : SANDSTONE;
+                            fillerState = fillerState.getValue(BlockSand.VARIANT) == BlockSand.EnumType.RED_SAND ? RED_SANDSTONE : SANDSTONE;
                         }
                     }
                 }
