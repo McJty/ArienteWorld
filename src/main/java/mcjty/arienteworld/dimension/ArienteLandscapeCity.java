@@ -4,10 +4,7 @@ import mcjty.ariente.api.MarbleColor;
 import mcjty.ariente.api.TechType;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.biomes.IArienteBiome;
-import mcjty.arienteworld.cities.AssetRegistries;
-import mcjty.arienteworld.cities.BuildingPart;
-import mcjty.arienteworld.cities.CityTools;
-import mcjty.arienteworld.cities.Transform;
+import mcjty.arienteworld.cities.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
@@ -228,15 +225,19 @@ public class ArienteLandscapeCity {
 
         if (CityTools.isDungeonChunk(chunkX, chunkZ)) {
             // Only generate marble until landscape level
-            PrimerTools.fillChunk(primer, baseChar, 0, CITY_LEVEL + CITYLEV_HEIGHT);
-            return;
+            City city = CityTools.getCity(new ChunkPos(chunkX, chunkZ));
+            if (!city.getPlan().isUnderground() && !city.getPlan().isFloating()) {
+//                PrimerTools.fillChunk(primer, baseChar, 0, CITY_LEVEL + CITYLEV_HEIGHT);
+                return;
+            }
         }
 
         // If there is a dungeon chunk adjacent to this we restrict to flat
         boolean adjacentDungeon = CityTools.isDungeonChunk(chunkX-1, chunkZ) ||
                 CityTools.isDungeonChunk(chunkX+1, chunkZ) ||
                 CityTools.isDungeonChunk(chunkX, chunkZ-1) ||
-                CityTools.isDungeonChunk(chunkX, chunkZ+1);
+                CityTools.isDungeonChunk(chunkX, chunkZ+1) ||
+                CityTools.isDungeonChunk(chunkX, chunkZ);
 
         int height = getBuildingHeight(chunkX, chunkZ);
         boolean levitatorChunk = isCityLevitatorChunk(chunkX, chunkZ);
@@ -244,7 +245,7 @@ public class ArienteLandscapeCity {
             height -= CITYLEV_HEIGHT;   // Building height is where the building starts. We need to go lower here
         }
 
-        PrimerTools.fillChunk(primer, baseChar, 0, CITY_LEVEL-2);
+//        PrimerTools.fillChunk(primer, baseChar, 0, CITY_LEVEL-2);
         PrimerTools.fillChunk(primer, fillChar, CITY_LEVEL-2, height);
 
         boolean undergroundPark = false;        // True if this park section is underground
@@ -260,15 +261,18 @@ public class ArienteLandscapeCity {
             part = getParkPart(chunkX, chunkZ);
         }
 
+        int start = height;
 
         if (levitatorChunk) {
             Pair<String, Transform> pair = getCityLevitatorPart(chunkX, chunkZ);
-            cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get(pair.getKey()),
+            BuildingPart buildingPart = AssetRegistries.PARTS.get(pair.getKey());
+            cityGenerator.generatePart(primer, CITY_PALETTE, buildingPart,
                     pair.getValue(), 0, height, 0);
+            start += buildingPart.getSliceCount();
 
             Random random = new Random(chunkX * 341873128712L + chunkZ * 132897987541L);
             random.nextFloat();
-            if (random.nextFloat() < .8) {
+            if (random.nextFloat() < .8 || undergroundPark) {
                 // Disable the building above this in most cases
                 part = null;
             } else {
@@ -278,8 +282,6 @@ public class ArienteLandscapeCity {
                 height += CITYLEV_HEIGHT;
             }
         }
-
-        int start = height;
 
         if (part != null) {
             BuildingPart buildingPart = AssetRegistries.PARTS.get(part);

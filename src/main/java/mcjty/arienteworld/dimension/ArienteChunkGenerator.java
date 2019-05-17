@@ -3,7 +3,9 @@ package mcjty.arienteworld.dimension;
 import com.google.common.collect.ImmutableList;
 import mcjty.ariente.api.ICityEquipment;
 import mcjty.ariente.api.IElevator;
+import mcjty.ariente.api.IStorageTile;
 import mcjty.arienteworld.ArienteStuff;
+import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.cities.AssetRegistries;
 import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
@@ -328,7 +330,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             System.out.println("Fixing tile entities in station " + x + "," + z);
             BuildingPart part = CityTools.getStationPart(x, z);
             if (part != null) {
-                fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight());
+                fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight(), false);
             }
         }
 
@@ -337,7 +339,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                 int height = ArienteLandscapeCity.getBuildingHeight(x, z);
                 String part = ArienteLandscapeCity.getBuildingPart(x, z);
                 System.out.println("Fixing tile entities in building " + x + "," + z + " (" + part + ")");
-                fixTileEntities(x, z, Collections.singletonList(AssetRegistries.PARTS.get(part)), height);
+                fixTileEntities(x, z, Collections.singletonList(AssetRegistries.PARTS.get(part)), height, true);
             }
         }
     }
@@ -350,10 +352,10 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         City city = CityTools.getNearestDungeon(this, x, z);
         List<BuildingPart> parts = CityTools.getBuildingParts(city, x, z);
         int lowestY = CityTools.getLowestHeight(city, this, x, z);
-        fixTileEntities(x, z, parts, lowestY);
+        fixTileEntities(x, z, parts, lowestY, false);
     }
 
-    private void fixTileEntities(int x, int z, List<BuildingPart> parts, int lowestY) {
+    private void fixTileEntities(int x, int z, List<BuildingPart> parts, int lowestY, boolean landscapeCity) {
         int y = lowestY;
         // We need the parts again to load the equipment data
         Map<BlockPos, Map<String, Object>> equipment = new HashMap<>();
@@ -374,7 +376,11 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                         worldObj.setBlockState(p, state, 3);
                         ((GenericTileEntity) te).markDirtyClient();
                     }
-                    if (te instanceof ICityEquipment && equipment.containsKey(p)) {
+                    if (landscapeCity && te instanceof IStorageTile && equipment.containsKey(p)) {
+                        IStorageTile storageTile = (IStorageTile) te;
+                        CityAI.fillLoot(AssetRegistries.CITYPLANS.get("landscapecities"), storageTile);
+
+                    } else if (te instanceof ICityEquipment && equipment.containsKey(p)) {
                         ((ICityEquipment)te).load(equipment.get(p));
                     }
                 }

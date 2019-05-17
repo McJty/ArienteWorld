@@ -1,5 +1,69 @@
 [
   {
+    "type": "plan",
+    "name": "landscapecities",
+    "palette": "landscapecities",
+    "sentinels": "0-0",
+    "sentinelDistance": 40,
+    "sentinelRelHeight": 20,
+    "dronesMinimum1": 0,
+    "dronesMinimum2": 0,
+    "dronesMinimumN": 0,
+    "dronesWaveMax1": 0,
+    "dronesWaveMax2": 0,
+    "dronesWaveMaxN": 0,
+    "soldiersMinimum1": 0,
+    "soldiersMinimum2": 0,
+    "soldiersMinimumN": 0,
+    "soldiersWaveMax1": 0,
+    "soldiersWaveMax2": 0,
+    "soldiersWaveMaxN": 0,
+    "powerArmorChance": 0.0,
+    "forcefieldChance": 0.0,
+    "masterChance": 0.0,
+    "loot": [
+      {
+        "meta": 0,
+        "blueprint": true,
+        "max": 3,
+        "chance": 0.2
+      },
+      {
+        "id": "ariente:ingot_silver",
+        "meta": 0,
+        "max": 3,
+        "chance": 0.2
+      },
+      {
+        "id": "ariente:ingot_manganese",
+        "meta": 0,
+        "max": 2,
+        "chance": 0.2
+      },
+      {
+        "id": "ariente:dust_negarite",
+        "meta": 0,
+        "max": 8,
+        "chance": 0.1
+      },
+      {
+        "id": "ariente:dust_posirite",
+        "meta": 0,
+        "max": 8,
+        "chance": 0.1
+      },
+      {
+        "id": "ariente:energy_sabre",
+        "blueprint": true,
+        "meta": 0,
+        "max": 1,
+        "chance": 0.1
+      }
+    ],
+    "partpalette": [
+    ]
+  },
+  {
     "type": "part",
     "name": "park1",
     "xsize": 16,
@@ -1257,7 +1321,7 @@
         ". h . . . . . . . . . . . . h . ",
         ". h . . . . . . . . . . . . h . ",
         ". h . . . l l . . . . . . . h . ",
-        ". h . . . i c . . . . . . . h . ",
+        ". h . . . k c . . . . . . . h . ",
         ". h . . . l l . . . . . . . a . ",
         ". h . . . . . . . . . . . . G . ",
         ". h . . . . . . . . . . . . G . ",
@@ -6724,6 +6788,10 @@
       {
         "char": "ma",
         "block": "ariente:slope@7"
+      },
+      {
+        "char": "k ",
+        "block": "ariente:storage@4"
       },
       {
         "char": "J ",
