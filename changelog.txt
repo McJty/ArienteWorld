@@ -1,5 +1,5 @@
 Upcoming
-- Worldgen enhancements: random biome dependend features on the terrain
+- Worldgen enhancements: random biome dependend features on the terrain. Currently spheres and spikes
 - New city biome
 - Fixed a problem with underground station not being generated when there was a floating city above it
 - Added support for mob spawners to cities and added solider spawning to some of the Ariente biomes

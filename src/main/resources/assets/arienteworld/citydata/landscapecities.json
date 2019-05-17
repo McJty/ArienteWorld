@@ -2,6 +2,7 @@
   {
     "type": "plan",
     "name": "landscapecities",
+    "city": false,
     "palette": "landscapecities",
     "sentinels": "0-0",
     "sentinelDistance": 40,

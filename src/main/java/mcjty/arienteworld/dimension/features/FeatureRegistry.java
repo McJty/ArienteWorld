@@ -10,6 +10,7 @@ public class FeatureRegistry {
 
     public static void init() {
         addFeature(new SpheresFeature());
+        addFeature(new SpikesFeature());
     }
 
     private static void addFeature(IFeature feature) {

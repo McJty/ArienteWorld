@@ -100,6 +100,9 @@ public class CityTools {
 
     public static CityIndex getDungeonIndex(int chunkX, int chunkZ, ChunkPos center, CityPlan plan) {
         List<String> pattern = plan.getPlan();
+        if (pattern.isEmpty()) {
+            throw new IllegalArgumentException("Bad plan!");
+        }
         int dimX = pattern.get(0).length();
         int dimZ = pattern.size();
         int ox = (chunkX + dimX / 2) - center.x;

@@ -2,6 +2,7 @@ package mcjty.arienteworld.biomes;
 
 import mcjty.arienteworld.dimension.features.IFeature;
 import mcjty.arienteworld.dimension.features.SpheresFeature;
+import mcjty.arienteworld.dimension.features.SpikesFeature;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
 
@@ -15,6 +16,7 @@ public class BiomeArienteRough extends AbstractArienteBiome {
 
     static {
         FEATURE_STRENGTHS.put(SpheresFeature.FEATURE_SPHERES, 0.3);
+        FEATURE_STRENGTHS.put(SpikesFeature.FEATURE_SPIKES, 4.0);
     }
 
 

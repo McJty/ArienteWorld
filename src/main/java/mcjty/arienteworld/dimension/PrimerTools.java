@@ -9,6 +9,15 @@ public class PrimerTools {
         Arrays.fill(primer.data, s, e, c);
     }
 
+    // Don't use in the void! 'index' is the coordinate of the bottom
+    // Return the height at which there is a non-air block
+    public static int findTopBlock(ChunkPrimer primer, int index, int height, char air) {
+        while (height > 0 && primer.data[index+height] == air) {
+            height--;
+        }
+        return height;
+    }
+
     public static void setBlockStateRangeSafe(ChunkPrimer primer, int s, int e, char c) {
         if (e <= s) {
             return;
