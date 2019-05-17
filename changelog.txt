@@ -1,5 +1,7 @@
 Upcoming
 - Worldgen enhancements: random biome dependend features on the terrain
+- New city biome
+- Fixed a problem with underground station not being generated when there was a floating city above it
 
 0.0.22-alpha:
 - Fixed another problem with generated flux levitators crashing
