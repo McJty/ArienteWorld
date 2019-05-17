@@ -49,7 +49,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     private MapGenBase caveGenerator = new MapGenCaves();
     private ArienteTerrainGenerator terraingen = new ArienteTerrainGenerator();
     private IslandsTerrainGenerator islandsGen = new IslandsTerrainGenerator();
-    private ArienteCityGenerator cityGenerator = new ArienteCityGenerator();
+    private ArienteDungeonGenerator dungeonGenerator = new ArienteDungeonGenerator();
 
     private static Map<ChunkPos, BlockPos> stationLevitatorTodo = new HashMap<>();
 
@@ -65,7 +65,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
 //        islandgen.setup(worldObj, random, this, 40);
 //        island2gen.setup(worldObj, new Random((seed + 314) * 516), this, 40);
         caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
-        cityGenerator.initialize(this);
+        dungeonGenerator.initialize(this);
     }
 
     // Get a heightmap for a chunk. If needed calculate (and cache) a primer
@@ -241,8 +241,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         return (int) h;
     }
 
-    public ArienteCityGenerator getCityGenerator() {
-        return cityGenerator;
+    public ArienteDungeonGenerator getDungeonGenerator() {
+        return dungeonGenerator;
     }
 
     private Map<String, Double> getActiveFeatures(int chunkX, int chunkZ, Biome[] biomes) {
@@ -280,19 +280,20 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
         terraingen.replaceBiomeBlocks(x, z, chunkprimer, biomesForGeneration);
 
-        if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, biomesForGeneration)) {
-            ArienteLandscapeCity.generate(x, z, chunkprimer, cityGenerator);
+        boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(x, z, biomesForGeneration);
+        if (isLandscapeCityChunk) {
+            ArienteLandscapeCity.generate(x, z, chunkprimer, dungeonGenerator);
         }
 
         generateActiveFeatures(chunkprimer, x, z, false, this.biomesForGeneration);
 
-        if (!ArienteLandscapeCity.isLandscapeCityChunk(x, z, this.biomesForGeneration)) {
+        if (!isLandscapeCityChunk) {
             // Don't do this for city chunks
             fixForNearbyCity(chunkprimer, x, z);
         }
 
-        this.caveGenerator.generate(this.worldObj, x, z, chunkprimer);
-        cityGenerator.generate(this.worldObj, x, z, chunkprimer);
+        caveGenerator.generate(this.worldObj, x, z, chunkprimer);
+        dungeonGenerator.generate(this.worldObj, x, z, chunkprimer);
         LevitatorNetworkGenerator.generate(this.worldObj, x, z, chunkprimer, this);
 
         Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
@@ -322,12 +323,10 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         WorldEntitySpawner.performWorldGenSpawning(this.worldObj, biome, i + 8, j + 8, 16, 16, this.random);
 
         if (CityTools.isDungeonChunk(x, z)) {
-            System.out.println("Fixing tile entities in chunk " + x + "," + z);
             fixTileEntities(x, z);
         }
 
         if (CityTools.isStationChunk(x, z)) {
-            System.out.println("Fixing tile entities in station " + x + "," + z);
             BuildingPart part = CityTools.getStationPart(x, z);
             if (part != null) {
                 fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight(), false);
@@ -338,14 +337,13 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             if (!CityTools.isDungeonChunk(x, z)) {
                 int height = ArienteLandscapeCity.getBuildingHeight(x, z);
                 String part = ArienteLandscapeCity.getBuildingPart(x, z);
-                System.out.println("Fixing tile entities in building " + x + "," + z + " (" + part + ")");
                 fixTileEntities(x, z, Collections.singletonList(AssetRegistries.PARTS.get(part)), height, true);
             }
         }
     }
 
-    public static void registerStationLevitatorTodo(ChunkPos ChunkPos, BlockPos pos) {
-        stationLevitatorTodo.put(ChunkPos, pos);
+    public static void registerStationLevitatorTodo(ChunkPos chunkPos, BlockPos pos) {
+        stationLevitatorTodo.put(chunkPos, pos);
     }
 
     private void fixTileEntities(int x, int z) {
@@ -376,7 +374,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                         worldObj.setBlockState(p, state, 3);
                         ((GenericTileEntity) te).markDirtyClient();
                     }
-                    if (landscapeCity && te instanceof IStorageTile && equipment.containsKey(p)) {
+                    if (landscapeCity && te instanceof IStorageTile) {
                         IStorageTile storageTile = (IStorageTile) te;
                         CityAI.fillLoot(AssetRegistries.CITYPLANS.get("landscapecities"), storageTile);
 

@@ -219,7 +219,7 @@ public class ArienteLandscapeCity {
             Pair.of("citylev_cross", Transform.ROTATE_NONE)         // 1111: OK
     );
 
-    public static void generate(int chunkX, int chunkZ, ChunkPrimer primer, ArienteCityGenerator cityGenerator) {
+    public static void generate(int chunkX, int chunkZ, ChunkPrimer primer, ArienteDungeonGenerator cityGenerator) {
         char baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
         char fillChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
 

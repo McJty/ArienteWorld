@@ -2,7 +2,7 @@ package mcjty.arienteworld.cities;
 
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
-import mcjty.arienteworld.dimension.ArienteCityGenerator;
+import mcjty.arienteworld.dimension.ArienteDungeonGenerator;
 import mcjty.lib.varia.BlockPosTools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -169,7 +169,7 @@ public class CityTools {
         MinecraftServer server = DimensionManager.getWorld(0).getMinecraftServer();
         WorldServer world = server.getWorld(WorldgenConfiguration.DIMENSION_ID.get());
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (world.getChunkProvider().chunkGenerator);
-        int minHeight = ArienteCityGenerator.getPortalHeight(generator, cx, cz);
+        int minHeight = ArienteDungeonGenerator.getPortalHeight(generator, cx, cz);
         return new BlockPos(cx * 16 + 8, minHeight + 2, cz * 16 + 8);
     }
 

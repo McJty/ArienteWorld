@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ArienteCityGenerator {
+public class ArienteDungeonGenerator {
 
     private static Set<Character> rotatableChars = null;
     private boolean initialized = false;
