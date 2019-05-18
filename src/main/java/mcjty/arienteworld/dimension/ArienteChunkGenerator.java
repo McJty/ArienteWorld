@@ -340,7 +340,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
 
         if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, biomesForGeneration)) {
             if (!CityTools.isDungeonChunk(x, z)) {
-                int height = ArienteLandscapeCity.getBuildingHeight(x, z);
+                int height = ArienteLandscapeCity.getBuildingYOffset(x, z);
                 String part = ArienteLandscapeCity.getBuildingPart(x, z);
                 fixTileEntities(x, z, Collections.singletonList(AssetRegistries.PARTS.get(part)), height, true);
             }

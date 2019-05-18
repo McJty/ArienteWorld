@@ -201,7 +201,7 @@ public class EditMode {
             // Check if it is a landscape city chunk
             String part = ArienteLandscapeCity.getBuildingPart(cx, cz);
             BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
-            int height = ArienteLandscapeCity.getBuildingHeight(cx, cz);
+            int height = ArienteLandscapeCity.getBuildingYOffset(cx, cz);
             restorePart(buildingPart, player.getEntityWorld(), new BlockPos(cx * 16 + 8, height /*unused*/, cz * 16 + 8),
                     height, AssetRegistries.PALETTES.get(ArienteLandscapeCity.CITY_PALETTE));
 
@@ -244,6 +244,8 @@ public class EditMode {
         BlockPos start = player.getPosition();
         int cx = (start.getX() >> 4);
         int cz = (start.getZ() >> 4);
+
+        player.sendMessage(new TextComponentString("Info for chunk " + cx + "," + cz));
 
         City city = getCurrentDungeon(player);
         if (city != null) {
@@ -505,7 +507,7 @@ public class EditMode {
         dummyPlan.setPalette(ArienteLandscapeCity.CITY_PALETTE);
 
         boolean levitatorChunk = ArienteLandscapeCity.isCityLevitatorChunk(cx, cz);
-        int height = ArienteLandscapeCity.getBuildingHeight(cx, cz);
+        int height = ArienteLandscapeCity.getBuildingYOffset(cx, cz);
         if (levitatorChunk && player.getPosition().getY() < height) {
             // Save the station part instead of the building part
             Pair<String, Transform> pair = ArienteLandscapeCity.getCityLevitatorPart(cx, cz);
@@ -519,7 +521,7 @@ public class EditMode {
             String buildingPart = ArienteLandscapeCity.getBuildingPart(cx, cz);
             dummyPlan.addToPartPalette('a', buildingPart);
             saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
-                    ArienteLandscapeCity::getBuildingHeight,
+                    ArienteLandscapeCity::getBuildingYOffset,
                     (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart)) : Collections.emptyList());
             player.sendMessage(new TextComponentString("Saved part: " + buildingPart));
         }

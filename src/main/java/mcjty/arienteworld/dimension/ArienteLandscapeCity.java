@@ -20,7 +20,7 @@ public class ArienteLandscapeCity {
 
     public static final int CITY_LEVEL = 65;    // @todo make variable?
     public static final int NUM_PARKS = 9;
-    public static final int NUM_BUILDINGS = 10;
+    public static final int NUM_BUILDINGS = 13;
     public static final int MAX_STRIP_LENGTH = 6;
     public static final int CITYLEV_HEIGHT = 6;        // The height of city levitator section
 
@@ -186,7 +186,7 @@ public class ArienteLandscapeCity {
     }
 
     // Only relevant on city chunks. Returns the height of this city part (lower y for the building)
-    public static int getBuildingHeight(int chunkX, int chunkZ) {
+    public static int getBuildingYOffset(int chunkX, int chunkZ) {
         Random random = new Random(chunkZ * 593441843L + chunkX * 217645177L);
         random.nextFloat();
         if (isCityLevitatorChunk(chunkX, chunkZ)) {
@@ -223,36 +223,38 @@ public class ArienteLandscapeCity {
         char baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
         char fillChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
 
+        boolean undergroundDungeon = false;
         if (CityTools.isDungeonChunk(chunkX, chunkZ)) {
-            // Only generate marble until landscape level
-            City city = CityTools.getCity(new ChunkPos(chunkX, chunkZ));
+            ChunkPos center = CityTools.getNearestDungeonCenter(chunkX, chunkZ);
+            City city = CityTools.getCity(center);
+            undergroundDungeon = city.getPlan().isUnderground();
             if (!city.getPlan().isUnderground() && !city.getPlan().isFloating()) {
 //                PrimerTools.fillChunk(primer, baseChar, 0, CITY_LEVEL + CITYLEV_HEIGHT);
                 return;
             }
         }
 
-        // If there is a dungeon chunk adjacent to this we restrict to flat
-        boolean adjacentDungeon = CityTools.isDungeonChunk(chunkX-1, chunkZ) ||
+        // If there is a dungeon chunk adjacent to this we restrict to flat (unless it is underground)
+        boolean adjacentDungeon = (!undergroundDungeon) && (CityTools.isDungeonChunk(chunkX-1, chunkZ) ||
                 CityTools.isDungeonChunk(chunkX+1, chunkZ) ||
                 CityTools.isDungeonChunk(chunkX, chunkZ-1) ||
                 CityTools.isDungeonChunk(chunkX, chunkZ+1) ||
-                CityTools.isDungeonChunk(chunkX, chunkZ);
+                CityTools.isDungeonChunk(chunkX, chunkZ));
 
-        int height = getBuildingHeight(chunkX, chunkZ);
+        int yOffset = getBuildingYOffset(chunkX, chunkZ);
         boolean levitatorChunk = isCityLevitatorChunk(chunkX, chunkZ);
         if (levitatorChunk) {
-            height -= CITYLEV_HEIGHT;   // Building height is where the building starts. We need to go lower here
+            yOffset -= CITYLEV_HEIGHT;   // Building height is where the building starts. We need to go lower here
         }
 
 //        PrimerTools.fillChunk(primer, baseChar, 0, CITY_LEVEL-2);
-        PrimerTools.fillChunk(primer, fillChar, CITY_LEVEL-2, height);
+        PrimerTools.fillChunk(primer, fillChar, CITY_LEVEL-2, yOffset);
 
         boolean undergroundPark = false;        // True if this park section is underground
         String part = getBuildingPart(chunkX, chunkZ);
         int partHeight = AssetRegistries.PARTS.get(part).getSliceCount();
         // Sample the world above this to see if we have room for a building
-        if (isChunkOccupied(primer, height+6, height + partHeight + (levitatorChunk ? CITYLEV_HEIGHT : 0))) {
+        if (isChunkOccupied(primer, yOffset+6, yOffset + partHeight + (levitatorChunk ? CITYLEV_HEIGHT : 0))) {
             undergroundPark = true;
         }
 
@@ -261,13 +263,13 @@ public class ArienteLandscapeCity {
             part = getParkPart(chunkX, chunkZ);
         }
 
-        int start = height;
+        int start = yOffset;
 
         if (levitatorChunk) {
             Pair<String, Transform> pair = getCityLevitatorPart(chunkX, chunkZ);
             BuildingPart buildingPart = AssetRegistries.PARTS.get(pair.getKey());
             cityGenerator.generatePart(primer, CITY_PALETTE, buildingPart,
-                    pair.getValue(), 0, height, 0);
+                    pair.getValue(), 0, yOffset, 0);
             start += buildingPart.getSliceCount();
 
             Random random = new Random(chunkX * 341873128712L + chunkZ * 132897987541L);
@@ -278,14 +280,14 @@ public class ArienteLandscapeCity {
             } else {
                 // We generate a roofpart on top of which the building will come
                 cityGenerator.generatePart(primer, CITY_PALETTE, AssetRegistries.PARTS.get("citylev_roofpart"),
-                        Transform.ROTATE_NONE, 0, height, 0);
-                height += CITYLEV_HEIGHT;
+                        Transform.ROTATE_NONE, 0, yOffset, 0);
+                yOffset += CITYLEV_HEIGHT;
             }
         }
 
         if (part != null) {
             BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
-            cityGenerator.generatePart(primer, CITY_PALETTE, buildingPart, Transform.ROTATE_NONE, 0, height, 0);
+            cityGenerator.generatePart(primer, CITY_PALETTE, buildingPart, Transform.ROTATE_NONE, 0, yOffset, 0);
             start += buildingPart.getSliceCount();
         }
 
