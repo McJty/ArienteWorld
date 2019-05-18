@@ -10,6 +10,7 @@ import mcjty.arienteworld.config.ConfigSetup;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.EditMode;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -39,6 +40,9 @@ public class ForgeEventHandlers {
             return;
         }
         if (event.getWorld().provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
+            if (event.getEntity() instanceof EntityMob) {
+                return;
+            }
             if (event.getEntity() instanceof IAnimals) {
                 event.setResult(Event.Result.DENY);
             }

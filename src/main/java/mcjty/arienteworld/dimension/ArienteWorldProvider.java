@@ -38,6 +38,21 @@ public class ArienteWorldProvider extends WorldProvider {
         this.biomeProvider = new ArienteBiomeProvider(world);
     }
 
+    @Nullable
+    @Override
+    public float[] calcSunriseSunsetColors(float celestialAngle, float partialTicks) {
+        float[] floats = super.calcSunriseSunsetColors(celestialAngle, partialTicks);
+//        if (floats != null) {
+//            for (float f : floats) {
+//                System.out.print(f + ",");
+//            }
+//            System.out.println("");
+//
+//        }
+//        float[] floats = { 0.8f, 0.3f, 0.2f, 0.9f };
+        return floats;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public Vec3d getSkyColor(net.minecraft.entity.Entity cameraEntity, float partialTicks) {

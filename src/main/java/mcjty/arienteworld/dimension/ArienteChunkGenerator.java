@@ -1,7 +1,5 @@
 package mcjty.arienteworld.dimension;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import mcjty.ariente.api.ICityEquipment;
 import mcjty.ariente.api.IElevator;
 import mcjty.ariente.api.IStorageTile;
@@ -14,7 +12,6 @@ import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.dimension.features.FeatureTools;
 import mcjty.arienteworld.dimension.features.IFeature;
-import mcjty.arienteworld.setup.ModSetup;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -419,15 +416,16 @@ public class ArienteChunkGenerator implements IChunkGenerator {
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
-        if (creatureType == EnumCreatureType.MONSTER){
-            if (mobs == null) {
-                mobs = Lists.newArrayList(
-                        new Biome.SpawnListEntry(ModSetup.arienteSystem.getSoldierClass(), 95, 4, 4),
-                        new Biome.SpawnListEntry(ModSetup.arienteSystem.getMasterSoldierClass(), 5, 1, 1));
-            }
-            return mobs;
-        }
-        return ImmutableList.of();
+        return this.worldObj.getBiome(pos).getSpawnableList(creatureType);
+//        if (creatureType == EnumCreatureType.MONSTER){
+//            if (mobs == null) {
+//                mobs = Lists.newArrayList(
+//                        new Biome.SpawnListEntry(ModSetup.arienteSystem.getSoldierClass(), 95, 4, 4),
+//                        new Biome.SpawnListEntry(ModSetup.arienteSystem.getMasterSoldierClass(), 5, 1, 1));
+//            }
+//            return mobs;
+//        }
+//        return ImmutableList.of();
     }
 
     @Nullable

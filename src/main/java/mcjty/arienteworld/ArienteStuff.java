@@ -6,6 +6,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ArienteStuff {
 
+    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":dust_negarite")
+    public static Item negariteDust;
+    @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":dust_posirite")
+    public static Item posiriteDust;
+
     @GameRegistry.ObjectHolder(ArienteWorld.ARIENTE_MODID + ":key_card")
     public static Item keyCardItem;
 
