@@ -4,6 +4,7 @@ import mcjty.ariente.api.IArienteMod;
 import mcjty.ariente.api.IArienteSystem;
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.ForgeEventHandlers;
+import mcjty.arienteworld.ModSounds;
 import mcjty.arienteworld.TerrainEventHandlers;
 import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.arienteworld.cities.AssetRegistries;
@@ -15,7 +16,9 @@ import mcjty.arienteworld.oregen.WorldTickHandler;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.lib.varia.Logging;
+import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.EnumHelperClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -31,6 +34,7 @@ import java.io.UncheckedIOException;
 public class ModSetup extends DefaultModSetup {
 
     public static IArienteSystem arienteSystem;
+    public MusicTicker.MusicType arienteMusic;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -77,6 +81,8 @@ public class ModSetup extends DefaultModSetup {
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
+        arienteMusic = EnumHelperClient.addMusicType("ariente_music", ModSounds.music, 12000, 24000);
+
         AssetRegistries.reset();
         for (String path : ConfigSetup.ASSETS) {
             if (path.startsWith("/")) {

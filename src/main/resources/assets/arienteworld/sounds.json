@@ -1,0 +1,15 @@
+{
+   "music":{
+      "category":"music",
+      "subtitle":"subtitle.arienteworld.music",
+      "sounds":[
+         "arienteworld:music/nakisee_song1",
+         "arienteworld:music/thegur90_ambient02",
+         "arienteworld:music/thegur90_ambient03",
+         "arienteworld:music/thegur90_ambient04",
+         "arienteworld:music/thegur90_ambient05",
+         "arienteworld:music/icelingbolt_disharmony",
+         "arienteworld:music/icelingbolt_observation"
+      ]
+  }
+}

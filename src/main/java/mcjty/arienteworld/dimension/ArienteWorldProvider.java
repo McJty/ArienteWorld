@@ -1,6 +1,8 @@
 package mcjty.arienteworld.dimension;
 
+import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.biomes.ArienteBiomeProvider;
+import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
@@ -75,6 +77,12 @@ public class ArienteWorldProvider extends WorldProvider {
     public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
         Vec3d v = super.getFogColor(p_76562_1_, p_76562_2_);
         return new Vec3d(v.x * .8f, v.y, v.z * .8f);
+    }
+
+    @Nullable
+    @Override
+    public MusicTicker.MusicType getMusicType() {
+        return ArienteWorld.setup.arienteMusic;
     }
 
     @Nullable

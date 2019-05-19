@@ -3,6 +3,7 @@ package mcjty.arienteworld.setup;
 
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.ModCrafting;
+import mcjty.arienteworld.ModSounds;
 import mcjty.arienteworld.biomes.ModBiomes;
 import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.lib.McJtyRegister;
@@ -38,7 +39,7 @@ public class Registration {
 
     @SubscribeEvent
     public static void registerSounds(RegistryEvent.Register<SoundEvent> sounds) {
+        ModSounds.init(sounds.getRegistry());
     }
-
 
 }
