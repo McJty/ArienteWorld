@@ -16,6 +16,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
@@ -23,6 +24,8 @@ public class ArienteSkyRenderer extends IRenderHandler {
 
     private static final ResourceLocation MOON_PHASES_TEXTURES = new ResourceLocation(ArienteWorld.MODID, "textures/sky/ariente_moon_phases.png");
     private static final ResourceLocation SUN_TEXTURES = new ResourceLocation(ArienteWorld.MODID, "textures/sky/ariente_sun.png");
+    private static final ResourceLocation STARS = new ResourceLocation(ArienteWorld.MODID, "textures/sky/stars.png");
+    private static final ResourceLocation STARSA = new ResourceLocation(ArienteWorld.MODID, "textures/sky/starsa.png");
 
     private boolean vboEnabled;
     private VertexBuffer starVBO;
@@ -209,6 +212,93 @@ public class ArienteSkyRenderer extends IRenderHandler {
         }
     }
 
+    private static class UV {
+        private final double u;
+        private final double v;
+
+        private UV(double u, double v) {
+            this.u = u;
+            this.v = v;
+        }
+
+        public static UV uv(double u, double v) {
+            return new UV(u, v);
+        }
+    }
+
+
+    private static UV[] faceDown  = new UV[] { UV.uv(0.0D, 1.0D), UV.uv(0.0D, 0.0D), UV.uv(1.0D, 0.0D), UV.uv(1.0D, 1.0D) };
+    private static UV[] faceUp    = new UV[] { UV.uv(0.0D, 1.0D), UV.uv(0.0D, 0.0D), UV.uv(1.0D, 0.0D), UV.uv(1.0D, 1.0D) };
+    private static UV[] faceNorth = new UV[] { UV.uv(0.0D, 0.0D), UV.uv(0.0D, 1.0D), UV.uv(1.0D, 1.0D), UV.uv(1.0D, 0.0D) };
+    private static UV[] faceSouth = new UV[] { UV.uv(1.0D, 1.0D), UV.uv(1.0D, 0.0D), UV.uv(0.0D, 0.0D), UV.uv(0.0D, 1.0D) };
+    private static UV[] faceWest  = new UV[] { UV.uv(1.0D, 0.0D), UV.uv(0.0D, 0.0D), UV.uv(0.0D, 1.0D), UV.uv(1.0D, 1.0D) };
+    private static UV[] faceEast  = new UV[] { UV.uv(0.0D, 1.0D), UV.uv(1.0D, 1.0D), UV.uv(1.0D, 0.0D), UV.uv(0.0D, 0.0D) };
+
+
+    @SideOnly(Side.CLIENT)
+    private static void renderSkyTexture(float alpha) {
+        ResourceLocation sky = STARS;
+        ResourceLocation sky2 = STARSA;
+        TextureManager renderEngine = Minecraft.getMinecraft().getTextureManager();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableFog();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.depthMask(false);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder renderer = tessellator.getBuffer();
+
+        for (int i = 0; i < 6; ++i) {
+            GlStateManager.pushMatrix();
+
+            UV[] uv = faceDown;
+            boolean white = true;
+
+            if (i == 0) {       // Down face
+                uv = faceDown;
+                renderEngine.bindTexture(sky2);
+            } else if (i == 1) {       // North face
+                renderEngine.bindTexture(sky);
+                GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                uv = faceNorth;
+            } else if (i == 2) {       // South face
+                renderEngine.bindTexture(sky);
+                GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+                uv = faceSouth;
+            } else if (i == 3) {       // Up face
+                GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+                uv = faceUp;
+                renderEngine.bindTexture(sky2);
+            } else if (i == 4) {       // East face
+                renderEngine.bindTexture(sky);
+                GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+                uv = faceEast;
+            } else if (i == 5) {       // West face
+                renderEngine.bindTexture(sky);
+                GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+                uv = faceWest;
+            }
+
+            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            int cc = white ? 255 : 0;
+            int a = (int) (alpha * 255);
+            renderer.pos(-100.0D, -100.0D, -100.0D).tex(uv[0].u, uv[0].v).color(cc, cc, cc, a).endVertex();
+            renderer.pos(-100.0D, -100.0D, 100.0D).tex(uv[1].u, uv[1].v).color(cc, cc, cc, a).endVertex();
+            renderer.pos(100.0D, -100.0D, 100.0D).tex(uv[2].u, uv[2].v).color(cc, cc, cc, a).endVertex();
+            renderer.pos(100.0D, -100.0D, -100.0D).tex(uv[3].u, uv[3].v).color(cc, cc, cc, a).endVertex();
+            tessellator.draw();
+            GlStateManager.popMatrix();
+        }
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlpha();
+    }
+
 
     @SideOnly(Side.CLIENT)
     private void renderSky(float partialTicks, WorldClient world, Minecraft mc) {
@@ -304,18 +394,19 @@ public class ArienteSkyRenderer extends IRenderHandler {
         float f15 = world.getStarBrightness(partialTicks) * f16;
 
         if (f15 > 0.0F) {
-            GlStateManager.color(f15, f15, f15, f15);
-
-            if (vboEnabled) {
-                starVBO.bindBuffer();
-                GlStateManager.glEnableClientState(32884);
-                GlStateManager.glVertexPointer(3, 5126, 12, 0);
-                starVBO.drawArrays(7);
-                starVBO.unbindBuffer();
-                GlStateManager.glDisableClientState(32884);
-            } else {
-                GlStateManager.callList(starGLCallList);
-            }
+//            GlStateManager.color(f15, f15, f15, f15);
+//
+//            if (vboEnabled) {
+//                starVBO.bindBuffer();
+//                GlStateManager.glEnableClientState(32884);
+//                GlStateManager.glVertexPointer(3, 5126, 12, 0);
+//                starVBO.drawArrays(7);
+//                starVBO.unbindBuffer();
+//                GlStateManager.glDisableClientState(32884);
+//            } else {
+//                GlStateManager.callList(starGLCallList);
+//            }
+            renderSkyTexture(f15);
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -369,7 +460,6 @@ public class ArienteSkyRenderer extends IRenderHandler {
             bufferbuilder.pos(1.0D, -1.0D, -1.0D).color(0, 0, 0, 255).endVertex();
             tessellator.draw();
         }
-
         if (world.provider.isSkyColored()) {
             GlStateManager.color(f * 0.2F + 0.04F, f1 * 0.2F + 0.04F, f2 * 0.6F + 0.1F);
         } else {

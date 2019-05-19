@@ -38,6 +38,8 @@ public class ArienteWorldProvider extends WorldProvider {
         this.biomeProvider = new ArienteBiomeProvider(world);
     }
 
+
+
     @Nullable
     @Override
     public float[] calcSunriseSunsetColors(float celestialAngle, float partialTicks) {
@@ -51,6 +53,14 @@ public class ArienteWorldProvider extends WorldProvider {
 //        }
 //        float[] floats = { 0.8f, 0.3f, 0.2f, 0.9f };
         return floats;
+    }
+
+    @Override
+    public float calculateCelestialAngle(long worldTime, float partialTicks) {
+        float angle = super.calculateCelestialAngle(worldTime, partialTicks);
+//        System.out.println("angle = " + angle);
+//        return 0.28f;
+        return angle;
     }
 
     @Override
