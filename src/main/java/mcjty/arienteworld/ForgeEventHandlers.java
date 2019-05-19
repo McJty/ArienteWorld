@@ -1,10 +1,12 @@
 package mcjty.arienteworld;
 
 import mcjty.ariente.api.IAlarmMode;
+import mcjty.ariente.api.IArienteMob;
 import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
+import mcjty.arienteworld.cities.CityIndex;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.config.ConfigSetup;
 import mcjty.arienteworld.config.WorldgenConfiguration;
@@ -40,7 +42,32 @@ public class ForgeEventHandlers {
             return;
         }
         if (event.getWorld().provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
+            if (event.getEntity() instanceof IArienteMob) {
+                // These can always spawn
+                return;
+            }
             if (event.getEntity() instanceof EntityMob) {
+                BlockPos pos = event.getEntity().getPosition();
+                int chunkX = pos.getX()>>4;
+                int chunkZ = pos.getZ()>>4;
+                // Check if we are in a city dungeon
+                CityIndex index = CityTools.getDungeonIndex(chunkX, chunkZ);
+                if (index == null) {
+                    // No so we can spawn
+                    return;
+                }
+                // Check if this city is still alive
+                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) event.getWorld()).getChunkProvider().chunkGenerator);
+                City city = CityTools.getNearestDungeon(generator, chunkX, chunkZ);
+                if (city != null) {
+                    CityAISystem cityAISystem = CityAISystem.getCityAISystem(event.getWorld());
+                    CityAI cityAI = cityAISystem.getCityAI(city.getCenter());
+                    if (cityAI != null) {
+                        if (!cityAI.isDead(event.getWorld())) {
+                            event.setResult(Event.Result.DENY);
+                        }
+                    }
+                }
                 return;
             }
             if (event.getEntity() instanceof IAnimals) {

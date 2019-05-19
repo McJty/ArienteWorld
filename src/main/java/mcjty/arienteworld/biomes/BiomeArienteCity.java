@@ -25,6 +25,7 @@ public class BiomeArienteCity extends AbstractArienteBiome {
         this.decorator.extraTreeChance = 0;
         this.decorator.flowersPerChunk = 0;
         this.decorator.grassPerChunk = 0;
+        this.spawnableMonsterList.clear();
         this.spawnableMonsterList.add(new Biome.SpawnListEntry(ModSetup.arienteSystem.getSoldierClass(), 95, 4, 4));
         this.spawnableMonsterList.add(new Biome.SpawnListEntry(ModSetup.arienteSystem.getMasterSoldierClass(), 5, 1, 1));
     }

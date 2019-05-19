@@ -41,6 +41,9 @@ public abstract class AbstractArienteBiome extends Biome implements IArienteBiom
         super(properties);
 //        this.topBlock = Blocks.DIAMOND_BLOCK.getDefaultState();
 //        this.fillerBlock = Blocks.MELON_BLOCK.getDefaultState();
+        this.spawnableCreatureList.clear();
+        this.spawnableCaveCreatureList.clear();
+        this.spawnableWaterCreatureList.clear();
     }
 
     @Override
