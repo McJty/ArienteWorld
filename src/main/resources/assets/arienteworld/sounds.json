@@ -11,5 +11,18 @@
          "arienteworld:music/icelingbolt_disharmony",
          "arienteworld:music/icelingbolt_observation"
       ]
-  }
+  },
+   "ambient":{
+      "category":"ambient",
+      "subtitle":"subtitle.arienteworld.ambient",
+      "sounds":[
+         "arienteworld:ambient/nakisee_ambient01",
+         "arienteworld:ambient/nakisee_ambient02",
+         "arienteworld:ambient/thegur90_ambient01",
+         "arienteworld:ambient/thegur90_ambient02",
+         "arienteworld:ambient/thegur90_ambient03",
+         "arienteworld:ambient/thegur90_ambient04",
+         "arienteworld:ambient/thegur90_ambient05"
+      ]
+   }
 }
