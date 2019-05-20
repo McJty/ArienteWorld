@@ -27,13 +27,25 @@
         "meta": 0,
         "blueprint": true,
         "max": 3,
-        "chance": 0.2
+        "chance": 0.05
       },
       {
         "id": "ariente:ingot_silver",
         "meta": 0,
         "max": 3,
         "chance": 0.2
+      },
+      {
+        "id": "ariente:circuit",
+        "meta": 0,
+        "max": 2,
+        "chance": 0.1
+      },
+      {
+        "id": "ariente:advanced_circuit",
+        "meta": 0,
+        "max": 1,
+        "chance": 0.02
       },
       {
         "id": "ariente:ingot_manganese",
@@ -45,13 +57,13 @@
         "id": "ariente:dust_negarite",
         "meta": 0,
         "max": 8,
-        "chance": 0.1
+        "chance": 0.2
       },
       {
         "id": "ariente:dust_posirite",
         "meta": 0,
         "max": 8,
-        "chance": 0.1
+        "chance": 0.2
       },
       {
         "id": "ariente:energy_sabre",

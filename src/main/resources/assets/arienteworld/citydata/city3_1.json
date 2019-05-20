@@ -32,6 +32,27 @@
         "chance": 0.3
       },
       {
+        "id": "ariente:circuit",
+        "meta": 0,
+        "max": 2,
+        "chance": 0.1,
+        "blueprint": false
+      },
+      {
+        "id": "ariente:advanced_circuit",
+        "meta": 0,
+        "max": 1,
+        "chance": 0.05,
+        "blueprint": false
+      },
+      {
+        "id": "ariente:flux_capacitor",
+        "meta": 0,
+        "max": 1,
+        "chance": 0.05,
+        "blueprint": false
+      },
+      {
         "id": "ariente:ingot_silver",
         "meta": 0,
         "max": 3,
