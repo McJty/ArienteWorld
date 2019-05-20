@@ -110,6 +110,7 @@ public class ArienteWorldProvider extends WorldProvider {
         worldInfo.setThunderTime(0);
         world.updateWeatherBody();
     }
+
     @Override
     public boolean canDoRainSnowIce(Chunk chunk) {
         return false;

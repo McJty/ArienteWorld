@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
 import org.apache.commons.lang3.tuple.Pair;
@@ -143,11 +144,13 @@ public class ArienteLandscapeCity {
     }
 
 
-    public static boolean isLandscapeCityChunk(int chunkX, int chunkZ, @Nullable Biome[] biomesForGeneration) {
+    private static Biome[] biomesForGeneration;
+
+    public static boolean isLandscapeCityChunk(int chunkX, int chunkZ, World world, @Nullable Biome[] biomesForGeneration) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!cityChunkCache.containsKey(pos)) {
             if (biomesForGeneration == null) {
-                throw new IllegalStateException("biomesForGeneration can't be null here!");
+                biomesForGeneration = world.getBiomeProvider().getBiomes(biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
             }
             cityChunkCache.put(pos, hasCityBiomes(biomesForGeneration));
         }

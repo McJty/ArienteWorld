@@ -22,7 +22,7 @@ public class ClientForgeEventHandlers {
     }
 
     @SubscribeEvent
-    public void onWorldtick(TickEvent event) {
+    public void onWorldtick(TickEvent.WorldTickEvent event) {
         World world = ArienteWorld.proxy.getClientWorld();
         if (world == null) {
             return;

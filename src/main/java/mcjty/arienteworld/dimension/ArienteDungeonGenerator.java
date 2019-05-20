@@ -22,6 +22,8 @@ public class ArienteDungeonGenerator {
     private char airChar;
     private char baseChar;
     private char fillerChar;
+    private char cityWallChar;
+    private char cityWallTop;
 
     public void initialize(ArienteChunkGenerator generator) {
         this.generator = generator;
@@ -29,11 +31,20 @@ public class ArienteDungeonGenerator {
             airChar = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
             baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
             fillerChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_bricks.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
+            cityWallChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
+            cityWallTop = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
 
             initialized = true;
         }
     }
 
+    public char getCityWallChar() {
+        return cityWallChar;
+    }
+
+    public char getCityWallTop() {
+        return cityWallTop;
+    }
 
     public static Set<Character> getRotatableChars() {
         if (rotatableChars == null) {

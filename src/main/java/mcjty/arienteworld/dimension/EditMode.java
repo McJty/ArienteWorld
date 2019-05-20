@@ -256,7 +256,7 @@ public class EditMode {
         }
 
         if (city == null) {
-            if (ArienteLandscapeCity.isLandscapeCityChunk(cx, cz, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(cx, cz, player.getEntityWorld(), null)) {
                 Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(cx, cz);
                 player.sendMessage(new TextComponentString("Building part: " + part.getKey() + " (" + part.getRight() + ")"));
                 if (ArienteLandscapeCity.isCityLevitatorChunk(cx, cz)) {

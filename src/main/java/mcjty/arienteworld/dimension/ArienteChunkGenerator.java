@@ -35,6 +35,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static mcjty.arienteworld.dimension.ArienteLandscapeCity.CITY_LEVEL;
 import static net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.CAVE;
 
 public class ArienteChunkGenerator implements IChunkGenerator {
@@ -274,29 +275,59 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     }
 
     @Override
-    public Chunk generateChunk(int x, int z) {
-        ChunkPrimer chunkprimer = getChunkPrimer(x, z);
+    public Chunk generateChunk(int chunkX, int chunkZ) {
+        ChunkPrimer chunkprimer = getChunkPrimer(chunkX, chunkZ);
 
-        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 16, z * 16, 16, 16);
-        terraingen.replaceBiomeBlocks(x, z, chunkprimer, biomesForGeneration);
+        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
+        terraingen.replaceBiomeBlocks(chunkX, chunkZ, chunkprimer, biomesForGeneration);
 
-        boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(x, z, biomesForGeneration);
+        boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ, worldObj, biomesForGeneration);
         if (isLandscapeCityChunk) {
-            ArienteLandscapeCity.generate(x, z, chunkprimer, dungeonGenerator);
+            ArienteLandscapeCity.generate(chunkX, chunkZ, chunkprimer, dungeonGenerator);
+        } else {
+            // Check all adjacent chunks and see if we need to generate a wall
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX-1, chunkZ, worldObj, null)) {
+                for (int dz = 0 ; dz < 16 ; dz++) {
+                    int index = (0 << 12) | (dz << 8);
+                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                }
+            }
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX+1, chunkZ, worldObj, null)) {
+                for (int dz = 0 ; dz < 16 ; dz++) {
+                    int index = (15 << 12) | (dz << 8);
+                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                }
+            }
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ-1, worldObj, null)) {
+                for (int dx = 0 ; dx < 16 ; dx++) {
+                    int index = (dx << 12) | (0 << 8);
+                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                }
+            }
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ+1, worldObj, null)) {
+                for (int dx = 0 ; dx < 16 ; dx++) {
+                    int index = (dx << 12) | (15 << 8);
+                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                }
+            }
         }
 
-        generateActiveFeatures(chunkprimer, x, z, false, this.biomesForGeneration);
+        generateActiveFeatures(chunkprimer, chunkX, chunkZ, false, this.biomesForGeneration);
 
         if (!isLandscapeCityChunk) {
             // Don't do this for city chunks
-            fixForNearbyCity(chunkprimer, x, z);
+            fixForNearbyCity(chunkprimer, chunkX, chunkZ);
         }
 
-        caveGenerator.generate(this.worldObj, x, z, chunkprimer);
-        dungeonGenerator.generate(this.worldObj, x, z, chunkprimer);
-        LevitatorNetworkGenerator.generate(this.worldObj, x, z, chunkprimer, this);
+        caveGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer);
+        dungeonGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer);
+        LevitatorNetworkGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer, this);
 
-        Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
+        Chunk chunk = new Chunk(this.worldObj, chunkprimer, chunkX, chunkZ);
 
         byte[] biomeArray = chunk.getBiomeArray();
         for (int i = 0; i < biomeArray.length; ++i) {
@@ -333,7 +364,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             }
         }
 
-        if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, biomesForGeneration)) {
+        if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, worldObj, biomesForGeneration)) {
             if (!CityTools.isDungeonChunk(x, z)) {
                 int height = ArienteLandscapeCity.getBuildingYOffset(x, z);
                 Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(x, z);
