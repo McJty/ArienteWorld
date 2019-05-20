@@ -29,6 +29,7 @@ public class ClientForgeEventHandlers {
             if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
                 EntityPlayer player = ArienteWorld.proxy.getClientPlayer();
                 world.playSound(player, player.getPosition(), ModSounds.ambient, SoundCategory.AMBIENT, 0.5f,
+                        0.8F + world.rand.nextFloat() * 0.2F);
             }
             this.ambienceTicks = world.rand.nextInt(12000) + 6000;
         }
