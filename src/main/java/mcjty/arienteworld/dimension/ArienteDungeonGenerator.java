@@ -55,6 +55,10 @@ public class ArienteDungeonGenerator {
             addStates(Blocks.LADDER, rotatableChars);
             addStates(ArienteStuff.fluxBeamBlock, rotatableChars);
             addStates(ArienteStuff.slopeBlock, rotatableChars);
+            addStates(ArienteStuff.rampBlock, rotatableChars);
+            addStates(ArienteStuff.storageBlock, rotatableChars);
+            addStates(ArienteStuff.flatLightBlock, rotatableChars);
+            addStates(ArienteStuff.doorMarkerBlock, rotatableChars);
         }
         return rotatableChars;
     }

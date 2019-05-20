@@ -5,10 +5,7 @@ import mcjty.ariente.api.IElevator;
 import mcjty.ariente.api.IStorageTile;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.ai.CityAI;
-import mcjty.arienteworld.cities.AssetRegistries;
-import mcjty.arienteworld.cities.BuildingPart;
-import mcjty.arienteworld.cities.City;
-import mcjty.arienteworld.cities.CityTools;
+import mcjty.arienteworld.cities.*;
 import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.dimension.features.FeatureTools;
 import mcjty.arienteworld.dimension.features.IFeature;
@@ -33,6 +30,7 @@ import net.minecraft.world.gen.MapGenBase;
 import net.minecraft.world.gen.MapGenCaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.minecraftforge.event.terraingen.TerrainGen;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -338,8 +336,10 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, biomesForGeneration)) {
             if (!CityTools.isDungeonChunk(x, z)) {
                 int height = ArienteLandscapeCity.getBuildingYOffset(x, z);
-                String part = ArienteLandscapeCity.getBuildingPart(x, z);
-                fixTileEntities(x, z, Collections.singletonList(AssetRegistries.PARTS.get(part)), height, true);
+                Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(x, z);
+                List<BuildingPart> parts = Collections.singletonList(AssetRegistries.PARTS.get(part.getKey()));
+                Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(x, z, parts, height, part.getValue());
+                fixTileEntities(x, z, true, equipment);
             }
         }
     }
@@ -355,21 +355,16 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         fixTileEntities(x, z, parts, lowestY, false);
     }
 
-    private void fixTileEntities(int x, int z, List<BuildingPart> parts, int lowestY, boolean landscapeCity) {
-        int y = lowestY;
-        // We need the parts again to load the equipment data
-        Map<BlockPos, Map<String, Object>> equipment = new HashMap<>();
-        for (BuildingPart part : parts) {
-            for (Map.Entry<BlockPos, Map<String, Object>> entry : part.getTeInfo().entrySet()) {
-                equipment.put(new BlockPos(x*16, y, z*16).add(entry.getKey()), entry.getValue());
-            }
-            y += part.getSliceCount();
-        }
+    private void fixTileEntities(int chunkX, int chunkZ, List<BuildingPart> parts, int lowestY, boolean landscapeCity) {
+        Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(chunkX, chunkZ, parts, lowestY, Transform.ROTATE_NONE);
+        fixTileEntities(chunkX, chunkZ, landscapeCity, equipment);
+    }
 
+    private void fixTileEntities(int chunkX, int chunkZ, boolean landscapeCity, Map<BlockPos, Map<String, Object>> equipment) {
         for (int dx = 0 ; dx < 16 ; dx++) {
             for (int dy = 0 ; dy < 256 ; dy++) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
-                    BlockPos p = new BlockPos(x*16 + dx, dy, z*16 + dz);
+                    BlockPos p = new BlockPos(chunkX*16 + dx, dy, chunkZ*16 + dz);
                     TileEntity te = worldObj.getTileEntity(p);
                     if (te instanceof GenericTileEntity) {
                         IBlockState state = worldObj.getBlockState(p);
@@ -396,17 +391,32 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             }
         }
 
-        ChunkPos coord = new ChunkPos(x, z);
+        ChunkPos coord = new ChunkPos(chunkX, chunkZ);
         if (stationLevitatorTodo.containsKey(coord)) {
             BlockPos levitatorPos = stationLevitatorTodo.get(coord);
             TileEntity te = worldObj.getTileEntity(levitatorPos);
             if (te instanceof IElevator) {
                 IElevator elevatorTile = (IElevator) te;
-                ChunkPos center = CityTools.getNearestDungeonCenter(x, z);
-                elevatorTile.setHeight(CityTools.getLowestHeight(CityTools.getCity(center), this, x, z) - 30 + 5);
+                ChunkPos center = CityTools.getNearestDungeonCenter(chunkX, chunkZ);
+                elevatorTile.setHeight(CityTools.getLowestHeight(CityTools.getCity(center), this, chunkX, chunkZ) - 30 + 5);
             }
             stationLevitatorTodo.remove(coord);
         }
+    }
+
+    private Map<BlockPos, Map<String, Object>> makeEquipmentMap(int x, int z, List<BuildingPart> parts, int lowestY,
+                                                                Transform transform) {
+        int y = lowestY;
+        // We need the parts again to load the equipment data
+        Map<BlockPos, Map<String, Object>> equipment = new HashMap<>();
+        for (BuildingPart part : parts) {
+            for (Map.Entry<BlockPos, Map<String, Object>> entry : part.getTeInfo().entrySet()) {
+                BlockPos relative = entry.getKey();
+                equipment.put(new BlockPos(x*16, y, z*16).add(transform.transform(relative)), entry.getValue());
+            }
+            y += part.getSliceCount();
+        }
+        return equipment;
     }
 
     @Override

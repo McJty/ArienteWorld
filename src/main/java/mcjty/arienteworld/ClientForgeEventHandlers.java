@@ -24,14 +24,21 @@ public class ClientForgeEventHandlers {
     @SubscribeEvent
     public void onWorldtick(TickEvent event) {
         World world = ArienteWorld.proxy.getClientWorld();
+        if (world == null) {
+            return;
+        }
+
         ambienceTicks--;
         if (ambienceTicks <= 0) {
+            ambienceTicks = world.rand.nextInt(12000) + 6000;
+            if (WorldgenConfiguration.DIMENSION_ID == null) {
+                return;
+            }
             if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
                 EntityPlayer player = ArienteWorld.proxy.getClientPlayer();
                 world.playSound(player, player.getPosition(), ModSounds.ambient, SoundCategory.AMBIENT, 0.5f,
                         0.8F + world.rand.nextFloat() * 0.2F);
             }
-            this.ambienceTicks = world.rand.nextInt(12000) + 6000;
         }
     }
 

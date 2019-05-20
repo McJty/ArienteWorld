@@ -927,6 +927,9 @@ public class CityAI implements ICityAI {
 
     public static void fillLoot(CityPlan plan, IStorageTile te) {
         WeightedRandom<Loot> randomLoot = plan.getRandomLoot();
+        if (randomLoot.weightedList.isEmpty()) {
+            return;
+        }
         for (int i = 0 ; i < 4 ; i++) {
             if (random.nextFloat() > .3f) {
                 Loot l = randomLoot.getRandom();

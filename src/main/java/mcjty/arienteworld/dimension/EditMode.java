@@ -199,9 +199,10 @@ public class EditMode {
         City city = CityTools.getNearestDungeon(generator, cx, cz);
         if (city == null || !CityTools.isDungeonChunk(cx, cz)) {
             // Check if it is a landscape city chunk
-            String part = ArienteLandscapeCity.getBuildingPart(cx, cz);
-            BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
+            Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(cx, cz);
+            BuildingPart buildingPart = AssetRegistries.PARTS.get(part.getKey());
             int height = ArienteLandscapeCity.getBuildingYOffset(cx, cz);
+            // We restore our building part with the default NONE transform so that we can edit is in a consistent way
             restorePart(buildingPart, player.getEntityWorld(), new BlockPos(cx * 16 + 8, height /*unused*/, cz * 16 + 8),
                     height, AssetRegistries.PALETTES.get(ArienteLandscapeCity.CITY_PALETTE));
 
@@ -256,8 +257,8 @@ public class EditMode {
 
         if (city == null) {
             if (ArienteLandscapeCity.isLandscapeCityChunk(cx, cz, null)) {
-                String part = ArienteLandscapeCity.getBuildingPart(cx, cz);
-                player.sendMessage(new TextComponentString("Building part: " + part));
+                Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(cx, cz);
+                player.sendMessage(new TextComponentString("Building part: " + part.getKey() + " (" + part.getRight() + ")"));
                 if (ArienteLandscapeCity.isCityLevitatorChunk(cx, cz)) {
                     Pair<String, Transform> pair = ArienteLandscapeCity.getCityLevitatorPart(cx, cz);
                     player.sendMessage(new TextComponentString("City levitator part: " + pair.getLeft() + " (" +
@@ -275,10 +276,10 @@ public class EditMode {
 
         BuildingPart found = null;
         int partY = -1;
-        for (int i = 0; i < parts.size(); i++) {
-            int count = parts.get(i).getSliceCount();
+        for (BuildingPart part : parts) {
+            int count = part.getSliceCount();
             if (pos.getY() >= lowesty && pos.getY() < lowesty + count) {
-                found = parts.get(i);
+                found = part;
                 partY = lowesty;
                 break;
             }
@@ -518,11 +519,12 @@ public class EditMode {
                     (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart)) : Collections.emptyList());
             player.sendMessage(new TextComponentString("Saved part: " + buildingPart));
         } else {
-            String buildingPart = ArienteLandscapeCity.getBuildingPart(cx, cz);
-            dummyPlan.addToPartPalette('a', buildingPart);
+            Pair<String, Transform> buildingPart = ArienteLandscapeCity.getBuildingPart(cx, cz);
+            dummyPlan.addToPartPalette('a', buildingPart.getKey());
+            // We save ignoring transform because we assume the user has done a restore and then the transform will be ignored too
             saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
                     ArienteLandscapeCity::getBuildingYOffset,
-                    (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart)) : Collections.emptyList());
+                    (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart.getKey())) : Collections.emptyList());
             player.sendMessage(new TextComponentString("Saved part: " + buildingPart));
         }
     }

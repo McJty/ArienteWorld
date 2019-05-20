@@ -168,21 +168,21 @@ public class ArienteLandscapeCity {
     }
 
     // Only relevant on city chunks. Returns the part name
-    public static String getBuildingPart(int chunkX, int chunkZ) {
+    public static Pair<String, Transform> getBuildingPart(int chunkX, int chunkZ) {
         Random random = new Random(chunkX * 234516783139L + chunkZ * 567000003533L);
         random.nextFloat();
         if (random.nextFloat() < .6) {
-            return "park" + (random.nextInt(NUM_PARKS)+1);
+            return Pair.of("park" + (random.nextInt(NUM_PARKS)+1), Transform.random(random));
         } else {
-            return "building" + (random.nextInt(NUM_BUILDINGS)+1);
+            return Pair.of("building" + (random.nextInt(NUM_BUILDINGS)+1), Transform.random(random));
         }
     }
 
     // Used when there is no room for a building
-    public static String getParkPart(int chunkX, int chunkZ) {
+    public static Pair<String, Transform> getParkPart(int chunkX, int chunkZ) {
         Random random = new Random(chunkX * 234516783139L + chunkZ * 567000003533L);
         random.nextFloat();
-        return "park" + (random.nextInt(NUM_PARKS)+1);
+        return Pair.of("park" + (random.nextInt(NUM_PARKS)+1), Transform.random(random));
     }
 
     // Only relevant on city chunks. Returns the height of this city part (lower y for the building)
@@ -251,14 +251,14 @@ public class ArienteLandscapeCity {
         PrimerTools.fillChunk(primer, fillChar, CITY_LEVEL-2, yOffset);
 
         boolean undergroundPark = false;        // True if this park section is underground
-        String part = getBuildingPart(chunkX, chunkZ);
-        int partHeight = AssetRegistries.PARTS.get(part).getSliceCount();
+        Pair<String, Transform> part = getBuildingPart(chunkX, chunkZ);
+        int partHeight = AssetRegistries.PARTS.get(part.getKey()).getSliceCount();
         // Sample the world above this to see if we have room for a building
         if (isChunkOccupied(primer, yOffset+6, yOffset + partHeight + (levitatorChunk ? CITYLEV_HEIGHT : 0))) {
             undergroundPark = true;
         }
 
-        if ((undergroundPark || adjacentDungeon) && part.startsWith("building")) {
+        if ((undergroundPark || adjacentDungeon) && part.getKey().startsWith("building")) {
             // Replace the building with a park section here
             part = getParkPart(chunkX, chunkZ);
         }
@@ -286,8 +286,8 @@ public class ArienteLandscapeCity {
         }
 
         if (part != null) {
-            BuildingPart buildingPart = AssetRegistries.PARTS.get(part);
-            cityGenerator.generatePart(primer, CITY_PALETTE, buildingPart, Transform.ROTATE_NONE, 0, yOffset, 0);
+            BuildingPart buildingPart = AssetRegistries.PARTS.get(part.getKey());
+            cityGenerator.generatePart(primer, CITY_PALETTE, buildingPart, part.getValue(), 0, yOffset, 0);
             start += buildingPart.getSliceCount();
         }
 

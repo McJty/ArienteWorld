@@ -1,6 +1,9 @@
 package mcjty.arienteworld.cities;
 
 import net.minecraft.block.BlockRailBase;
+import net.minecraft.util.math.BlockPos;
+
+import java.util.Random;
 
 public enum Transform {
     ROTATE_NONE(net.minecraft.util.Rotation.NONE),
@@ -13,12 +16,18 @@ public enum Transform {
 
     private final net.minecraft.util.Rotation mcRotation;
 
+    public static final Transform[] VALUES = Transform.values();
+
     Transform(net.minecraft.util.Rotation mcRotation) {
         this.mcRotation = mcRotation;
     }
 
     public net.minecraft.util.Rotation getMcRotation() {
         return mcRotation;
+    }
+
+    public static Transform random(Random random) {
+        return VALUES[random.nextInt(VALUES.length)];
     }
 
     public Transform getOpposite() {
@@ -39,6 +48,14 @@ public enum Transform {
                 return MIRROR_90_X;
         }
         throw new IllegalStateException("Cannot happen!");
+    }
+
+    // Transform a relative position (position in chunk)
+    public BlockPos transform(BlockPos pos) {
+        if (this == ROTATE_NONE) {
+            return pos;
+        }
+        return new BlockPos(rotateX(pos.getX(), pos.getZ()), pos.getY(), rotateZ(pos.getX(), pos.getZ()));
     }
 
     public int rotateX(int x, int z) {
