@@ -4,6 +4,8 @@ Upcoming
 - Fixed a problem with underground station not being generated when there was a floating city above it
 - Added support for mob spawners to cities and added solider spawning to some of the Ariente biomes
 - Added background music from Icelingbolt, nakisee, and TheGur90
+- Disabled rain and thunder in the Ariente dimension
+- Disabled clouds in the Ariente dimension
 
 0.0.22-alpha:
 - Fixed another problem with generated flux levitators crashing

@@ -2,11 +2,15 @@ package mcjty.arienteworld.dimension;
 
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.biomes.ArienteBiomeProvider;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MusicTicker;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -83,6 +87,43 @@ public class ArienteWorldProvider extends WorldProvider {
     @Override
     public MusicTicker.MusicType getMusicType() {
         return ArienteWorld.setup.arienteMusic;
+    }
+
+    @Override
+    public void calculateInitialWeather() {
+        world.thunderingStrength = 0.0F;
+        world.rainingStrength = 0.0F;
+        world.getWorldInfo().setThundering(false);
+        world.getWorldInfo().setRaining(false);
+    }
+
+    @Override
+    public void updateWeather() {
+        WorldInfo worldInfo = world.getWorldInfo();
+        if (!world.isRemote) {
+            world.thunderingStrength = 0.0f;
+            world.rainingStrength = 0.0F;
+            worldInfo.setThundering(false);
+            worldInfo.setRaining(false);
+        }
+        worldInfo.setCleanWeatherTime(0);
+        worldInfo.setThunderTime(0);
+        world.updateWeatherBody();
+    }
+    @Override
+    public boolean canDoRainSnowIce(Chunk chunk) {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public IRenderHandler getCloudRenderer() {
+        return new IRenderHandler() {
+            @Override
+            public void render(float partialTicks, WorldClient world, Minecraft mc) {
+                // Clouds are always disabled here
+            }
+        };
     }
 
     @Nullable
