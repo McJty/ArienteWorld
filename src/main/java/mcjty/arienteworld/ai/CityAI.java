@@ -113,7 +113,9 @@ public class CityAI implements ICityAI {
             // There are no other valid AI cores. Spawn an item for the player
             // with the right security key
             ItemStack stack = new ItemStack(ArienteStuff.keyCardItem);
+            City city = CityTools.getCity(center);
             ModSetup.arienteSystem.addSecurity(stack, getStorageKeyId());
+            ModSetup.arienteSystem.setDescription(stack, "City: " + city.getName());
             EntityItem entityitem = new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack);
             entityitem.setDefaultPickupDelay();
             world.spawnEntity(entityitem);
@@ -919,6 +921,12 @@ public class CityAI implements ICityAI {
     }
 
     @Override
+    public String getCityName() {
+        City city = CityTools.getCity(getCenter());
+        return city.getName();
+    }
+
+    @Override
     public void fillLoot(IStorageTile te) {
         City city = CityTools.getCity(getCenter());
         CityPlan plan = city.getPlan();
@@ -995,6 +1003,14 @@ public class CityAI implements ICityAI {
     private void initCityEquipment(World world) {
 
         setAlarmType(world, AlarmType.SAFE);
+
+        for (BlockPos p : aiCores) {
+            TileEntity te = world.getTileEntity(p);
+            if (te instanceof IAICoreTile) {
+                City city = CityTools.getCity(center);
+                ((IAICoreTile) te).setCityName(city.getName());
+            }
+        }
 
         for (BlockPos p : negariteGenerators) {
             TileEntity te = world.getTileEntity(p);

@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraftforge.common.DimensionManager;
 
 import javax.annotation.Nonnull;
@@ -24,7 +25,7 @@ public class CityTools {
 
     public static City getCity(ChunkPos center) {
         if (!cities.containsKey(center)) {
-            City city = new City(center, getRandomDungeonPlan(center), -1);
+            City city = new City(center, getRandomDungeonPlan(center), getRandomDungeonName(center), -1);
             cacheCity(center, city);
         }
         return cities.get(center);
@@ -115,6 +116,12 @@ public class CityTools {
         }
     }
 
+    private static String getRandomDungeonName(ChunkPos c) {
+        long seed = DimensionManager.getWorld(0).getSeed();
+        Random random = new Random(seed + c.x * 903932899L + c.z * 776531419L);
+        return NameGenerator.randomName(random);
+    }
+
     // Return a random city plan. Use a valid city center as chunk coordinate parameter
     private static CityPlan getRandomDungeonPlan(ChunkPos c) {
         int chunkX = c.x;
@@ -138,7 +145,7 @@ public class CityTools {
         City city = cities.get(center);
         if (city == null) {
 //            ChunkHeightmap heightmap = generator.getHeightmap(center.getChunkX(), center.getChunkZ());
-            city = new City(center, getRandomDungeonPlan(center), -1);
+            city = new City(center, getRandomDungeonPlan(center), getRandomDungeonName(center), -1);
             cacheCity(center, city);
         }
         return city;

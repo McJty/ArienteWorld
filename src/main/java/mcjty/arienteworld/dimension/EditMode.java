@@ -268,6 +268,8 @@ public class EditMode {
             return;
         }
 
+        player.sendMessage(new TextComponentString("City name: " + city.getName()));
+
         BlockPos pos = player.getPosition();
         ChunkPos coord = BlockPosTools.getChunkCoordFromPos(pos);
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);

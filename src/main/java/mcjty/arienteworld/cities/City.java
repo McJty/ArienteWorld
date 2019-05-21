@@ -9,17 +9,22 @@ public class City {
 
     private final ChunkPos center;
     private final CityPlan plan;
+    private final String name;
     private int height;
 
-    public City(ChunkPos center, CityPlan plan, int height) {
+    public City(ChunkPos center, CityPlan plan, String name, int height) {
         this.center = center;
         this.plan = plan;
+        this.name = name;
         this.height = height;
-
     }
 
     public ChunkPos getCenter() {
         return center;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public CityPlan getPlan() {

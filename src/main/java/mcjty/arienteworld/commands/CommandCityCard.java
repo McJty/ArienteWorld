@@ -45,6 +45,7 @@ public class CommandCityCard implements ICommand {
         CityAI cityAI = CityAISystem.getCityAISystem(server.getEntityWorld()).getCityAI(city.getCenter());
         ItemStack stack = new ItemStack(ArienteStuff.keyCardItem);
         ModSetup.arienteSystem.addSecurity(stack, cityAI.getStorageKeyId());
+        ModSetup.arienteSystem.setDescription(stack, "City: " + city.getName());
         if (!player.inventory.addItemStackToInventory(stack)) {
             player.entityDropItem(stack, 1.05f);
         }
