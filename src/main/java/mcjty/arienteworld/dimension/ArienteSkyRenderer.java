@@ -294,8 +294,8 @@ public class ArienteSkyRenderer extends IRenderHandler {
             GlStateManager.popMatrix();
         }
 
-        GlStateManager.depthMask(true);
-        GlStateManager.enableTexture2D();
+        GlStateManager.depthMask(false);
+        GlStateManager.disableTexture2D();
         GlStateManager.enableAlpha();
     }
 
