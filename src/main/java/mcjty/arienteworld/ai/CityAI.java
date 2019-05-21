@@ -42,6 +42,7 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class CityAI implements ICityAI {
@@ -61,12 +62,9 @@ public class CityAI implements ICityAI {
     private Map<BlockPos, EnumFacing> soldierPositions = new HashMap<>();
     private Map<BlockPos, EnumFacing> masterSoldierPositions = new HashMap<>();
 
-    private boolean foundArmy = false;
-    private int[] sentinels = null;
     private int sentinelMovementTicks = 6;
     private int sentinelAngleOffset = 0;
 
-    private int[] drones = new int[40];
     private int droneTicker = 0;
 
     private int levitator = -1;
@@ -77,7 +75,6 @@ public class CityAI implements ICityAI {
     private String storageKeyId;
     private String forcefieldId;
 
-    private int[] soldiers = new int[60];
     private int soldierTicker = 0;
 
     private int onAlert = 0;
@@ -98,11 +95,9 @@ public class CityAI implements ICityAI {
         if (!initialized) {
             initialized = true;
             initialize(world);
-            findArmy(world);
             return false;
         } else {
             findEquipment(world, false);
-            findArmy(world);
             return true;
         }
     }
@@ -116,7 +111,7 @@ public class CityAI implements ICityAI {
             City city = CityTools.getCity(center);
             ModSetup.arienteSystem.addSecurity(stack, getStorageKeyId());
             ModSetup.arienteSystem.setDescription(stack, "City: " + city.getName());
-            EntityItem entityitem = new EntityItem(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack);
+            EntityItem entityitem = new EntityItem(world, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, stack);
             entityitem.setDefaultPickupDelay();
             world.spawnEntity(entityitem);
             setAlarmType(world, AlarmType.DEAD);
@@ -181,12 +176,75 @@ public class CityAI implements ICityAI {
         return null;
     }
 
+    // Lazy way to count all entities
+    private class EntityInfo {
+        private int countSoldier = -1;
+        private int countDrone = -1;
+        private int countSentinel = -1;
+
+        public int getCountSoldier(World world) {
+            if (countSoldier == -1) {
+                countEntities(world);
+            }
+            return countSoldier;
+        }
+
+        public int getCountDrone(World world) {
+            if (countDrone == -1) {
+                countEntities(world);
+            }
+            return countDrone;
+        }
+
+        public int getCountSentinel(World world) {
+            if (countSentinel == -1) {
+                countEntities(world);
+            }
+            return countSentinel;
+        }
+
+        private void countEntities(World world) {
+            City city = CityTools.getCity(center);
+            assert city != null;
+            CityPlan plan = city.getPlan();
+            List<String> pattern = plan.getPlan();
+            int dimX = pattern.get(0).length() * 16 * 2;
+            int dimZ = pattern.size() * 16 * 2;
+
+            BlockPos ctr = new BlockPos(center.x * 16 + 8, 50, center.z * 16 + 8);
+
+            // To avoid creating the list we use the filter as a consumer here to increment our counter
+            AtomicInteger soldiers = new AtomicInteger(0);
+            AtomicInteger drones = new AtomicInteger(0);
+            AtomicInteger sentinels = new AtomicInteger(0);
+            world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(ctr).grow(dimX, 200, dimZ),
+                    entity -> {
+                        if (entity instanceof ISoldier) {
+                            soldiers.intValue();
+                        }
+                        if (entity instanceof ISentinel) {
+                            sentinels.intValue();
+                        }
+                        if (entity instanceof IDrone) {
+                            drones.intValue();
+                        }
+                        return false;
+                    });
+            countSoldier = soldiers.intValue();
+            countDrone = drones.intValue();
+            countSentinel = sentinels.intValue();
+        }
+
+    }
+
     private void handleAI(World world) {
+        EntityInfo info = new EntityInfo();
+
         handlePower(world);
-        handleSentinels(world);
+        handleSentinels(world, info);
         handleAlert(world);
-        handleDrones(world);
-        handleSoldiers(world);
+        handleDrones(world, info);
+        handleSoldiers(world, info);
         handleFluxLevitators(world);
     }
 
@@ -201,7 +259,7 @@ public class CityAI implements ICityAI {
                 BlockPos desiredDestination = levitatorEntity.getDesiredDestination();
                 if (desiredDestination != null) {
                     double distanceSq = entity.getPosition().distanceSq(desiredDestination);
-                    if (distanceSq < 5*5) {
+                    if (distanceSq < 5 * 5) {
                         // Arrived
                         dismountAndKill(levitatorEntity);
                     } else {
@@ -286,7 +344,7 @@ public class CityAI implements ICityAI {
     }
 
     private BlockPos isValidBeam(World world, ChunkPos c, EnumFacing direction, int minOffset, int maxOffset) {
-        for (int i = minOffset ; i <= maxOffset ; i++) {
+        for (int i = minOffset; i <= maxOffset; i++) {
             BlockPos pos = new BlockPos(c.x * 16 + 8 + direction.getDirectionVec().getX() * i, 32, (c.z * 16) + 8 + direction.getDirectionVec().getZ() * i);
             IBlockState state = world.getBlockState(pos);
             if (state.getBlock() == ArienteStuff.fluxBeamBlock) {
@@ -384,17 +442,6 @@ public class CityAI implements ICityAI {
         }
     }
 
-    private int countEntities(World world, int[] entityIds) {
-        int cnt = 0;
-        for (int id : entityIds) {
-            if (id != 0 && world.getEntityByID(id) != null) {
-                cnt++;
-            }
-        }
-
-        return cnt;
-    }
-
     @Nullable
     private BlockPos findRandomPlayer(World world) {
         List<BlockPos> players = new ArrayList<>();
@@ -415,7 +462,7 @@ public class CityAI implements ICityAI {
         return players.get(random.nextInt(players.size()));
     }
 
-    private void handleDrones(World world) {
+    private void handleDrones(World world, EntityInfo info) {
         if (onAlert > 0) {
             droneTicker--;
             if (droneTicker > 0) {
@@ -425,7 +472,7 @@ public class CityAI implements ICityAI {
 
             City city = CityTools.getCity(center);
             CityPlan plan = city.getPlan();
-            ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
+            ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
             int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
             int desiredMinimumCount = 0;
@@ -441,7 +488,7 @@ public class CityAI implements ICityAI {
                 newWaveMaximum = plan.getDronesWaveMax1();
             }
 
-            int cnt = countEntities(world, drones);
+            int cnt = info.getCountDrone(world);
             while (cnt < desiredMinimumCount) {
                 spawnDrone(world, droneHeight);
                 cnt++;
@@ -458,7 +505,7 @@ public class CityAI implements ICityAI {
         }
     }
 
-    private void handleSoldiers(World world) {
+    private void handleSoldiers(World world, EntityInfo info) {
         if (onAlert > 0) {
             soldierTicker--;
             if (soldierTicker > 0) {
@@ -483,16 +530,10 @@ public class CityAI implements ICityAI {
             }
             if (highAlert) {
                 desiredMinimumCount *= 2;
-                if (desiredMinimumCount > soldiers.length) {
-                    desiredMinimumCount = soldiers.length;
-                }
                 newWaveMaximum *= 2;
-                if (newWaveMaximum > soldiers.length) {
-                    newWaveMaximum = soldiers.length;
-                }
             }
 
-            int cnt = countEntities(world, soldiers);
+            int cnt = info.getCountSoldier(world);
             while (cnt < desiredMinimumCount) {
                 spawnSoldier(world);
                 cnt++;
@@ -515,44 +556,34 @@ public class CityAI implements ICityAI {
         }
 
         // Too few soldiers. Spawn a new one
-        int foundId = -1;
-        for (int i = 0 ; i < soldiers.length ; i++) {
-            if (soldiers[i] == 0 || world.getEntityByID(soldiers[i]) == null) {
-                foundId = i;
-                break;
+        City city = CityTools.getCity(center);
+        CityPlan plan = city.getPlan();
+
+        BlockPos pos;
+        // Avoid too close to player if possible
+        int avoidNearby = 3;
+        do {
+            pos = new ArrayList<>(soldierPositions.keySet()).get(random.nextInt(soldierPositions.size()));
+            EntityPlayer closestPlayer = world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 10, false);
+            if (closestPlayer == null) {
+                avoidNearby = 0;
+            } else {
+                avoidNearby--;
             }
-        }
-        if (foundId != -1) {
-            City city = CityTools.getCity(center);
-            CityPlan plan = city.getPlan();
+        } while (avoidNearby > 0);
 
-            BlockPos pos;
-            // Avoid too close to player if possible
-            int avoidNearby = 3;
-            do {
-                pos = new ArrayList<>(soldierPositions.keySet()).get(random.nextInt(soldierPositions.size()));
-                EntityPlayer closestPlayer = world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 10, false);
-                if (closestPlayer == null) {
-                    avoidNearby = 0;
-                } else {
-                    avoidNearby--;
-                }
-            } while (avoidNearby > 0);
+        System.out.println("CityAI.spawnSoldier at " + pos);
 
-            System.out.println("CityAI.spawnSoldier at " + pos);
+        EnumFacing facing = soldierPositions.get(pos);
+        EntityLivingBase entity = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER,
+                random.nextDouble() < plan.getMasterChance());
+        entity.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));    // @todo need a lasergun
 
-            EnumFacing facing = soldierPositions.get(pos);
-            EntityLivingBase entity = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER,
-                    random.nextDouble() < plan.getMasterChance());
-            entity.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));    // @todo need a lasergun
-
-            if (random.nextFloat() < plan.getPowerArmorChance()) {
-                entity.setItemStackToSlot(EntityEquipmentSlot.HEAD, createNiceHelmet());
-                entity.setItemStackToSlot(EntityEquipmentSlot.FEET, createNiceBoots());
-                entity.setItemStackToSlot(EntityEquipmentSlot.CHEST, createNiceChestplate(plan));
-                entity.setItemStackToSlot(EntityEquipmentSlot.LEGS, createNiceLegs());
-            }
-            soldiers[foundId] = entity.getEntityId();
+        if (random.nextFloat() < plan.getPowerArmorChance()) {
+            entity.setItemStackToSlot(EntityEquipmentSlot.HEAD, createNiceHelmet());
+            entity.setItemStackToSlot(EntityEquipmentSlot.FEET, createNiceBoots());
+            entity.setItemStackToSlot(EntityEquipmentSlot.CHEST, createNiceChestplate(plan));
+            entity.setItemStackToSlot(EntityEquipmentSlot.LEGS, createNiceLegs());
         }
     }
 
@@ -603,25 +634,15 @@ public class CityAI implements ICityAI {
 
     private void spawnDrone(World world, int height) {
         // Too few drones. Spawn a new one
-        int foundId = -1;
-        for (int i = 0 ; i < drones.length ; i++) {
-            if (drones[i] == 0 || world.getEntityByID(drones[i]) == null) {
-                foundId = i;
-                break;
-            }
-        }
-        if (foundId != -1) {
-            EntityLivingBase entity = ModSetup.arienteSystem.createDrone(world, center);
-            int cx = center.x * 16 + 8;
-            int cy = height;
-            int cz = center.z * 16 + 8;
-            entity.setPosition(cx, cy, cz);
-            world.spawnEntity(entity);
-            drones[foundId] = entity.getEntityId();
-        }
+        EntityLivingBase entity = ModSetup.arienteSystem.createDrone(world, center);
+        int cx = center.x * 16 + 8;
+        int cy = height;
+        int cz = center.z * 16 + 8;
+        entity.setPosition(cx, cy, cz);
+        world.spawnEntity(entity);
     }
 
-    private void handleSentinels(World world) {
+    private void handleSentinels(World world, EntityInfo info) {
         // Sentinel movement
         sentinelMovementTicks--;
         if (sentinelMovementTicks <= 0) {
@@ -634,12 +655,12 @@ public class CityAI implements ICityAI {
 
         // Small chance to revive sentinels if they are missing. Only revive if all are missing
         if (random.nextFloat() < .1f) {
-            if (countEntities(world, sentinels) == 0) {
+            if (info.getCountSentinel(world) == 0) {
                 City city = CityTools.getCity(center);
                 CityPlan plan = city.getPlan();
-                ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
+                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
                 int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
-                for (int i = 0; i < sentinels.length; i++) {
+                for (int i = 0; i < settings.getNumSentinels(); i++) {
 //                    System.out.println("revive: i = " + i);
                     createSentinel(world, i, droneHeight);
                 }
@@ -679,8 +700,8 @@ public class CityAI implements ICityAI {
         if (target != null) {
             float angle = random.nextFloat() * 360.0f;
             float distance = 4;
-            int cx = (int) (target.getX()+.5 + Math.cos(angle) * distance);
-            int cz = (int) (target.getZ()+.5 + Math.sin(angle) * distance);
+            int cx = (int) (target.getX() + .5 + Math.cos(angle) * distance);
+            int cz = (int) (target.getZ() + .5 + Math.sin(angle) * distance);
             return new BlockPos(cx, target.getY(), cz);
         }
         return null;
@@ -697,28 +718,25 @@ public class CityAI implements ICityAI {
         if (target != null) {
             float angle = random.nextFloat() * 360.0f;
             float distance = 15;
-            int cx = (int) (target.getX()+.5 + Math.cos(angle) * distance);
-            int cz = (int) (target.getZ()+.5 + Math.sin(angle) * distance);
-            return new BlockPos(cx, target.getY()+3, cz);
+            int cx = (int) (target.getX() + .5 + Math.cos(angle) * distance);
+            int cz = (int) (target.getZ() + .5 + Math.sin(angle) * distance);
+            return new BlockPos(cx, target.getY() + 3, cz);
         }
         return null;
     }
 
     @Override
     public BlockPos requestNewSentinelPosition(World world, int sentinelId) {
-        if (sentinels == null) {
-            return null;
-        }
         if (aiCores.isEmpty()) {
             return null;
         }
 
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
-        ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
         int droneHeight = plan.getSentinelRelHeight() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
-        int angleI = (sentinelAngleOffset + sentinelId * 12 / sentinels.length) % 12;
+        int angleI = (sentinelAngleOffset + sentinelId * 12 / settings.getNumSentinels()) % 12;
         int cx = center.x * 16 + 8;
         int cy = droneHeight;
         int cz = center.z * 16 + 8;
@@ -767,52 +785,6 @@ public class CityAI implements ICityAI {
     public void highAlertMode(EntityPlayer player) {
         alertCity(player);
         highAlert = true;
-    }
-
-    private void findArmy(World world) {
-        if (foundArmy) {
-            return;
-        }
-
-        City city = CityTools.getCity(center);
-        assert city != null;
-        CityPlan plan = city.getPlan();
-        List<String> pattern = plan.getPlan();
-        int dimX = pattern.get(0).length() * 16 * 2;
-        int dimZ = pattern.size() * 16 * 2;
-
-        BlockPos ctr = new BlockPos(this.center.x * 16 + 8, 50, this.center.z * 16 + 8);
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(ctr).grow(dimX, 200, dimZ));
-
-        if (sentinels == null) {
-            sentinels = new int[settings.getNumSentinels()];
-        }
-        int cntSentinel = 0;
-        int cntDrone = 0;
-        int cntSoldier = 0;
-
-        for (EntityLivingBase entity : entities) {
-            if (entity instanceof ISentinel) {
-                if (cntSentinel < sentinels.length) {
-                    sentinels[cntSentinel++] = entity.getEntityId();
-                }
-            } else if (entity instanceof ISoldier) {
-                if (cntSoldier < soldiers.length) {
-                    soldiers[cntSoldier++] = entity.getEntityId();
-                }
-            } else if (entity instanceof IDrone) {
-                if (cntDrone < drones.length) {
-                    drones[cntDrone++] = entity.getEntityId();
-                }
-            }
-        }
-
-        // @todo remove later
-        System.out.println("cntSoldier = " + cntSoldier);
-        System.out.println("cntSentinel = " + cntSentinel);
-        System.out.println("cntDrone = " + cntDrone);
-
-        foundArmy = true;
     }
 
     private void findEquipment(World world, boolean firstTime) {
@@ -884,7 +856,7 @@ public class CityAI implements ICityAI {
                                     aiCores.add(p);
                                 } else if (te instanceof IForceFieldTile) {
                                     // We already have this as equipment but we need it separate
-                                    ((IForceFieldTile)te).setCityCenter(center);
+                                    ((IForceFieldTile) te).setCityCenter(center);
                                     forceFields.add(p);
                                 } else if (te instanceof IAlarmTile) {
                                     alarms.add(p);
@@ -938,7 +910,7 @@ public class CityAI implements ICityAI {
         if (randomLoot.weightedList.isEmpty()) {
             return;
         }
-        for (int i = 0 ; i < 4 ; i++) {
+        for (int i = 0; i < 4; i++) {
             if (random.nextFloat() > .3f) {
                 Loot l = randomLoot.getRandom();
                 int amount;
@@ -952,14 +924,14 @@ public class CityAI implements ICityAI {
             }
         }
         // @dirty?
-        ((GenericTileEntity)te).markDirtyClient();
+        ((GenericTileEntity) te).markDirtyClient();
     }
 
     private static int getMinMax(Random rnd, int min, int max) {
         if (min >= max) {
             return min;
         }
-        return min + rnd.nextInt(max-min);
+        return min + rnd.nextInt(max - min);
     }
 
     private void createSettings(World world) {
@@ -1043,12 +1015,11 @@ public class CityAI implements ICityAI {
     private void initSentinels(World world) {
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
-        ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
         int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
         int numSentinels = settings.getNumSentinels();
-        sentinels = new int[numSentinels];
-        for (int i = 0 ; i < numSentinels ; i++) {
+        for (int i = 0; i < numSentinels; i++) {
             System.out.println("initSentinels: i = " + i);
             createSentinel(world, i, droneHeight);
         }
@@ -1061,7 +1032,6 @@ public class CityAI implements ICityAI {
         int cz = center.z * 16 + 8;
         entity.setPosition(cx, cy, cz);
         world.spawnEntity(entity);
-        sentinels[i] = entity.getEntityId();
     }
 
     public void enableEditMode(World world) {
@@ -1155,7 +1125,7 @@ public class CityAI implements ICityAI {
 
     private void readSetFromNBT(NBTTagList list, Set<BlockPos> set) {
         set.clear();
-        for (int i = 0 ; i < list.tagCount() ; i++) {
+        for (int i = 0; i < list.tagCount(); i++) {
             BlockPos pos = NBTUtil.getPosFromTag(list.getCompoundTagAt(i));
             set.add(pos);
         }
@@ -1173,7 +1143,7 @@ public class CityAI implements ICityAI {
 
     private void readMapFromNBT(NBTTagList list, Map<BlockPos, EnumFacing> map) {
         map.clear();
-        for (int i = 0 ; i < list.tagCount() ; i++) {
+        for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound tc = list.getCompoundTagAt(i);
             BlockPos pos = NBTUtil.getPosFromTag(tc);
             EnumFacing facing = EnumFacing.VALUES[tc.getInteger("facing")];
