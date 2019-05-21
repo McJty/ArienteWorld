@@ -61,6 +61,7 @@ public class CityAI implements ICityAI {
     private Map<BlockPos, EnumFacing> guardPositions = new HashMap<>();
     private Map<BlockPos, EnumFacing> soldierPositions = new HashMap<>();
     private Map<BlockPos, EnumFacing> masterSoldierPositions = new HashMap<>();
+    private AxisAlignedBB soldierBoundingbox = null;
 
     private int sentinelMovementTicks = 6;
     private int sentinelAngleOffset = 0;
@@ -176,6 +177,36 @@ public class CityAI implements ICityAI {
         return null;
     }
 
+    private AxisAlignedBB getSoldierBoundingbox() {
+        if (soldierBoundingbox == null) {
+            for (Map.Entry<BlockPos, EnumFacing> entry : soldierPositions.entrySet()) {
+                if (soldierBoundingbox == null) {
+                    soldierBoundingbox = new AxisAlignedBB(entry.getKey());
+                } else {
+                    soldierBoundingbox.union(new AxisAlignedBB(entry.getKey()));
+                }
+            }
+            for (Map.Entry<BlockPos, EnumFacing> entry : masterSoldierPositions.entrySet()) {
+                if (soldierBoundingbox == null) {
+                    soldierBoundingbox = new AxisAlignedBB(entry.getKey());
+                } else {
+                    soldierBoundingbox.union(new AxisAlignedBB(entry.getKey()));
+                }
+            }
+            for (Map.Entry<BlockPos, EnumFacing> entry : guardPositions.entrySet()) {
+                if (soldierBoundingbox == null) {
+                    soldierBoundingbox = new AxisAlignedBB(entry.getKey());
+                } else {
+                    soldierBoundingbox.union(new AxisAlignedBB(entry.getKey()));
+                }
+            }
+            if (soldierBoundingbox != null) {
+                soldierBoundingbox = soldierBoundingbox.grow(10);
+            }
+        }
+        return soldierBoundingbox;
+    }
+
     // Lazy way to count all entities
     private class EntityInfo {
         private int countSoldier = -1;
@@ -217,16 +248,21 @@ public class CityAI implements ICityAI {
             AtomicInteger soldiers = new AtomicInteger(0);
             AtomicInteger drones = new AtomicInteger(0);
             AtomicInteger sentinels = new AtomicInteger(0);
+            AxisAlignedBB boundingbox = getSoldierBoundingbox();
             world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(ctr).grow(dimX, 200, dimZ),
                     entity -> {
                         if (entity instanceof ISoldier) {
-                            soldiers.intValue();
+                            if (boundingbox != null) {
+                                if (boundingbox.contains(entity.getPositionVector())) {
+                                    soldiers.incrementAndGet();
+                                }
+                            }
                         }
                         if (entity instanceof ISentinel) {
-                            sentinels.intValue();
+                            sentinels.incrementAndGet();
                         }
                         if (entity instanceof IDrone) {
-                            drones.intValue();
+                            drones.incrementAndGet();
                         }
                         return false;
                     });
