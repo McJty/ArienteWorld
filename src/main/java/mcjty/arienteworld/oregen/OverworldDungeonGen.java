@@ -109,7 +109,7 @@ public class OverworldDungeonGen implements IWorldGenerator {
             return getDungeonPos(world, cp.x, cp.z);
         }
         for (int d = 1 ; d < 20 ; d++) {
-            for (int m = 0 ; m < d ; m++) {
+            for (int m = 0 ; m < d*2 ; m++) {
                 int cx = cp.x - d + m;
                 int cz = cp.z - d;
                 if (isValidDungeonChunk(world, cx, cz)) {
