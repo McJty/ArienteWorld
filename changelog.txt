@@ -1,4 +1,4 @@
-Upcoming
+0.0.30-alpha:
 - Worldgen enhancements: random biome dependend features on the terrain. Currently spheres and spikes
 - New city biome
 - Fixed a problem with underground station not being generated when there was a floating city above it
