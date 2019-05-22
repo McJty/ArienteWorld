@@ -164,9 +164,14 @@ public class OverworldDungeonGen implements IWorldGenerator {
      * Return true if this chunk can contain a dungeon
      */
     private static boolean isDungeonChunk(World world, int chunkX, int chunkZ) {
-        Random rnd = new Random(world.getSeed() + chunkX * 198491317L + chunkZ * 776531419L);
-        rnd.nextFloat();
-        return rnd.nextFloat() < WorldgenConfiguration.OVERWORLD_DUNGEON_CHANCE.get();
+        // Only for the overworld!
+        if (world.provider.getDimension() == 0) {
+            Random rnd = new Random(world.getSeed() + chunkX * 198491317L + chunkZ * 776531419L);
+            rnd.nextFloat();
+            return rnd.nextFloat() < WorldgenConfiguration.OVERWORLD_DUNGEON_CHANCE.get();
+        } else {
+            return false;
+        }
     }
 
     private static int getDungeonHeight(World world, int chunkX, int chunkZ) {
