@@ -16,7 +16,7 @@ public class AssetRegistries {
     public static final AbstractAssetRegistry<Palette> PALETTES = new AbstractAssetRegistry<>();
     public static final AbstractAssetRegistry<CityPlan> CITYPLANS = new AbstractAssetRegistry<>();
 
-    public static final void reset() {
+    public static void reset() {
         PARTS.reset();
         PALETTES.reset();
         CITYPLANS.reset();
