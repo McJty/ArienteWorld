@@ -75,6 +75,7 @@ public class ArienteWorld implements ModBase {
         event.registerServerCommand(new CommandSaveCity());
         event.registerServerCommand(new CommandVariant());
         event.registerServerCommand(new CommandEditMode());
+        event.registerServerCommand(new CommandSyncChunk());
         event.registerServerCommand(new CommandFindCity());
         event.registerServerCommand(new CommandInfo());
         event.registerServerCommand(new CommandPacify());

@@ -24,8 +24,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ForgeEventHandlers {
 
@@ -124,30 +123,12 @@ public class ForgeEventHandlers {
         World world = event.getWorld();
         if (!world.isRemote) {
             if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
-                ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
                 BlockPos pos = event.getPos();
-                int cx = pos.getX() >> 4;
-                int cz = pos.getZ() >> 4;
-                City city = CityTools.getNearestDungeon(generator, cx, cz);
+                City city = CityTools.getNearestDungeon(world, pos);
                 if (city != null) {
-                    List<BuildingPart> parts = CityTools.getBuildingParts(city, cx, cz);
-                    if (!parts.isEmpty()) {
-                        BuildingPart found = null;
-                        int partY = -1;
-                        int lowesty = CityTools.getLowestHeight(city, generator, cx, cz);
-                        for (BuildingPart part : parts) {
-                            int count = part.getSliceCount();
-                            if (pos.getY() >= lowesty && pos.getY() < lowesty + count) {
-                                found = part;
-                                partY = lowesty;
-                                break;
-                            }
-                            lowesty += count;
-
-                        }
-                        if (found != null) {
-                            EditMode.breakBlock(city, event.getWorld(), found, pos.getX() & 0xf, pos.getY() - partY, pos.getZ() & 0xf);
-                        }
+                    Pair<BuildingPart, Integer> pair = EditMode.getCurrentPart(city, event.getWorld(), event.getPos());
+                    if (pair != null) {
+                        EditMode.breakBlock(city, event.getWorld(), pair.getKey(), pos.getX() & 0xf, pos.getY() - pair.getRight(), pos.getZ() & 0xf);
                     }
                 }
             }
@@ -162,34 +143,15 @@ public class ForgeEventHandlers {
         World world = event.getWorld();
         if (!world.isRemote) {
             if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
-                ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer) world).getChunkProvider().chunkGenerator);
                 BlockPos pos = event.getPos();
-                int cx = pos.getX() >> 4;
-                int cz = pos.getZ() >> 4;
-                City city = CityTools.getNearestDungeon(generator, cx, cz);
+                City city = CityTools.getNearestDungeon(world, pos);
                 if (city != null) {
-                    List<BuildingPart> parts = CityTools.getBuildingParts(city, cx, cz);
-                    if (!parts.isEmpty()) {
-                        BuildingPart found = null;
-                        int partY = -1;
-                        int lowesty = CityTools.getLowestHeight(city, generator, cx, cz);
-                        for (BuildingPart part : parts) {
-                            int count = part.getSliceCount();
-                            if (pos.getY() >= lowesty && pos.getY() < lowesty + count) {
-                                found = part;
-                                partY = lowesty;
-                                break;
-                            }
-                            lowesty += count;
-
-                        }
-                        if (found != null) {
-                            EditMode.copyBlock(city, event.getWorld(), event.getPlacedBlock(), found, pos.getX() & 0xf, pos.getY() - partY, pos.getZ() & 0xf);
-                        }
+                    Pair<BuildingPart, Integer> pair = EditMode.getCurrentPart(city, event.getWorld(), event.getPos());
+                    if (pair != null) {
+                        EditMode.copyBlock(city, event.getWorld(), event.getPlacedBlock(), pair.getKey(), pos.getX() & 0xf, pos.getY() - pair.getRight(), pos.getZ() & 0xf);
                     }
                 }
             }
         }
     }
-
 }

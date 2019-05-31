@@ -36,6 +36,58 @@ public class EditMode {
     public static final PaletteIndex PALETTE_AIR = new PaletteIndex(' ', ' ');
     public static boolean editMode = false;
 
+    public static Pair<BuildingPart, Integer> getCurrentPart(City city, World world, BlockPos pos) {
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
+        int cx = pos.getX() >> 4;
+        int cz = pos.getZ() >> 4;
+        List<BuildingPart> parts = CityTools.getBuildingParts(city, cx, cz);
+        if (!parts.isEmpty()) {
+            BuildingPart found = null;
+            int partY = -1;
+            int lowesty = CityTools.getLowestHeight(city, generator, cx, cz);
+            for (BuildingPart part : parts) {
+                int count = part.getSliceCount();
+                if (pos.getY() >= lowesty && pos.getY() < lowesty + count) {
+                    found = part;
+                    partY = lowesty;
+                    break;
+                }
+                lowesty += count;
+
+            }
+            if (found != null) {
+                return Pair.of(found, partY);
+            }
+        }
+        return null;
+    }
+
+    public static void syncChunk(EntityPlayer player) {
+        City city = getCurrentDungeon(player);
+        if (city == null) {
+            player.sendStatusMessage(new TextComponentString(TextFormatting.RED + "No city!"), false);
+            return;
+        }
+        World world = player.getEntityWorld();
+        BlockPos pos = player.getPosition();
+        int cx = (pos.getX() >> 4);
+        int cz = (pos.getZ() >> 4);
+
+        Pair<BuildingPart, Integer> pair = EditMode.getCurrentPart(city, world, pos);
+        if (pair != null) {
+            BuildingPart part = pair.getLeft();
+            int y = pair.getRight();
+            for (int relX = 0; relX < 16; relX++) {
+                for (int relZ = 0; relZ < 16; relZ++) {
+                    for (int relY = y; relY < y + part.getSliceCount(); relY++) {
+                        IBlockState state = world.getBlockState(new BlockPos(cx * 16 + relX, relY, cz * 16 + relZ));
+                        EditMode.copyBlock(city, world, state, pair.getKey(), relX, relY-y, relZ);
+                    }
+                }
+            }
+        }
+    }
+
     public static void setVariant(EntityPlayer player, String variant) {
         City city = getCurrentDungeon(player);
         if (city == null) {
@@ -153,7 +205,7 @@ public class EditMode {
 
         saveCity(player);
 
-        variantSelections.put(variant, Math.min(index, variants.get(variant)-1));
+        variantSelections.put(variant, Math.min(index, variants.get(variant) - 1));
         player.sendStatusMessage(new TextComponentString("Variant " + variant + " set to " + index), false);
 
         updateCity(player, city);
@@ -228,12 +280,7 @@ public class EditMode {
     }
 
     public static City getCurrentDungeon(EntityPlayer player) {
-        BlockPos start = player.getPosition();
-        int cx = (start.getX() >> 4);
-        int cz = (start.getZ() >> 4);
-
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) player.getEntityWorld()).getChunkProvider().chunkGenerator);
-        City city = CityTools.getNearestDungeon(generator, cx, cz);
+        City city = CityTools.getNearestDungeon(player.getEntityWorld(), player.getPosition());
         if (city == null) {
             player.sendMessage(new TextComponentString("No city can be found!"));
             return null;
@@ -423,9 +470,9 @@ public class EditMode {
     }
 
     private static void voidChunk(World world, int chunkX, int chunkZ) {
-        for (int y = 1 ; y < 100 ; y++) {
-            for (int x = 0 ; x < 16 ; x++) {
-                for (int z = 0 ; z < 16 ; z++) {
+        for (int y = 1; y < 100; y++) {
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
                     world.setBlockToAir(new BlockPos(chunkX * 16 + x, y, chunkZ * 16 + z));
                 }
             }
@@ -517,7 +564,7 @@ public class EditMode {
             String buildingPart = pair.getKey();
             dummyPlan.addToPartPalette('a', buildingPart);
             saveCityOrStation(player, new ChunkPos(cx, cz), dummyPlan, 0,
-                    (x, z) -> height-ArienteLandscapeCity.CITYLEV_HEIGHT,
+                    (x, z) -> height - ArienteLandscapeCity.CITYLEV_HEIGHT,
                     (x, z) -> x == cx && z == cz ? Collections.singletonList(AssetRegistries.PARTS.get(buildingPart)) : Collections.emptyList());
             player.sendMessage(new TextComponentString("Saved part: " + buildingPart));
         } else {

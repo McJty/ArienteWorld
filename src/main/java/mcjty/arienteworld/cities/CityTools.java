@@ -7,6 +7,7 @@ import mcjty.lib.varia.BlockPosTools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraftforge.common.DimensionManager;
@@ -149,6 +150,14 @@ public class CityTools {
             cacheCity(center, city);
         }
         return city;
+    }
+
+    @Nullable
+    public static City getNearestDungeon(World world, BlockPos pos) {
+        ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer)world).getChunkProvider().chunkGenerator);
+        int cx = pos.getX() >> 4;
+        int cz = pos.getZ() >> 4;
+        return getNearestDungeon(generator, cx, cz);
     }
 
     @Nullable
