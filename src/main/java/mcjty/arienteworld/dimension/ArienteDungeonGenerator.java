@@ -2,6 +2,7 @@ package mcjty.arienteworld.dimension;
 
 import mcjty.ariente.api.MarbleColor;
 import mcjty.arienteworld.ArienteStuff;
+import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.cities.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -172,7 +173,8 @@ public class ArienteDungeonGenerator {
                         PaletteIndex c = vs.getSlice().get(y);
                         Character b = compiledPalette.get(c);
                         if (b == null) {
-                            throw new RuntimeException("Could not find entry '" + c + "' in the palette for part '" + part.getName() + "'!");
+                            ArienteWorld.setup.getLogger().error("Could not find entry '" + c + "' in the palette for part '" + part.getName() + "'!");
+                            b = airChar;
                         }
 
                         if (transform != Transform.ROTATE_NONE) {
