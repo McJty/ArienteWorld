@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a client-side problem on servers
+
 0.0.30-alpha:
 - Worldgen enhancements: random biome dependend features on the terrain. Currently spheres and spikes
 - New city biome

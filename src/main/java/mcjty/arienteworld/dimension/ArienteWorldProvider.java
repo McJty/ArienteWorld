@@ -1,7 +1,7 @@
 package mcjty.arienteworld.dimension;
 
-import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.biomes.ArienteBiomeProvider;
+import mcjty.arienteworld.setup.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -86,7 +86,7 @@ public class ArienteWorldProvider extends WorldProvider {
     @Nullable
     @Override
     public MusicTicker.MusicType getMusicType() {
-        return ArienteWorld.setup.arienteMusic;
+        return ClientProxy.arienteMusic;
     }
 
     @Override

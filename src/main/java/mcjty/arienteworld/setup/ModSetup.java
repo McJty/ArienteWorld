@@ -34,7 +34,6 @@ import java.io.UncheckedIOException;
 public class ModSetup extends DefaultModSetup {
 
     public static IArienteSystem arienteSystem;
-    public MusicTicker.MusicType arienteMusic;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -81,8 +80,6 @@ public class ModSetup extends DefaultModSetup {
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
-        arienteMusic = EnumHelperClient.addMusicType("ariente_music", ModSounds.music, 12000, 24000);
-
         AssetRegistries.reset();
         for (String path : ConfigSetup.ASSETS) {
             if (path.startsWith("/")) {
