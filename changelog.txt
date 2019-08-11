@@ -1,5 +1,6 @@
-Upcoming:
+0.0.31-alpha:
 - Fixed a client-side problem on servers
+- Started working on a HUGE new dungeon. Not finished!
 
 0.0.30-alpha:
 - Worldgen enhancements: random biome dependend features on the terrain. Currently spheres and spikes
