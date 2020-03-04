@@ -2,7 +2,7 @@ package mcjty.arienteworld.biomes.features;
 
 import net.minecraft.block.BlockVine;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class WorldGenBlueTree extends WorldGenHugeTrees {
 
-    public WorldGenBlueTree(int baseHeightIn, int extraRandomHeightIn, IBlockState woodMetadataIn, IBlockState leavesMetadataIn) {
+    public WorldGenBlueTree(int baseHeightIn, int extraRandomHeightIn, BlockState woodMetadataIn, BlockState leavesMetadataIn) {
         super(false, baseHeightIn, extraRandomHeightIn, woodMetadataIn, leavesMetadataIn);
     }
 
@@ -100,7 +100,7 @@ public class WorldGenBlueTree extends WorldGenHugeTrees {
 
     private void placeVine(World p_181632_1_, Random p_181632_2_, BlockPos p_181632_3_, PropertyBool p_181632_4_) {
         if (p_181632_2_.nextInt(3) > 0 && p_181632_1_.isAirBlock(p_181632_3_)) {
-            this.setBlockAndNotifyAdequately(p_181632_1_, p_181632_3_, Blocks.VINE.getDefaultState().withProperty(p_181632_4_, Boolean.valueOf(true)));
+            this.setBlockAndNotifyAdequately(p_181632_1_, p_181632_3_, Blocks.VINE.getDefaultState().with(p_181632_4_, Boolean.valueOf(true)));
         }
     }
 
@@ -114,7 +114,7 @@ public class WorldGenBlueTree extends WorldGenHugeTrees {
 
     //Helper macro
     private boolean isAirLeaves(World world, BlockPos pos) {
-        IBlockState state = world.getBlockState(pos);
+        BlockState state = world.getBlockState(pos);
         return state.getBlock().isAir(state, world, pos) || state.getBlock().isLeaves(state, world, pos);
     }
 }

@@ -7,7 +7,7 @@ import mcjty.arienteworld.biomes.IArienteBiome;
 import mcjty.arienteworld.cities.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -34,7 +34,7 @@ public class ArienteLandscapeCity {
     private static class LStripInfo {
         private final boolean isLevel0Chunk;
         private final int length;
-        private final int direction; // Like EnumFacing.ordinal() (2, 3, 4, 5)
+        private final int direction; // Like Direction.ordinal() (2, 3, 4, 5)
         private Boolean isLevel1Chunk;
         private Boolean containsStrip;
 
@@ -75,22 +75,22 @@ public class ArienteLandscapeCity {
         for (int i = 1 ; i <= MAX_STRIP_LENGTH ; i++) {
             LStripInfo info;
             info = getStripInfo(chunkX + i, chunkZ);
-            if (info.isLevel0Chunk && info.direction == EnumFacing.WEST.ordinal() && info.length > i) {
+            if (info.isLevel0Chunk && info.direction == Direction.WEST.ordinal() && info.length > i) {
                 level1 = true;
                 break;
             }
             info = getStripInfo(chunkX - i, chunkZ);
-            if (info.isLevel0Chunk && info.direction == EnumFacing.EAST.ordinal() && info.length > i) {
+            if (info.isLevel0Chunk && info.direction == Direction.EAST.ordinal() && info.length > i) {
                 level1 = true;
                 break;
             }
             info = getStripInfo(chunkX, chunkZ + i);
-            if (info.isLevel0Chunk && info.direction == EnumFacing.NORTH.ordinal() && info.length > i) {
+            if (info.isLevel0Chunk && info.direction == Direction.NORTH.ordinal() && info.length > i) {
                 level1 = true;
                 break;
             }
             info = getStripInfo(chunkX, chunkZ - i);
-            if (info.isLevel0Chunk && info.direction == EnumFacing.SOUTH.ordinal() && info.length > i) {
+            if (info.isLevel0Chunk && info.direction == Direction.SOUTH.ordinal() && info.length > i) {
                 level1 = true;
                 break;
             }
@@ -118,22 +118,22 @@ public class ArienteLandscapeCity {
         for (int i = 1 ; i <= MAX_STRIP_LENGTH ; i++) {
             LStripInfo info;
             info = getStripInfo(chunkX + i, chunkZ);
-            if (isStripStartStation(chunkX+i, chunkZ) && info.direction == EnumFacing.WEST.ordinal() && info.length > i) {
+            if (isStripStartStation(chunkX+i, chunkZ) && info.direction == Direction.WEST.ordinal() && info.length > i) {
                 info0.containsStrip = true;
                 return true;
             }
             info = getStripInfo(chunkX - i, chunkZ);
-            if (isStripStartStation(chunkX-i, chunkZ) && info.direction == EnumFacing.EAST.ordinal() && info.length > i) {
+            if (isStripStartStation(chunkX-i, chunkZ) && info.direction == Direction.EAST.ordinal() && info.length > i) {
                 info0.containsStrip = true;
                 return true;
             }
             info = getStripInfo(chunkX, chunkZ + i);
-            if (isStripStartStation(chunkX, chunkZ+i) && info.direction == EnumFacing.NORTH.ordinal() && info.length > i) {
+            if (isStripStartStation(chunkX, chunkZ+i) && info.direction == Direction.NORTH.ordinal() && info.length > i) {
                 info0.containsStrip = true;
                 return true;
             }
             info = getStripInfo(chunkX, chunkZ - i);
-            if (isStripStartStation(chunkX, chunkZ-i) && info.direction == EnumFacing.SOUTH.ordinal() && info.length > i) {
+            if (isStripStartStation(chunkX, chunkZ-i) && info.direction == Direction.SOUTH.ordinal() && info.length > i) {
                 info0.containsStrip = true;
                 return true;
             }
@@ -224,7 +224,7 @@ public class ArienteLandscapeCity {
 
     public static void generate(int chunkX, int chunkZ, ChunkPrimer primer, ArienteDungeonGenerator cityGenerator) {
         char baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
-        char fillChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
+        char fillChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
 
         boolean undergroundDungeon = false;
         if (CityTools.isDungeonChunk(chunkX, chunkZ)) {
@@ -296,8 +296,8 @@ public class ArienteLandscapeCity {
 
         if (undergroundPark) {
             char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
-            char marble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
-            char tech = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.blackmarble_techpat.getDefaultState().withProperty(TechType.TYPE, TechType.LINES));
+            char marble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
+            char tech = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.blackmarble_techpat.getDefaultState().with(TechType.TYPE, TechType.LINES));
             int layerHeight = CITY_LEVEL + CITYLEV_HEIGHT + 6;
             if (start < layerHeight) {
                 PrimerTools.fillChunk(primer, air, start, layerHeight);

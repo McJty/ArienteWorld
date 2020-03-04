@@ -1,7 +1,7 @@
 package mcjty.arienteworld.cities;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +40,8 @@ public class CompiledPalette {
     public void addPalettes(Palette[] palettes) {
         // First add the straight palette entries
         for (Palette p : palettes) {
-            for (Map.Entry<PaletteIndex, IBlockState> entry : p.getPalette().entrySet()) {
-                IBlockState value = entry.getValue();
+            for (Map.Entry<PaletteIndex, BlockState> entry : p.getPalette().entrySet()) {
+                BlockState value = entry.getValue();
                 palette.put(entry.getKey(), (char) Block.BLOCK_STATE_IDS.get((value)));
             }
         }
@@ -51,7 +51,7 @@ public class CompiledPalette {
         return palette.keySet();
     }
 
-    public IBlockState getStraight(PaletteIndex c) {
+    public BlockState getStraight(PaletteIndex c) {
         try {
             Character o = palette.get(c);
             return Block.BLOCK_STATE_IDS.getByValue((Character) o);

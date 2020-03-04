@@ -6,7 +6,7 @@ import mcjty.ariente.api.TechType;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import net.minecraft.block.BlockSlab;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -200,25 +200,25 @@ public class OverworldDungeonGen implements IWorldGenerator {
                                 break;
                             case 'a':
                                 setBlock(random, world, pos, 15,
-                                        ArienteStuff.marble.getDefaultState().withProperty(COLOR, MarbleColor.BLACK),
-                                        ArienteStuff.marble_bricks.getDefaultState().withProperty(COLOR, MarbleColor.BLACK),
-                                        ArienteStuff.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.BLACK));
+                                        ArienteStuff.marble.getDefaultState().with(COLOR, MarbleColor.BLACK),
+                                        ArienteStuff.marble_bricks.getDefaultState().with(COLOR, MarbleColor.BLACK),
+                                        ArienteStuff.marble_smooth.getDefaultState().with(COLOR, MarbleColor.BLACK));
                                 break;
                             case 'f':
                                 if (!world.isAirBlock(pos)) {
                                     setBlock(random, world, pos, 15,
-                                            ArienteStuff.marble.getDefaultState().withProperty(COLOR, MarbleColor.GRAY),
-                                            ArienteStuff.marble_bricks.getDefaultState().withProperty(COLOR, MarbleColor.GRAY),
-                                            ArienteStuff.marble_smooth.getDefaultState().withProperty(COLOR, MarbleColor.GRAY));
+                                            ArienteStuff.marble.getDefaultState().with(COLOR, MarbleColor.GRAY),
+                                            ArienteStuff.marble_bricks.getDefaultState().with(COLOR, MarbleColor.GRAY),
+                                            ArienteStuff.marble_smooth.getDefaultState().with(COLOR, MarbleColor.GRAY));
                                 }
                                 break;
                             case 's':
                                 world.setBlockState(pos, ArienteStuff.marbleSlabBlock.getDefaultState()
-                                        .withProperty(HALF, BlockSlab.EnumBlockHalf.BOTTOM)
-                                        .withProperty(COLOR, MarbleColor.BLACK), 2);
+                                        .with(HALF, BlockSlab.EnumBlockHalf.BOTTOM)
+                                        .with(COLOR, MarbleColor.BLACK), 2);
                                 break;
                             case 'x':
-                                world.setBlockState(pos, ArienteStuff.blackmarble_techpat.getDefaultState().withProperty(TYPE, TechType.RED_LINES_GLOW), 2);
+                                world.setBlockState(pos, ArienteStuff.blackmarble_techpat.getDefaultState().with(TYPE, TechType.RED_LINES_GLOW), 2);
                                 break;
                             case '#':
                                 world.setBlockState(pos, ArienteStuff.warperBlock.getDefaultState(), 2);
@@ -230,7 +230,7 @@ public class OverworldDungeonGen implements IWorldGenerator {
         }
     }
 
-    private static void setBlock(Random random, World world, BlockPos pos, int chances, IBlockState common, IBlockState s1, IBlockState s2) {
+    private static void setBlock(Random random, World world, BlockPos pos, int chances, BlockState common, BlockState s1, BlockState s2) {
         switch (random.nextInt(chances)) {
             case 0:
                 world.setBlockState(pos, s1, 2);

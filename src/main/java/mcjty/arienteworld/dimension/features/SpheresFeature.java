@@ -38,7 +38,7 @@ public class SpheresFeature implements IFeature {
         int radius = random.nextInt(6) + 6;
         int centery = random.nextInt(60) + 40;
 
-        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLUE));
+        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLUE));
         int centerx = 8 + (dx) * 16;
         int centerz = 8 + (dz) * 16;
         double sqradius = radius * radius;

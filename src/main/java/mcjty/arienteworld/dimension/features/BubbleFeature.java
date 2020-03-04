@@ -39,8 +39,8 @@ public class BubbleFeature implements IFeature {
         int radius = random.nextInt(6) + 6;
         int centery = random.nextInt(7) + 60;
 
-//        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLUE));
-        char block = (char) Block.BLOCK_STATE_IDS.get(Blocks.STAINED_GLASS.getDefaultState().withProperty(BlockStainedGlass.COLOR, EnumDyeColor.BLUE));
+//        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLUE));
+        char block = (char) Block.BLOCK_STATE_IDS.get(Blocks.STAINED_GLASS.getDefaultState().with(BlockStainedGlass.COLOR, EnumDyeColor.BLUE));
         char water = (char) Block.BLOCK_STATE_IDS.get(Blocks.WATER.getDefaultState());
         int centerx = 8 + (dx) * 16;
         int centerz = 8 + (dz) * 16;

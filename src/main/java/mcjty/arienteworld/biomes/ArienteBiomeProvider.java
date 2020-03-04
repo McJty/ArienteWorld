@@ -1,10 +1,7 @@
 package mcjty.arienteworld.biomes;
 
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeProvider;
-import net.minecraft.world.gen.layer.GenLayer;
-import net.minecraft.world.gen.layer.GenLayerVoronoiZoom;
-import net.minecraft.world.gen.layer.GenLayerZoom;
+import net.minecraft.world.biome.provider.BiomeProvider;
 
 public class ArienteBiomeProvider extends BiomeProvider {
 

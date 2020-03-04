@@ -4,7 +4,7 @@ import mcjty.arienteworld.ArienteStuff;
 import net.minecraft.block.BlockChorusFlower;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -22,7 +22,7 @@ public class IslandsTerrainGenerator {
     private Random rand;
     private World world;
 
-    protected static final IBlockState AIR = Blocks.AIR.getDefaultState();
+    protected static final BlockState AIR = Blocks.AIR.getDefaultState();
     private NoiseGeneratorOctaves lperlinNoise1;
     private NoiseGeneratorOctaves lperlinNoise2;
     private NoiseGeneratorOctaves perlinNoise1;
@@ -112,26 +112,26 @@ public class IslandsTerrainGenerator {
             for (int j = 0; j < 16; ++j) {
                 int k = 1;
                 int l = -1;
-                IBlockState iblockstate = ArienteStuff.marble.getDefaultState();
-                IBlockState iblockstate1 = ArienteStuff.marble.getDefaultState();
+                BlockState BlockState = ArienteStuff.marble.getDefaultState();
+                BlockState BlockState1 = ArienteStuff.marble.getDefaultState();
 
                 for (int i1 = 127; i1 >= 0; --i1) {
-                    IBlockState iblockstate2 = primer.getBlockState(i, i1, j);
+                    BlockState BlockState2 = primer.getBlockState(i, i1, j);
 
-                    if (iblockstate2.getMaterial() == Material.AIR) {
+                    if (BlockState2.getMaterial() == Material.AIR) {
                         l = -1;
-                    } else if (iblockstate2.getBlock() == ArienteStuff.marble.getDefaultState()) {
+                    } else if (BlockState2.getBlock() == ArienteStuff.marble.getDefaultState()) {
                         if (l == -1) {
                             l = 1;
 
                             if (i1 >= 0) {
-                                primer.setBlockState(i, i1, j, iblockstate);
+                                primer.setBlockState(i, i1, j, BlockState);
                             } else {
-                                primer.setBlockState(i, i1, j, iblockstate1);
+                                primer.setBlockState(i, i1, j, BlockState1);
                             }
                         } else if (l > 0) {
                             --l;
-                            primer.setBlockState(i, i1, j, iblockstate1);
+                            primer.setBlockState(i, i1, j, BlockState1);
                         }
                     }
                 }

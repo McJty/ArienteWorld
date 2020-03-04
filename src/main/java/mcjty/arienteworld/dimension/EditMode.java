@@ -9,7 +9,7 @@ import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.*;
 import mcjty.lib.varia.BlockPosTools;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -80,7 +80,7 @@ public class EditMode {
             for (int relX = 0; relX < 16; relX++) {
                 for (int relZ = 0; relZ < 16; relZ++) {
                     for (int relY = y; relY < y + part.getSliceCount(); relY++) {
-                        IBlockState state = world.getBlockState(new BlockPos(cx * 16 + relX, relY, cz * 16 + relZ));
+                        BlockState state = world.getBlockState(new BlockPos(cx * 16 + relX, relY, cz * 16 + relZ));
                         EditMode.copyBlock(city, world, state, pair.getKey(), relX, relY-y, relZ);
                     }
                 }
@@ -340,7 +340,7 @@ public class EditMode {
         }
     }
 
-    public static void copyBlock(City city, World world, IBlockState placedBlock, BuildingPart found, int relX, int relY, int relZ) {
+    public static void copyBlock(City city, World world, BlockState placedBlock, BuildingPart found, int relX, int relY, int relZ) {
         int cx;
         int cz;
         CityPlan plan = city.getPlan();
@@ -440,7 +440,7 @@ public class EditMode {
         Palette palette = new Palette(plan.getPalette());
         CompiledPalette compiledPalette = CompiledPalette.getCompiledPalette(plan.getPalette());
         for (PaletteIndex character : compiledPalette.getCharacters()) {
-            IBlockState state = compiledPalette.getStraight(character);
+            BlockState state = compiledPalette.getStraight(character);
             if (state != null) {
                 palette.addMapping(character, state);
             }
@@ -498,8 +498,8 @@ public class EditMode {
                         }
                         pos.setPos(cx + x, cy, cz + z);
                         PaletteIndex c = vs.getSlice().get(f);
-                        IBlockState original = palette.getPalette().get(c);
-                        IBlockState current = world.getBlockState(pos);
+                        BlockState original = palette.getPalette().get(c);
+                        BlockState current = world.getBlockState(pos);
 
                         if (!current.equals(original) && original != null) {
                             world.setBlockState(pos, original, 3);
@@ -599,11 +599,11 @@ public class EditMode {
 
         JsonArray array = new JsonArray();
         AtomicInteger idx = new AtomicInteger(1);
-        Map<IBlockState, PaletteIndex> mapping = new HashMap<>();
+        Map<BlockState, PaletteIndex> mapping = new HashMap<>();
         Palette palette = new Palette(plan.getPalette());
         CompiledPalette compiledPalette = CompiledPalette.getNewCompiledPalette(plan.getPalette());
         for (PaletteIndex character : compiledPalette.getCharacters()) {
-            IBlockState state = compiledPalette.getStraight(character);
+            BlockState state = compiledPalette.getStraight(character);
             if (state != null) {
                 palette.addMapping(character, state);
                 mapping.put(state, character);
@@ -669,7 +669,7 @@ public class EditMode {
 
     private static BuildingPart exportPart(BuildingPart part, World world, BlockPos start, int y, Palette palette,
                                            Set<PaletteIndex> paletteUsage,
-                                           Map<IBlockState, PaletteIndex> mapping, AtomicInteger idx) {
+                                           Map<BlockState, PaletteIndex> mapping, AtomicInteger idx) {
         Map<BlockPos, Map<String, Object>> teData = new HashMap<>();
         List<Slice> slices = new ArrayList<>();
         for (int f = 0; f < part.getSliceCount(); f++) {
@@ -685,7 +685,7 @@ public class EditMode {
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     pos.setPos(cx + x, cy, cz + z);
-                    IBlockState state = world.getBlockState(pos);
+                    BlockState state = world.getBlockState(pos);
                     // Make sure the state doesn't contain any extended stuff
                     state = state.getBlock().getStateFromMeta(state.getBlock().getMetaFromState(state));
                     PaletteIndex character;

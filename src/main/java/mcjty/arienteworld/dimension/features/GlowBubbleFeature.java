@@ -41,8 +41,8 @@ public class GlowBubbleFeature implements IFeature {
         int radius = random.nextInt(6) + 6;
         int centery = random.nextInt(7) + 40;
 
-//        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLUE));
-        char block = (char) Block.BLOCK_STATE_IDS.get(Blocks.STAINED_GLASS.getDefaultState().withProperty(BlockStainedGlass.COLOR, EnumDyeColor.BLUE));
+//        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLUE));
+        char block = (char) Block.BLOCK_STATE_IDS.get(Blocks.STAINED_GLASS.getDefaultState().with(BlockStainedGlass.COLOR, EnumDyeColor.BLUE));
         char inner = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.fluxGlow.getDefaultState());
         char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
         int centerx = 8 + (dx) * 16;

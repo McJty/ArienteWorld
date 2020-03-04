@@ -1,6 +1,6 @@
 package mcjty.arienteworld.dimension;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -35,7 +35,7 @@ public class ArienteTerrainGenerator {
     private final float[] parabolicField;
     private double[] stoneNoise = new double[256];
 
-    private IBlockState baseBlock;
+    private BlockState baseBlock;
     private boolean amplified;
 
     public ArienteTerrainGenerator() {
@@ -54,7 +54,7 @@ public class ArienteTerrainGenerator {
         amplified = a;
     }
 
-    public void setup(World world, Random rand, IBlockState baseBlock) {
+    public void setup(World world, Random rand, BlockState baseBlock) {
         this.rand = rand;
         this.world = world;
         this.baseBlock = baseBlock;

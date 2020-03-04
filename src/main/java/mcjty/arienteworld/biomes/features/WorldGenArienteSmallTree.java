@@ -4,9 +4,9 @@ import net.minecraft.block.BlockCocoa;
 import net.minecraft.block.BlockVine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
@@ -17,14 +17,14 @@ public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
 
     private final int minTreeHeight;
     private final boolean vinesGrow;
-    private final IBlockState metaWood;
-    private final IBlockState metaLeaves;
+    private final BlockState metaWood;
+    private final BlockState metaLeaves;
 
-    public WorldGenArienteSmallTree(IBlockState woodMeta, IBlockState leaves) {
+    public WorldGenArienteSmallTree(BlockState woodMeta, BlockState leaves) {
         this(4, woodMeta, leaves, false);
     }
 
-    public WorldGenArienteSmallTree(int minTreeHeightIn, IBlockState woodMeta, IBlockState leaves, boolean growVines) {
+    public WorldGenArienteSmallTree(int minTreeHeightIn, BlockState woodMeta, BlockState leaves, boolean growVines) {
         super(false);
         this.minTreeHeight = minTreeHeightIn;
         this.metaWood = woodMeta;
@@ -66,9 +66,9 @@ public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
             if (!flag) {
                 return false;
             } else {
-                IBlockState state = worldIn.getBlockState(position.down());
+                BlockState state = worldIn.getBlockState(position.down());
 
-                if (state.getBlock().canSustainPlant(state, worldIn, position.down(), net.minecraft.util.EnumFacing.UP, (net.minecraft.block.BlockSapling) Blocks.SAPLING) && position.getY() < worldIn.getHeight() - i - 1) {
+                if (state.getBlock().canSustainPlant(state, worldIn, position.down(), net.minecraft.util.Direction.UP, (net.minecraft.block.BlockSapling) Blocks.SAPLING) && position.getY() < worldIn.getHeight() - i - 1) {
                     state.getBlock().onPlantGrow(state, worldIn, position.down(), position);
                     int k2 = 3;
                     int l2 = 0;
@@ -161,9 +161,9 @@ public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
 
                         if (rand.nextInt(5) == 0 && i > 5) {
                             for (int l3 = 0; l3 < 2; ++l3) {
-                                for (EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL) {
+                                for (Direction enumfacing : Direction.Plane.HORIZONTAL) {
                                     if (rand.nextInt(4 - l3) == 0) {
-                                        EnumFacing enumfacing1 = enumfacing.getOpposite();
+                                        Direction enumfacing1 = enumfacing.getOpposite();
                                         this.placeCocoa(worldIn, rand.nextInt(3), position.add(enumfacing1.getFrontOffsetX(), i - 5 + l3, enumfacing1.getFrontOffsetZ()), enumfacing);
                                     }
                                 }
@@ -181,12 +181,12 @@ public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
         }
     }
 
-    private void placeCocoa(World worldIn, int p_181652_2_, BlockPos pos, EnumFacing side) {
-        this.setBlockAndNotifyAdequately(worldIn, pos, Blocks.COCOA.getDefaultState().withProperty(BlockCocoa.AGE, Integer.valueOf(p_181652_2_)).withProperty(BlockCocoa.FACING, side));
+    private void placeCocoa(World worldIn, int p_181652_2_, BlockPos pos, Direction side) {
+        this.setBlockAndNotifyAdequately(worldIn, pos, Blocks.COCOA.getDefaultState().with(BlockCocoa.AGE, Integer.valueOf(p_181652_2_)).with(BlockCocoa.FACING, side));
     }
 
     private void addVine(World worldIn, BlockPos pos, PropertyBool prop) {
-        this.setBlockAndNotifyAdequately(worldIn, pos, Blocks.VINE.getDefaultState().withProperty(prop, Boolean.valueOf(true)));
+        this.setBlockAndNotifyAdequately(worldIn, pos, Blocks.VINE.getDefaultState().with(prop, Boolean.valueOf(true)));
     }
 
     private void addHangingVine(World worldIn, BlockPos pos, PropertyBool prop) {

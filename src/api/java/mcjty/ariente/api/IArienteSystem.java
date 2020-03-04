@@ -1,12 +1,12 @@
 package mcjty.ariente.api;
 
 import net.minecraft.block.BlockRailBase;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -24,7 +24,7 @@ public interface IArienteSystem {
     @Nonnull
     List<? extends IFluxLevitatorEntity> getLevitatorsWithinAABB(World world, AxisAlignedBB aabb);
 
-    EntityLivingBase createSoldier(World world, BlockPos pos, EnumFacing facing, @Nullable ChunkPos cityCenter, SoldierBehaviourType type, boolean master);
+    EntityLivingBase createSoldier(World world, BlockPos pos, Direction facing, @Nullable ChunkPos cityCenter, SoldierBehaviourType type, boolean master);
 
     Class<? extends EntityLiving> getSoldierClass();
     Class<? extends EntityLiving> getMasterSoldierClass();
@@ -41,7 +41,7 @@ public interface IArienteSystem {
 
     void fixNetworks(World world, BlockPos pos);
 
-    BlockRailBase.EnumRailDirection getBeamDirection(IBlockState state);
+    BlockRailBase.EnumRailDirection getBeamDirection(BlockState state);
 
     boolean hasWorkingUpgrade(ItemStack armor, ArmorUpgradeType type);
 

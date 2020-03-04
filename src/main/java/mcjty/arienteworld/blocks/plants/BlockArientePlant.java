@@ -7,7 +7,7 @@ import net.minecraft.block.BlockBush;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -46,17 +46,17 @@ public class BlockArientePlant extends BlockBush implements net.minecraftforge.c
 
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
         return BLACK_BUSH_AABB;
     }
 
     @Override
-    public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public MapColor getMapColor(BlockState state, IBlockAccess worldIn, BlockPos pos) {
         return MapColor.WOOD;
     }
 
     @Override
-    protected boolean canSustainBush(IBlockState state) {
+    protected boolean canSustainBush(BlockState state) {
         return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS;
     }
 
@@ -71,12 +71,12 @@ public class BlockArientePlant extends BlockBush implements net.minecraftforge.c
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+    public Item getItemDropped(BlockState state, Random rand, int fortune) {
         return Items.STICK;
     }
 
     @Override
-    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
         if (!worldIn.isRemote && stack.getItem() == Items.SHEARS) {
             spawnAsEntity(worldIn, pos, new ItemStack(this, 1, 0));
         } else {

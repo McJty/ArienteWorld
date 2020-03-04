@@ -1,7 +1,7 @@
 package mcjty.arienteworld.varia;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +21,7 @@ public class Tools {
     }
 
 
-    public static IBlockState stringToState(String s) {
+    public static BlockState stringToState(String s) {
         if (s.contains("@")) {
             String[] split = StringUtils.split(s, '@');
             Block value = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(split[0]));
@@ -43,7 +43,7 @@ public class Tools {
         }
     }
 
-    public static String stateToString(IBlockState state) {
+    public static String stateToString(BlockState state) {
         int meta = state.getBlock().getMetaFromState(state);
         if (meta == 0) {
             return state.getBlock().getRegistryName().toString();

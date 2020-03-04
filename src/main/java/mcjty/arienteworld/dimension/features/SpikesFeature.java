@@ -44,9 +44,9 @@ public class SpikesFeature implements IFeature {
         Random random = new Random(world.getSeed() + chunkX * 899809363L + chunkZ * 953485367L);
         random.nextFloat();
 
-        char block1 = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
-        char block2 = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.DARKBLUE));
-        char blockG = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.GRAY));
+        char block1 = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
+        char block2 = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.DARKBLUE));
+        char blockG = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.GRAY));
         char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
 
         int radius = random.nextInt(4) + 2;

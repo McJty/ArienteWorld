@@ -11,32 +11,20 @@ import mcjty.arienteworld.dimension.features.FeatureTools;
 import mcjty.arienteworld.dimension.features.IFeature;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.MapGenBase;
-import net.minecraft.world.gen.MapGenCaves;
-import net.minecraft.world.gen.NoiseGeneratorPerlin;
-import net.minecraftforge.event.terraingen.TerrainGen;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 import static mcjty.arienteworld.dimension.ArienteLandscapeCity.CITY_LEVEL;
-import static net.minecraftforge.event.terraingen.InitMapGenEvent.EventType.CAVE;
 
 public class ArienteChunkGenerator implements IChunkGenerator {
 
@@ -398,7 +386,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                     BlockPos p = new BlockPos(chunkX*16 + dx, dy, chunkZ*16 + dz);
                     TileEntity te = worldObj.getTileEntity(p);
                     if (te instanceof GenericTileEntity) {
-                        IBlockState state = worldObj.getBlockState(p);
+                        BlockState state = worldObj.getBlockState(p);
                         worldObj.setBlockState(p, state, 3);
                         ((GenericTileEntity) te).markDirtyClient();
                     }
@@ -415,7 +403,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                         Map<String, Object> map = equipment.get(p);
                         logic.setEntityId(new ResourceLocation((String)map.get("mob")));
                         te.markDirty();
-                        IBlockState state = worldObj.getBlockState(p);
+                        BlockState state = worldObj.getBlockState(p);
                         worldObj.notifyBlockUpdate(p, state, state, 3);
                     }
                 }

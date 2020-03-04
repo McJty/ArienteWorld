@@ -1,9 +1,10 @@
 package mcjty.arienteworld.biomes.features;
 
 import mcjty.arienteworld.blocks.ModBlocks;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
@@ -12,8 +13,8 @@ import java.util.Random;
 
 public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
 
-    private static final IBlockState WOOD = ModBlocks.bluelog.getDefaultState();
-    private static final IBlockState LEAVES = ModBlocks.blueleaves.getDefaultState();
+    private static final BlockState WOOD = ModBlocks.bluelog.getDefaultState();
+    private static final BlockState LEAVES = ModBlocks.blueleaves.getDefaultState();
 
     public WorldGenArianteVariantTree() {
         super(false);
@@ -27,8 +28,8 @@ public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
 
         if (y >= 1 && y + i + 1 < 256) {
             BlockPos blockpos = position.down();
-            IBlockState state = worldIn.getBlockState(blockpos);
-            boolean isSoil = state.getBlock().canSustainPlant(state, worldIn, blockpos, EnumFacing.UP, ((net.minecraft.block.BlockSapling) Blocks.SAPLING));
+            BlockState state = worldIn.getBlockState(blockpos);
+            boolean isSoil = state.getBlock().canSustainPlant(state, worldIn, blockpos, Direction.UP, ((net.minecraft.block.SaplingBlock) Blocks.SAPLING));
 
             if (!(isSoil && position.getY() < worldIn.getHeight() - i - 1)) {
                 return false;
@@ -39,7 +40,7 @@ public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
                 this.onPlantGrow(worldIn, blockpos.east(), position);
                 this.onPlantGrow(worldIn, blockpos.south(), position);
                 this.onPlantGrow(worldIn, blockpos.south().east(), position);
-                EnumFacing enumfacing = EnumFacing.Plane.HORIZONTAL.random(rand);
+                Direction enumfacing = Direction.Plane.HORIZONTAL.random(rand);
                 int i1 = i - rand.nextInt(4);
                 int j1 = 2 - rand.nextInt(3);
                 int k1 = x;
@@ -168,7 +169,7 @@ public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
 
     private void placeLeafAt(World worldIn, int x, int y, int z) {
         BlockPos blockpos = new BlockPos(x, y, z);
-        IBlockState state = worldIn.getBlockState(blockpos);
+        BlockState state = worldIn.getBlockState(blockpos);
 
         if (state.getBlock().isAir(state, worldIn, blockpos)) {
             this.setBlockAndNotifyAdequately(worldIn, blockpos, LEAVES);
@@ -177,7 +178,7 @@ public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
 
     //Just a helper macro
     private void onPlantGrow(World world, BlockPos pos, BlockPos source) {
-        IBlockState state = world.getBlockState(pos);
+        BlockState state = world.getBlockState(pos);
         state.getBlock().onPlantGrow(state, world, pos, source);
     }
 }

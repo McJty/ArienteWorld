@@ -17,7 +17,7 @@ import mcjty.lib.varia.RedstoneMode;
 import mcjty.lib.varia.WeightedRandom;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -29,7 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -58,9 +58,9 @@ public class CityAI implements ICityAI {
     private Set<BlockPos> alarms = new HashSet<>();
     private Set<BlockPos> negariteGenerators = new HashSet<>();
     private Set<BlockPos> posiriteGenerators = new HashSet<>();
-    private Map<BlockPos, EnumFacing> guardPositions = new HashMap<>();
-    private Map<BlockPos, EnumFacing> soldierPositions = new HashMap<>();
-    private Map<BlockPos, EnumFacing> masterSoldierPositions = new HashMap<>();
+    private Map<BlockPos, Direction> guardPositions = new HashMap<>();
+    private Map<BlockPos, Direction> soldierPositions = new HashMap<>();
+    private Map<BlockPos, Direction> masterSoldierPositions = new HashMap<>();
     private AxisAlignedBB soldierBoundingbox = null;
 
     private int sentinelMovementTicks = 6;
@@ -179,21 +179,21 @@ public class CityAI implements ICityAI {
 
     private AxisAlignedBB getSoldierBoundingbox() {
         if (soldierBoundingbox == null) {
-            for (Map.Entry<BlockPos, EnumFacing> entry : soldierPositions.entrySet()) {
+            for (Map.Entry<BlockPos, Direction> entry : soldierPositions.entrySet()) {
                 if (soldierBoundingbox == null) {
                     soldierBoundingbox = new AxisAlignedBB(entry.getKey());
                 } else {
                     soldierBoundingbox.union(new AxisAlignedBB(entry.getKey()));
                 }
             }
-            for (Map.Entry<BlockPos, EnumFacing> entry : masterSoldierPositions.entrySet()) {
+            for (Map.Entry<BlockPos, Direction> entry : masterSoldierPositions.entrySet()) {
                 if (soldierBoundingbox == null) {
                     soldierBoundingbox = new AxisAlignedBB(entry.getKey());
                 } else {
                     soldierBoundingbox.union(new AxisAlignedBB(entry.getKey()));
                 }
             }
-            for (Map.Entry<BlockPos, EnumFacing> entry : guardPositions.entrySet()) {
+            for (Map.Entry<BlockPos, Direction> entry : guardPositions.entrySet()) {
                 if (soldierBoundingbox == null) {
                     soldierBoundingbox = new AxisAlignedBB(entry.getKey());
                 } else {
@@ -341,7 +341,7 @@ public class CityAI implements ICityAI {
 
 
                     BlockPos pos = path.start;
-                    IBlockState state = world.getBlockState(pos);
+                    BlockState state = world.getBlockState(pos);
                     BlockRailBase.EnumRailDirection dir = ModSetup.arienteSystem.getBeamDirection(state);
                     double d0 = 0.0D;
 
@@ -351,7 +351,7 @@ public class CityAI implements ICityAI {
 
                     Entity entity = ModSetup.arienteSystem.createFluxLevitatorEntity(world, pos.getX() + 0.5D, pos.getY() + 0.0625D + d0, pos.getZ() + 0.5D);
                     IFluxLevitatorEntity levitator = (IFluxLevitatorEntity) entity;
-                    if (path.direction == EnumFacing.SOUTH || path.direction == EnumFacing.EAST) {
+                    if (path.direction == Direction.SOUTH || path.direction == Direction.EAST) {
                         levitator.changeSpeed(-50);
                     } else {
                         levitator.changeSpeed(50);
@@ -379,10 +379,10 @@ public class CityAI implements ICityAI {
         levitator = -1;
     }
 
-    private BlockPos isValidBeam(World world, ChunkPos c, EnumFacing direction, int minOffset, int maxOffset) {
+    private BlockPos isValidBeam(World world, ChunkPos c, Direction direction, int minOffset, int maxOffset) {
         for (int i = minOffset; i <= maxOffset; i++) {
             BlockPos pos = new BlockPos(c.x * 16 + 8 + direction.getDirectionVec().getX() * i, 32, (c.z * 16) + 8 + direction.getDirectionVec().getZ() * i);
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             if (state.getBlock() == ArienteStuff.fluxBeamBlock) {
                 return pos;
             }
@@ -391,21 +391,21 @@ public class CityAI implements ICityAI {
     }
 
     private static class LevitatorPath {
-        private final EnumFacing direction;
+        private final Direction direction;
         private final BlockPos start;
         private final BlockPos end;
 
-        public LevitatorPath(EnumFacing direction, BlockPos start, BlockPos end) {
+        public LevitatorPath(Direction direction, BlockPos start, BlockPos end) {
             this.direction = direction;
             this.start = start;
             this.end = end;
         }
     }
 
-    private boolean isValidPath(World world, BlockPos start, BlockPos end, EnumFacing facing) {
+    private boolean isValidPath(World world, BlockPos start, BlockPos end, Direction facing) {
         BlockPos p = start;
         while (!end.equals(p)) {
-            IBlockState state = world.getBlockState(p);
+            BlockState state = world.getBlockState(p);
             if (state.getBlock() != ArienteStuff.fluxBeamBlock) {
                 return false;
             }
@@ -419,7 +419,7 @@ public class CityAI implements ICityAI {
     private LevitatorPath findValidBeam(World world) {
         CityAISystem system = CityAISystem.getCityAISystem(world);
         List<LevitatorPath> positions = new ArrayList<>();
-        for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+        for (Direction facing : Direction.HORIZONTALS) {
             ChunkPos otherCoord = new ChunkPos(center.x + facing.getDirectionVec().getX() * 16,
                     center.z + facing.getDirectionVec().getZ() * 16);
             CityAI otherCity = system.getCityAI(otherCoord);
@@ -610,7 +610,7 @@ public class CityAI implements ICityAI {
 
         System.out.println("CityAI.spawnSoldier at " + pos);
 
-        EnumFacing facing = soldierPositions.get(pos);
+        Direction facing = soldierPositions.get(pos);
         EntityLivingBase entity = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER,
                 random.nextDouble() < plan.getMasterChance());
         entity.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));    // @todo need a lasergun
@@ -858,7 +858,7 @@ public class CityAI implements ICityAI {
                     for (int z = dz * 16; z < dz * 16 + 16; z++) {
                         for (int y = starty; y < starty + 100; y++) {
                             BlockPos p = new BlockPos(x, y, z);
-                            IBlockState state = world.getBlockState(p);
+                            BlockState state = world.getBlockState(p);
                             Block block = state.getBlock();
                             if (block == ModBlocks.guardDummy) {
                                 guardPositions.put(p, state.getValue(BaseBlock.FACING_HORIZ));
@@ -991,18 +991,18 @@ public class CityAI implements ICityAI {
     }
 
     private void initGuards(World world) {
-        for (Map.Entry<BlockPos, EnumFacing> entry : guardPositions.entrySet()) {
+        for (Map.Entry<BlockPos, Direction> entry : guardPositions.entrySet()) {
             BlockPos pos = entry.getKey();
-            EnumFacing facing = entry.getValue();
+            Direction facing = entry.getValue();
             EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_GUARD, false);
             soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
     }
 
     private void initMasterSoldiers(World world) {
-        for (Map.Entry<BlockPos, EnumFacing> entry : masterSoldierPositions.entrySet()) {
+        for (Map.Entry<BlockPos, Direction> entry : masterSoldierPositions.entrySet()) {
             BlockPos pos = entry.getKey();
-            EnumFacing facing = entry.getValue();
+            Direction facing = entry.getValue();
             EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER, true);
             soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
@@ -1071,14 +1071,14 @@ public class CityAI implements ICityAI {
     }
 
     public void enableEditMode(World world) {
-        for (Map.Entry<BlockPos, EnumFacing> entry : guardPositions.entrySet()) {
-            world.setBlockState(entry.getKey(), ModBlocks.guardDummy.getDefaultState().withProperty(BaseBlock.FACING_HORIZ, entry.getValue()));
+        for (Map.Entry<BlockPos, Direction> entry : guardPositions.entrySet()) {
+            world.setBlockState(entry.getKey(), ModBlocks.guardDummy.getDefaultState().with(BaseBlock.FACING_HORIZ, entry.getValue()));
         }
-        for (Map.Entry<BlockPos, EnumFacing> entry : soldierPositions.entrySet()) {
-            world.setBlockState(entry.getKey(), ModBlocks.soldierDummy.getDefaultState().withProperty(BaseBlock.FACING_HORIZ, entry.getValue()));
+        for (Map.Entry<BlockPos, Direction> entry : soldierPositions.entrySet()) {
+            world.setBlockState(entry.getKey(), ModBlocks.soldierDummy.getDefaultState().with(BaseBlock.FACING_HORIZ, entry.getValue()));
         }
-        for (Map.Entry<BlockPos, EnumFacing> entry : masterSoldierPositions.entrySet()) {
-            world.setBlockState(entry.getKey(), ModBlocks.masterSoldierDummy.getDefaultState().withProperty(BaseBlock.FACING_HORIZ, entry.getValue()));
+        for (Map.Entry<BlockPos, Direction> entry : masterSoldierPositions.entrySet()) {
+            world.setBlockState(entry.getKey(), ModBlocks.masterSoldierDummy.getDefaultState().with(BaseBlock.FACING_HORIZ, entry.getValue()));
         }
     }
 
@@ -1167,9 +1167,9 @@ public class CityAI implements ICityAI {
         }
     }
 
-    private NBTTagList writeMapToNBT(Map<BlockPos, EnumFacing> map) {
+    private NBTTagList writeMapToNBT(Map<BlockPos, Direction> map) {
         NBTTagList list = new NBTTagList();
-        for (Map.Entry<BlockPos, EnumFacing> entry : map.entrySet()) {
+        for (Map.Entry<BlockPos, Direction> entry : map.entrySet()) {
             NBTTagCompound tc = NBTUtil.createPosTag(entry.getKey());
             tc.setInteger("facing", entry.getValue().ordinal());
             list.appendTag(tc);
@@ -1177,12 +1177,12 @@ public class CityAI implements ICityAI {
         return list;
     }
 
-    private void readMapFromNBT(NBTTagList list, Map<BlockPos, EnumFacing> map) {
+    private void readMapFromNBT(NBTTagList list, Map<BlockPos, Direction> map) {
         map.clear();
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound tc = list.getCompoundTagAt(i);
             BlockPos pos = NBTUtil.getPosFromTag(tc);
-            EnumFacing facing = EnumFacing.VALUES[tc.getInteger("facing")];
+            Direction facing = Direction.VALUES[tc.getInteger("facing")];
             map.put(pos, facing);
         }
     }

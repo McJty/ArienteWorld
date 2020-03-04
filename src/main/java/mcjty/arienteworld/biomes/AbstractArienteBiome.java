@@ -8,7 +8,7 @@ import mcjty.arienteworld.biomes.features.WorldGenBlueTree;
 import mcjty.arienteworld.blocks.ModBlocks;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,11 +21,11 @@ import java.util.Random;
 
 public abstract class AbstractArienteBiome extends Biome implements IArienteBiome {
 
-    private static final IBlockState GLOW_TRUNK = ModBlocks.glowlog.getDefaultState();
-    private static final IBlockState GLOW_LEAVES = ModBlocks.glowleaves.getDefaultState();
-    private static final IBlockState BLUE_TRUNK = ModBlocks.bluelog.getDefaultState();
-    private static final IBlockState DARK_LEAVES = ModBlocks.darkleaves.getDefaultState();
-    private static final IBlockState BLUE_LEAVES = ModBlocks.blueleaves.getDefaultState();
+    private static final BlockState GLOW_TRUNK = ModBlocks.glowlog.getDefaultState();
+    private static final BlockState GLOW_LEAVES = ModBlocks.glowleaves.getDefaultState();
+    private static final BlockState BLUE_TRUNK = ModBlocks.bluelog.getDefaultState();
+    private static final BlockState DARK_LEAVES = ModBlocks.darkleaves.getDefaultState();
+    private static final BlockState BLUE_LEAVES = ModBlocks.blueleaves.getDefaultState();
 
     private static final WorldGenArienteSmallTree GLASS_TREE = new WorldGenArienteSmallTree(GLOW_TRUNK, GLOW_LEAVES);
     private static final WorldGenArienteSmallTree DARK_TREE = new WorldGenArienteSmallTree(BLUE_TRUNK, DARK_LEAVES);
@@ -96,8 +96,8 @@ public abstract class AbstractArienteBiome extends Biome implements IArienteBiom
 
     protected final void generateBlocks(World world, Random rand, ChunkPrimer primer, int x, int z, double noiseVal) {
         int i = world.getSeaLevel();
-        IBlockState topState = this.topBlock;
-        IBlockState fillerState = this.fillerBlock;
+        BlockState topState = this.topBlock;
+        BlockState fillerState = this.fillerBlock;
         int j = -1;
         int k = (int) (noiseVal / 3.0D + 3.0D + rand.nextDouble() * 0.25D);
         int dz = x & 15;    // swapped?
@@ -108,7 +108,7 @@ public abstract class AbstractArienteBiome extends Biome implements IArienteBiom
             if (y <= rand.nextInt(5)) {
                 primer.setBlockState(dx, y, dz, BEDROCK);
             } else {
-                IBlockState state = primer.getBlockState(dx, y, dz);
+                BlockState state = primer.getBlockState(dx, y, dz);
 
                 if (state.getMaterial() == Material.AIR) {
                     j = -1;

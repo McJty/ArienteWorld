@@ -5,8 +5,7 @@ import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.cities.*;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
 
@@ -31,9 +30,9 @@ public class ArienteDungeonGenerator {
         if (!initialized) {
             airChar = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
             baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
-            fillerChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_bricks.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
-            cityWallChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
-            cityWallTop = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().withProperty(MarbleColor.COLOR, MarbleColor.BLACK));
+            fillerChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_bricks.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
+            cityWallChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
+            cityWallTop = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
 
             initialized = true;
         }
@@ -78,7 +77,7 @@ public class ArienteDungeonGenerator {
     private static void addStates(Block block, Set<Character> set) {
         for (int m = 0; m < 16; m++) {
             try {
-                IBlockState state = block.getStateFromMeta(m);
+                BlockState state = block.getStateFromMeta(m);
                 set.add((char) Block.BLOCK_STATE_IDS.get(state));
             } catch (Exception e) {
                 // Ignore
@@ -179,7 +178,7 @@ public class ArienteDungeonGenerator {
 
                         if (transform != Transform.ROTATE_NONE) {
                             if (getRotatableChars().contains(b)) {
-                                IBlockState bs = Block.BLOCK_STATE_IDS.getByValue(b);
+                                BlockState bs = Block.BLOCK_STATE_IDS.getByValue(b);
                                 bs = bs.withRotation(transform.getMcRotation());
                                 b = (char) Block.BLOCK_STATE_IDS.get(bs);
                             }

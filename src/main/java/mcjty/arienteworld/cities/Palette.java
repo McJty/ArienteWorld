@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import mcjty.arienteworld.varia.Tools;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +18,7 @@ import java.util.Set;
 public class Palette implements IAsset {
 
     private String name;
-    private final Map<PaletteIndex, IBlockState> palette = new HashMap<>();
+    private final Map<PaletteIndex, BlockState> palette = new HashMap<>();
 
     public Palette() {
     }
@@ -50,7 +50,7 @@ public class Palette implements IAsset {
         return name;
     }
 
-    public Map<PaletteIndex, IBlockState> getPalette() {
+    public Map<PaletteIndex, BlockState> getPalette() {
         return palette;
     }
 
@@ -69,7 +69,7 @@ public class Palette implements IAsset {
                     new PaletteIndex(cidx.charAt(0), ' ');
             if (o.has("block")) {
                 String block = o.get("block").getAsString();
-                IBlockState state = Tools.stringToState(block);
+                BlockState state = Tools.stringToState(block);
                 palette.put(c, state);
             } else {
                 throw new RuntimeException("Illegal palette!");
@@ -90,12 +90,12 @@ public class Palette implements IAsset {
         object.add("type", new JsonPrimitive("palette"));
         object.add("name", new JsonPrimitive(name));
         JsonArray array = new JsonArray();
-        for (Map.Entry<PaletteIndex, IBlockState> entry : palette.entrySet()) {
+        for (Map.Entry<PaletteIndex, BlockState> entry : palette.entrySet()) {
             JsonObject o = new JsonObject();
             PaletteIndex idx = entry.getKey();
             o.add("char", new JsonPrimitive(String.valueOf(idx.getI1()) + idx.getI2()));
-            if (entry.getValue() instanceof IBlockState) {
-                IBlockState state = (IBlockState) entry.getValue();
+            if (entry.getValue() instanceof BlockState) {
+                BlockState state = (BlockState) entry.getValue();
                 o.add("block", new JsonPrimitive(Tools.stateToString(state)));
             }
             array.add(o);
@@ -104,7 +104,7 @@ public class Palette implements IAsset {
         return object;
     }
 
-    public Palette addMapping(PaletteIndex c, IBlockState state) {
+    public Palette addMapping(PaletteIndex c, BlockState state) {
         palette.put(c, state);
         return this;
     }

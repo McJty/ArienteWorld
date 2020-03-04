@@ -1,10 +1,10 @@
 package mcjty.arienteworld.biomes;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.layer.GenLayer;
+import net.minecraft.world.gen.layer.BiomeLayer;
 import net.minecraft.world.gen.layer.IntCache;
 
-public class GenLayerArienteBiomes extends GenLayer {
+public class GenLayerArienteBiomes extends BiomeLayer {
 
     protected Biome commonBiomes[] = (new Biome[]{
             ModBiomes.arientePlains,
