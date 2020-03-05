@@ -2,9 +2,12 @@ package mcjty.arienteworld.setup;
 
 
 import mcjty.arienteworld.ArienteWorld;
+import mcjty.arienteworld.biomes.*;
 import mcjty.arienteworld.blocks.DummyBlock;
 import mcjty.arienteworld.blocks.plants.BlockArientePlant;
 import mcjty.arienteworld.dimension.ArienteModDimension;
+import mcjty.arienteworld.oregen.OverworldDungeonFeature;
+import mcjty.arienteworld.oregen.OverworldDungeonPlacement;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -14,6 +17,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.ModDimension;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -29,6 +34,8 @@ public class Registration {
     public static final DeferredRegister<Biome> BIOMES = new DeferredRegister<>(ForgeRegistries.BIOMES, MODID);
     public static final DeferredRegister<SoundEvent> SOUNDS = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, MODID);
     public static final DeferredRegister<ModDimension> DIMENSIONS = new DeferredRegister<>(ForgeRegistries.MOD_DIMENSIONS, MODID);
+    public static final DeferredRegister<Feature<?>> FEATURES = new DeferredRegister<>(ForgeRegistries.FEATURES, MODID);
+    public static final DeferredRegister<Placement<?>> PLACEMENTS = new DeferredRegister<>(ForgeRegistries.DECORATORS, MODID);
 
     public static Item.Properties createStandardProperties() {
         return new Item.Properties().group(ArienteWorld.setup.getTab());
@@ -40,7 +47,19 @@ public class Registration {
         BIOMES.register(FMLJavaModLoadingContext.get().getModEventBus());
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
         DIMENSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        FEATURES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        PLACEMENTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
+
+    public static final RegistryObject<OverworldDungeonPlacement> DUNGEON_PLACEMENT = PLACEMENTS.register("overworld_dungeon", OverworldDungeonPlacement::new);
+    public static final RegistryObject<OverworldDungeonFeature> DUNGEON_FEATURE = FEATURES.register("overworld_dungeon", OverworldDungeonFeature::new);
+
+    public static final RegistryObject<BiomeArientePlains> ARIENTE_PLAINS = BIOMES.register("ariente_plains", ModBiomes::createBiomePlains);
+    public static final RegistryObject<BiomeArienteHills> ARIENTE_HILLS = BIOMES.register("ariente_hills", ModBiomes::createBiomeHills);
+    public static final RegistryObject<BiomeArienteOcean> ARIENTE_OCEAN = BIOMES.register("ariente_ocean", ModBiomes::createBiomeOcean);
+    public static final RegistryObject<BiomeArienteForest> ARIENTE_FOREST = BIOMES.register("ariente_forest", ModBiomes::createBiomeForest);
+    public static final RegistryObject<BiomeArienteRough> ARIENTE_ROUGH = BIOMES.register("ariente_rough", ModBiomes::createBiomeRough);
+    public static final RegistryObject<BiomeArienteCity> ARIENTE_CITY = BIOMES.register("ariente_city", ModBiomes::createBiomeCity);
 
     public static final RegistryObject<BaseBlock> GUARD_DUMMY = BLOCKS.register("guard_dummy", () -> new DummyBlock(new BlockBuilder()));
     public static final RegistryObject<Item> GUARD_DUMMY_ITEM = ITEMS.register("guard_dummy", () -> new BlockItem(GUARD_DUMMY.get(), createStandardProperties()));

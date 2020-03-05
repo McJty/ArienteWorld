@@ -5,6 +5,7 @@ import mcjty.arienteworld.config.WorldgenConfiguration;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -124,13 +125,13 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
         return null;
     }
 
-    private static BlockPos getDungeonPos(World world, int cx, int cz) {
+    public static BlockPos getDungeonPos(IWorld world, int cx, int cz) {
         return new BlockPos(cx * 16 + 8, getDungeonHeight(world, cx, cz), cz * 16 + 8);
     }
 
 
     /// Return true if this chunk can contain a dungeon and the warper is still present
-    private static boolean isValidDungeonChunk(World world, int chunkX, int chunkZ) {
+    public static boolean isValidDungeonChunk(IWorld world, int chunkX, int chunkZ) {
         if (isDungeonChunk(world, chunkX, chunkZ)) {
             BlockPos pos = getDungeonPos(world, chunkX, chunkZ);
             for (int dx = -2 ; dx <= 2 ; dx++) {
@@ -148,7 +149,7 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
     }
 
     /// Return true if this chunk can contain a dungeon
-    private static boolean isDungeonChunk(World world, int chunkX, int chunkZ) {
+    private static boolean isDungeonChunk(IWorld world, int chunkX, int chunkZ) {
         // Only for the overworld!
         if (world.getDimension().getType() == DimensionType.OVERWORLD) {
             Random rnd = new Random(world.getSeed() + chunkX * 198491317L + chunkZ * 776531419L);
@@ -159,7 +160,7 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
         }
     }
 
-    private static int getDungeonHeight(World world, int chunkX, int chunkZ) {
+    private static int getDungeonHeight(IWorld world, int chunkX, int chunkZ) {
         Random rnd = new Random(world.getSeed() + chunkX * 23567813L + chunkZ * 923568029L);
         rnd.nextFloat();
         return rnd.nextInt(25) + 8;

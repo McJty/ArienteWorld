@@ -1,19 +1,9 @@
 package mcjty.arienteworld.biomes;
 
 import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.BiomeLayer;
 
 public class GenLayerArienteBiomes extends BiomeLayer {
-
-    protected Biome commonBiomes[] = (new Biome[]{
-            ModBiomes.arientePlains,
-            ModBiomes.arienteHills,
-            ModBiomes.arienteOcean,
-            ModBiomes.arienteForest,
-            ModBiomes.arienteRough,
-            ModBiomes.arienteCity
-    });
 
     public GenLayerArienteBiomes(WorldType type, int l) {
         super(type, l);

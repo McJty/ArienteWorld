@@ -2,19 +2,22 @@ package mcjty.arienteworld.setup;
 
 import mcjty.ariente.api.IArienteSystem;
 import mcjty.arienteworld.ForgeEventHandlers;
-import mcjty.arienteworld.blocks.ModBlocks;
-import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.oregen.WorldGen;
-import mcjty.arienteworld.oregen.WorldTickHandler;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModSetup extends DefaultModSetup {
 
@@ -35,6 +38,22 @@ public class ModSetup extends DefaultModSetup {
         WorldGen.init();
         FeatureRegistry.init();
 //        ArienteMessages.registerMessages("arienteWorld");
+
+        BiomeDictionary.addTypes(Registration.ARIENTE_CITY.get(), BiomeDictionary.Type.SPARSE);
+        BiomeDictionary.addTypes(Registration.ARIENTE_FOREST.get(), BiomeDictionary.Type.FOREST);
+        BiomeDictionary.addTypes(Registration.ARIENTE_HILLS.get(), BiomeDictionary.Type.HILLS);
+        BiomeDictionary.addTypes(Registration.ARIENTE_ROUGH.get(), BiomeDictionary.Type.DEAD, BiomeDictionary.Type.HILLS);
+        BiomeDictionary.addTypes(Registration.ARIENTE_OCEAN.get(), BiomeDictionary.Type.DEAD, BiomeDictionary.Type.OCEAN);
+        BiomeDictionary.addTypes(Registration.ARIENTE_PLAINS.get(), BiomeDictionary.Type.SPARSE);
+
+        for (Biome biome : ForgeRegistries.BIOMES) {
+            if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD)) {
+                biome.addFeature(GenerationStage.Decoration.RAW_GENERATION, Registration.DUNGEON_FEATURE.get()
+                        .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
+                        .withPlacement(Registration.DUNGEON_PLACEMENT.get().configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
+                );
+            }
+        }
     }
 
     @Override

@@ -1,40 +1,78 @@
 package mcjty.arienteworld.biomes;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
+import net.minecraft.world.gen.IExtendedNoiseRandom;
+import net.minecraft.world.gen.LazyAreaLayerContext;
+import net.minecraft.world.gen.area.IArea;
+import net.minecraft.world.gen.area.IAreaFactory;
+import net.minecraft.world.gen.area.LazyArea;
+import net.minecraft.world.gen.layer.Layer;
+import net.minecraft.world.gen.layer.ZoomLayer;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.function.LongFunction;
 
 public class ArienteBiomeProvider extends BiomeProvider {
 
+    private static Set<Biome> BIOMES;
+    private final Layer genBiomes;
+
     public ArienteBiomeProvider(World world) {
-        super(Collections.emptySet());
+        super(getBiomes());
+
+        //generates the world and biome layouts
+        Layer[] agenlayer = buildOverworldProcedure(world.getSeed(), world.getWorldType());
+        this.genBiomes = agenlayer[0];
+        ArienteBiomeLayer.setSeed(world.getSeed());
+
         // @todo 1.15
-//        super(world.getWorldInfo());
-        getBiomesToSpawnIn().clear();
-        getBiomesToSpawnIn().add(ModBiomes.arientePlains);
-        getBiomesToSpawnIn().add(ModBiomes.arienteHills);
-        getBiomesToSpawnIn().add(ModBiomes.arienteOcean);
-        getBiomesToSpawnIn().add(ModBiomes.arienteForest);
-        getBiomesToSpawnIn().add(ModBiomes.arienteRough);
-        getBiomesToSpawnIn().add(ModBiomes.arienteCity);
-        makeLayers(world.getSeed());
+//        getBiomesToSpawnIn().clear();
+//        getBiomesToSpawnIn().add(Registration.ARIENTE_PLAINS.get());
+//        getBiomesToSpawnIn().add(Registration.ARIENTE_HILLS.get());
+//        getBiomesToSpawnIn().add(Registration.ARIENTE_OCEAN.get());
+//        getBiomesToSpawnIn().add(Registration.ARIENTE_FOREST.get());
+//        getBiomesToSpawnIn().add(Registration.ARIENTE_ROUGH.get());
+//        getBiomesToSpawnIn().add(Registration.ARIENTE_CITY.get());
+//        makeLayers(world.getSeed());
     }
 
-    public ArienteBiomeProvider(Set<Biome> biomes) {
-        super(biomes);
-        // @todo 1.15
+    public static Layer[] buildOverworldProcedure(long seed, WorldType typeIn) {
+        ImmutableList<IAreaFactory<LazyArea>> immutablelist = buildOverworldProcedure(typeIn, (p_215737_2_) -> {
+            return new LazyAreaLayerContext(25, seed, p_215737_2_);
+        });
+        Layer genlayer = new Layer(immutablelist.get(0));
+        Layer genlayer1 = new Layer(immutablelist.get(1));
+        Layer genlayer2 = new Layer(immutablelist.get(2));
+        return new Layer[]{genlayer, genlayer1, genlayer2};
+    }
+
+    public static <T extends IArea, C extends IExtendedNoiseRandom<T>> ImmutableList<IAreaFactory<T>> buildOverworldProcedure(WorldType worldTypeIn, LongFunction<C> contextFactory) {
+        IAreaFactory<T> layer = ArienteBiomeLayer.INSTANCE.apply(contextFactory.apply(200L));
+        layer = ZoomLayer.FUZZY.apply(contextFactory.apply(2000L), layer);
+        layer = ZoomLayer.NORMAL.apply((IExtendedNoiseRandom<T>) contextFactory.apply(1001L), layer);
+        layer = ZoomLayer.NORMAL.apply((IExtendedNoiseRandom<T>) contextFactory.apply(1001L), layer);
+        return ImmutableList.of(layer, layer, layer);
+    }
+
+
+    private static Set<Biome> getBiomes() {
+        if (BIOMES == null) {
+            BIOMES = new HashSet<>();
+        }
+        return BIOMES;
     }
 
     @Override
-    public Biome getNoiseBiome(int i, int i1, int i2) {
-        // @todo 1.15
-        return null;
+    public Biome getNoiseBiome(int x, int y, int z) {
+        return genBiomes.func_215738_a(x, z);
     }
 
-    private void makeLayers(long seed) {
+//    private void makeLayers(long seed) {
         // @todo 1.15
 //        GenLayer biomes = new GenLayerArienteBiomes(1L);
 //
@@ -54,6 +92,6 @@ public class ArienteBiomeProvider extends BiomeProvider {
 //
 //        genBiomes = biomes;
 //        biomeIndexLayer = genlayervoronoizoom;
-    }
+//    }
 
 }
