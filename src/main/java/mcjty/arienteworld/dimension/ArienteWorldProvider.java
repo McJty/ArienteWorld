@@ -1,24 +1,6 @@
 package mcjty.arienteworld.dimension;
 
-import mcjty.arienteworld.biomes.ArienteBiomeProvider;
-import mcjty.arienteworld.setup.ClientProxy;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.MusicTicker;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class ArienteWorldProvider extends WorldProvider {
+public class ArienteWorldProvider {} /* @todo 1.15 extends WorldProvider {
 
     @Override
     @Nonnull
@@ -136,3 +118,4 @@ public class ArienteWorldProvider extends WorldProvider {
         return super.getSkyRenderer();
     }
 }
+*/

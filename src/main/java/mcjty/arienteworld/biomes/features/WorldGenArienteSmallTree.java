@@ -1,19 +1,6 @@
 package mcjty.arienteworld.biomes.features;
 
-import net.minecraft.block.BlockCocoa;
-import net.minecraft.block.BlockVine;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.BlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenAbstractTree;
-
-import java.util.Random;
-
-public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
+public class WorldGenArienteSmallTree {} /* @todo 1.15 extends WorldGenAbstractTree {
 
     private final int minTreeHeight;
     private final boolean vinesGrow;
@@ -48,7 +35,7 @@ public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
                     k = 2;
                 }
 
-                BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+                BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
                 for (int l = position.getX() - k; l <= position.getX() + k && flag; ++l) {
                     for (int i1 = position.getZ() - k; i1 <= position.getZ() + k && flag; ++i1) {
@@ -126,7 +113,7 @@ public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
                         for (int k3 = position.getY() - 3 + i; k3 <= position.getY() + i; ++k3) {
                             int j4 = k3 - (position.getY() + i);
                             int k4 = 2 - j4 / 2;
-                            BlockPos.MutableBlockPos blockpos$mutableblockpos1 = new BlockPos.MutableBlockPos();
+                            BlockPos.Mutable blockpos$mutableblockpos1 = new BlockPos.Mutable();
 
                             for (int l4 = position.getX() - k4; l4 <= position.getX() + k4; ++l4) {
                                 for (int i5 = position.getZ() - k4; i5 <= position.getZ() + k4; ++i5) {
@@ -199,4 +186,4 @@ public class WorldGenArienteSmallTree extends WorldGenAbstractTree {
         }
     }
 
-}
+}*/

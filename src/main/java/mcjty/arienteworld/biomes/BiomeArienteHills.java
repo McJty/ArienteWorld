@@ -1,8 +1,13 @@
 package mcjty.arienteworld.biomes;
 
 import mcjty.arienteworld.dimension.features.*;
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.GenerationStage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,17 +25,19 @@ public class BiomeArienteHills extends AbstractArienteBiome {
     }
 
 
-    public BiomeArienteHills(BiomeProperties properties) {
+    public BiomeArienteHills(Builder properties) {
         super(properties);
-        this.decorator.treesPerChunk = 0;
-        this.decorator.extraTreeChance = 0;
-        this.decorator.flowersPerChunk = 0;
+        // @todo 1.15
+//        this.decorator.treesPerChunk = 0;
+//        this.decorator.extraTreeChance = 0;
+//        this.decorator.flowersPerChunk = 0;
     }
 
     @Override
-    public void decorate(World worldIn, Random rand, BlockPos pos) {
-        super.decorate(worldIn, rand, pos);
-        generateFlowers(worldIn, rand, 5);
+    public void decorate(GenerationStage.Decoration stage, ChunkGenerator<? extends GenerationSettings> chunkGenerator, IWorld worldIn, long seed, SharedSeedRandom random, BlockPos pos) {
+        super.decorate(stage, chunkGenerator, worldIn, seed, random, pos);
+        // @todo 1.15
+//        generateFlowers(worldIn.getWorld(), random, 5);
     }
 
     @Override

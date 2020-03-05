@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.*;
@@ -304,7 +305,7 @@ public class BuildingPart implements IAsset {
         return slices[y].getSlice().get(z * xSize + x);
     }
 
-    public Character get(CompiledPalette palette, int x, int y, int z) {
+    public BlockState get(CompiledPalette palette, int x, int y, int z) {
         return palette.get(slices[y].getSlice().get(z * xSize + x));
     }
 

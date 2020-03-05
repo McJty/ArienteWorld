@@ -7,7 +7,7 @@ import com.google.gson.JsonPrimitive;
 import mcjty.lib.varia.WeightedRandom;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

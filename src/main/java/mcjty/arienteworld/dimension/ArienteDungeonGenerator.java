@@ -5,7 +5,9 @@ import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.cities.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
 
@@ -19,30 +21,30 @@ public class ArienteDungeonGenerator {
     private boolean initialized = false;
     private ArienteChunkGenerator generator;
 
-    private char airChar;
-    private char baseChar;
-    private char fillerChar;
-    private char cityWallChar;
-    private char cityWallTop;
+    private BlockState airChar;
+    private BlockState baseChar;
+    private BlockState fillerChar;
+    private BlockState cityWallChar;
+    private BlockState cityWallTop;
 
     public void initialize(ArienteChunkGenerator generator) {
         this.generator = generator;
         if (!initialized) {
-            airChar = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
-            baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
-            fillerChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_bricks.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
-            cityWallChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
-            cityWallTop = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
+            airChar = Blocks.AIR.getDefaultState();
+            baseChar = ArienteStuff.marble.getDefaultState();
+            fillerChar = ArienteStuff.marble_bricks.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
+            cityWallChar = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
+            cityWallTop = ArienteStuff.marble_smooth.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
 
             initialized = true;
         }
     }
 
-    public char getCityWallChar() {
+    public BlockState getCityWallChar() {
         return cityWallChar;
     }
 
-    public char getCityWallTop() {
+    public BlockState getCityWallTop() {
         return cityWallTop;
     }
 
@@ -77,7 +79,7 @@ public class ArienteDungeonGenerator {
     private static void addStates(Block block, Set<Character> set) {
         for (int m = 0; m < 16; m++) {
             try {
-                BlockState state = block.getStateFromMeta(m);
+                BlockState state = block.getDefaultState(); // @todo 1.15 meta getStateFromMeta(m);
                 set.add((char) Block.BLOCK_STATE_IDS.get(state));
             } catch (Exception e) {
                 // Ignore
@@ -141,11 +143,13 @@ public class ArienteDungeonGenerator {
     }
 
     private void fillDown(ChunkPrimer primer, int lowestY, int dx, int dz) {
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         int y = lowestY-1;
         int index = (dx << 12) | (dz << 8);
         while (y > 1) {
-            if (primer.data[index+y] == airChar) {
-                primer.data[index+y] = fillerChar;
+            pos.setPos(dx, y, dz);
+            if (primer.getBlockState(pos) == airChar) {
+                primer.setBlockState(pos, fillerChar, false);
             } else {
                 break;
             }
@@ -159,18 +163,19 @@ public class ArienteDungeonGenerator {
                                     int ox, int oy, int oz) {
         CompiledPalette compiledPalette = CompiledPalette.getCompiledPalette(palette);
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = 0; x < part.getXSize(); x++) {
             for (int z = 0; z < part.getZSize(); z++) {
                 BuildingPart.PalettedSlice vs = part.getVSlice(x, z);
                 if (vs != null) {
                     int rx = ox + transform.rotateX(x, z);
                     int rz = oz + transform.rotateZ(x, z);
-                    int index = (rx << 12) | (rz << 8) + oy;
+                    int index = 0;
                     int len = vs.getSlice().size();
                     boolean allSpaces = true;
                     for (int y = 0; y < len; y++) {
                         PaletteIndex c = vs.getSlice().get(y);
-                        Character b = compiledPalette.get(c);
+                        BlockState b = compiledPalette.get(c);
                         if (b == null) {
                             ArienteWorld.setup.getLogger().error("Could not find entry '" + c + "' in the palette for part '" + part.getName() + "'!");
                             b = airChar;
@@ -178,19 +183,17 @@ public class ArienteDungeonGenerator {
 
                         if (transform != Transform.ROTATE_NONE) {
                             if (getRotatableChars().contains(b)) {
-                                BlockState bs = Block.BLOCK_STATE_IDS.getByValue(b);
-                                bs = bs.withRotation(transform.getMcRotation());
-                                b = (char) Block.BLOCK_STATE_IDS.get(bs);
+                                b = b.rotate(transform.getMcRotation());
                             }
                         }
                         if (allSpaces) {
                             // Skip all initial spaces. This is to avoid ugly generation issues with floating cities
                             if (b != airChar) {
-                                primer.data[index] = b;
+                                primer.setBlockState(pos.setPos(rx, oy+index, rz), b, false);
                                 allSpaces = false;
                             }
                         } else {
-                            primer.data[index] = b;
+                            primer.setBlockState(pos.setPos(rx, oy+index, rz), b, false);
                         }
                         index++;
                     }

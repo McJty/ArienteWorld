@@ -1,19 +1,15 @@
 package mcjty.arienteworld.dimension;
 
 import mcjty.arienteworld.ArienteStuff;
-import net.minecraft.block.BlockChorusFlower;
-import net.minecraft.block.BlockFalling;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChorusFlowerBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.gen.NoiseGeneratorOctaves;
-import net.minecraft.world.gen.NoiseGeneratorSimplex;
-import net.minecraft.world.gen.feature.WorldGenEndIsland;
 
 import java.util.Random;
 
@@ -34,7 +30,8 @@ public class IslandsTerrainGenerator {
     double[] pnr;
     double[] ar;
     double[] br;
-    private final WorldGenEndIsland endIslands = new WorldGenEndIsland();
+    // @todo 1.15
+//    private final WorldGenEndIsland endIslands = new WorldGenEndIsland();
     // temporary variables used during event handling
     private int chunkX = 0;
     private int chunkZ = 0;
@@ -56,6 +53,8 @@ public class IslandsTerrainGenerator {
         int k = 33;
         int l = 3;
         this.buffer = this.getHeights(this.buffer, x * 2, 0, z * 2, 3, 33, 3);
+
+        BlockPos.Mutable pos = new BlockPos.Mutable();
 
         for (int i1 = 0; i1 < 2; ++i1) {
             for (int j1 = 0; j1 < 2; ++j1) {
@@ -87,7 +86,7 @@ public class IslandsTerrainGenerator {
                                     int k2 = i2 + i1 * 8;
                                     int l2 = l1 + k1 * 4;
                                     int i3 = j2 + j1 * 8;
-                                    primer.setBlockState(k2, l2+30, i3, ArienteStuff.marble.getDefaultState()); // @todo offset
+                                    primer.setBlockState(pos.setPos(k2, l2+30, i3), ArienteStuff.marble.getDefaultState(), false); // @todo offset
                                 }
 
                                 d15 += d16;
@@ -108,30 +107,31 @@ public class IslandsTerrainGenerator {
     }
 
     public void buildSurfaces(ChunkPrimer primer) {
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int i = 0; i < 16; ++i) {
             for (int j = 0; j < 16; ++j) {
                 int k = 1;
                 int l = -1;
-                BlockState BlockState = ArienteStuff.marble.getDefaultState();
-                BlockState BlockState1 = ArienteStuff.marble.getDefaultState();
+                BlockState blockState = ArienteStuff.marble.getDefaultState();
+                BlockState blockState1 = ArienteStuff.marble.getDefaultState();
 
                 for (int i1 = 127; i1 >= 0; --i1) {
-                    BlockState BlockState2 = primer.getBlockState(i, i1, j);
+                    BlockState blockState2 = primer.getBlockState(pos.setPos(i, i1, j));
 
-                    if (BlockState2.getMaterial() == Material.AIR) {
+                    if (blockState2.getMaterial() == Material.AIR) {
                         l = -1;
-                    } else if (BlockState2.getBlock() == ArienteStuff.marble.getDefaultState()) {
+                    } else if (blockState2.getBlock() == ArienteStuff.marble) {
                         if (l == -1) {
                             l = 1;
 
                             if (i1 >= 0) {
-                                primer.setBlockState(i, i1, j, BlockState);
+                                primer.setBlockState(pos.setPos(i, i1, j), blockState, false);
                             } else {
-                                primer.setBlockState(i, i1, j, BlockState1);
+                                primer.setBlockState(pos.setPos(i, i1, j), blockState1, false);
                             }
                         } else if (l > 0) {
                             --l;
-                            primer.setBlockState(i, i1, j, BlockState1);
+                            primer.setBlockState(pos.setPos(i, i1, j), blockState1, false);
                         }
                     }
                 }
@@ -245,21 +245,24 @@ public class IslandsTerrainGenerator {
     }
 
     public void populate(int x, int z) {
-        BlockFalling.fallInstantly = true;
+        // @todo 1.15
+//        FallingBlock.fallInstantly = true;
         BlockPos blockpos = new BlockPos(x * 16, 0, z * 16);
 
-        this.world.getBiome(blockpos.add(16, 0, 16)).decorate(this.world, this.world.rand, blockpos);
+        // @todo 1.15
+//        this.world.getBiome(blockpos.add(16, 0, 16)).decorate(this.world, this.world.rand, blockpos);
         long i = (long) x * x + (long) z * z;
 
         if (i > 4096L) {
             float f = this.getIslandHeightValue(x, z, 1, 1);
 
             if (f < -20.0F && this.rand.nextInt(14) == 0) {
-                this.endIslands.generate(this.world, this.rand, blockpos.add(this.rand.nextInt(16) + 8, 55 + this.rand.nextInt(16), this.rand.nextInt(16) + 8));
-
-                if (this.rand.nextInt(4) == 0) {
-                    this.endIslands.generate(this.world, this.rand, blockpos.add(this.rand.nextInt(16) + 8, 55 + this.rand.nextInt(16), this.rand.nextInt(16) + 8));
-                }
+                // @todo 1.15
+//                this.endIslands.generate(this.world, this.rand, blockpos.add(this.rand.nextInt(16) + 8, 55 + this.rand.nextInt(16), this.rand.nextInt(16) + 8));
+//
+//                if (this.rand.nextInt(4) == 0) {
+//                    this.endIslands.generate(this.world, this.rand, blockpos.add(this.rand.nextInt(16) + 8, 55 + this.rand.nextInt(16), this.rand.nextInt(16) + 8));
+//                }
             }
 
             if (this.getIslandHeightValue(x, z, 1, 1) > 40.0F) {
@@ -268,19 +271,20 @@ public class IslandsTerrainGenerator {
                 for (int k = 0; k < j; ++k) {
                     int l = this.rand.nextInt(16) + 8;
                     int i1 = this.rand.nextInt(16) + 8;
-                    int j1 = this.world.getHeight(blockpos.add(l, 0, i1)).getY();
+                    int j1 = 0; // @todo 1.15 this.world.getHeight(blockpos.add(l, 0, i1)).getY();
 
                     if (j1 > 0) {
                         int k1 = j1 - 1;
 
                         if (this.world.isAirBlock(blockpos.add(l, k1 + 1, i1)) && this.world.getBlockState(blockpos.add(l, k1, i1)).getBlock() == Blocks.END_STONE) {
-                            BlockChorusFlower.generatePlant(this.world, blockpos.add(l, k1 + 1, i1), this.rand, 8);
+                            ChorusFlowerBlock.generatePlant(this.world, blockpos.add(l, k1 + 1, i1), this.rand, 8);
                         }
                     }
                 }
             }
         }
 
-        BlockFalling.fallInstantly = false;
+        // @todo 1.15
+//        BlockFalling.fallInstantly = false;
     }
 }

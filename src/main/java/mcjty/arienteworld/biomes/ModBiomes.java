@@ -3,69 +3,69 @@ package mcjty.arienteworld.biomes;
 import mcjty.arienteworld.ArienteWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 public class ModBiomes {
 
-    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_plains")
+    @ObjectHolder(ArienteWorld.MODID + ":ariente_plains")
     public static BiomeArientePlains arientePlains;
 
-    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_hills")
+    @ObjectHolder(ArienteWorld.MODID + ":ariente_hills")
     public static BiomeArienteHills arienteHills;
 
-    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_ocean")
+    @ObjectHolder(ArienteWorld.MODID + ":ariente_ocean")
     public static BiomeArienteOcean arienteOcean;
 
-    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_forest")
+    @ObjectHolder(ArienteWorld.MODID + ":ariente_forest")
     public static BiomeArienteForest arienteForest;
 
-    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_rough")
+    @ObjectHolder(ArienteWorld.MODID + ":ariente_rough")
     public static BiomeArienteRough arienteRough;
 
-    @GameRegistry.ObjectHolder(ArienteWorld.MODID + ":ariente_city")
+    @ObjectHolder(ArienteWorld.MODID + ":ariente_city")
     public static BiomeArienteCity arienteCity;
 
 
     public static void registerBiomes(IForgeRegistry<Biome> registry) {
         setupBiome(registry, "ariente_plains", new BiomeArientePlains(
-                        new Biome.BiomeProperties("Ariente Plains")
-                                .setBaseHeight(0.125F)
-                                .setHeightVariation(0.05F)
-                                .setTemperature(0.8F)
-                                .setRainfall(0.4F)),
+                        new Biome.Builder()     // @todo 1.15 "Ariente Plains")
+                                .depth(0.125F)
+                                .scale(0.05F)
+                                .temperature(0.8F)
+                                .downfall(0.4F)),
                 BiomeDictionary.Type.SPARSE);
         setupBiome(registry, "ariente_forest", new BiomeArienteForest(
-                        new Biome.BiomeProperties("Ariente Forest")
-                                .setBaseHeight(0.125F)
-                                .setHeightVariation(0.05F)
-                                .setTemperature(0.8F)
-                                .setRainfall(0.4F)),
+                        new Biome.Builder()     // @todo 1.15 "Ariente Forest")
+                                .depth(0.125F)
+                                .scale(0.05F)
+                                .temperature(0.8F)
+                                .downfall(0.4F)),
                 BiomeDictionary.Type.FOREST);
         setupBiome(registry, "ariente_hills", new BiomeArienteHills(
-                        new Biome.BiomeProperties("Ariente Hills")
-                                .setBaseHeight(0.45F)
-                                .setHeightVariation(0.3F)
-                                .setTemperature(0.8F)
-                                .setRainfall(0.4F)),
+                        new Biome.Builder() // @todo 1.15 "Ariente Hills")
+                                .depth(0.45F)
+                                .scale(0.3F)
+                                .temperature(0.8F)
+                                .downfall(0.4F)),
                 BiomeDictionary.Type.HILLS);
         setupBiome(registry, "ariente_rough", new BiomeArienteRough(
-                        new Biome.BiomeProperties("Ariente Rough")
-                                .setBaseHeight(0.25F)
-                                .setHeightVariation(0.5F)
-                                .setTemperature(0.8F)
-                                .setRainfall(0.4F)),
+                        new Biome.Builder() // @todo 1.15 "Ariente Rough")
+                                .depth(0.25F)
+                                .scale(0.5F)
+                                .temperature(0.8F)
+                                .downfall(0.4F)),
                 BiomeDictionary.Type.DEAD, BiomeDictionary.Type.HILLS);
         setupBiome(registry, "ariente_ocean", new BiomeArienteOcean(
-                        new Biome.BiomeProperties("Ariente Ocean")
-                                .setBaseHeight(-1.0F).setHeightVariation(0.1F)),
+                        new Biome.Builder() // @todo 1.15 "Ariente Ocean")
+                                .depth(-1.0F).scale(0.1F)),
                 BiomeDictionary.Type.DEAD, BiomeDictionary.Type.OCEAN);
         setupBiome(registry, "ariente_city", new BiomeArienteCity(
-                        new Biome.BiomeProperties("Ariente City")
-                                .setBaseHeight(0.125F)
-                                .setHeightVariation(0.05F)
-                                .setTemperature(0.8F)
-                                .setRainfall(0.4F)),
+                        new Biome.Builder() // @todo 1.15 "Ariente City")
+                                .depth(0.125F)
+                                .scale(0.05F)
+                                .temperature(0.8F)
+                                .downfall(0.4F)),
                 BiomeDictionary.Type.SPARSE);
     }
 

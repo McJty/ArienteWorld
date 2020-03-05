@@ -1,6 +1,6 @@
 package mcjty.arienteworld.ai;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Randomized settings specific to a single city
@@ -17,12 +17,12 @@ public class CityAISettings {
         this.numSentinels = numSentinels;
     }
 
-    public void readFromNBT(NBTTagCompound compound) {
-        numSentinels = compound.getInteger("sentinels");
+    public void readFromNBT(CompoundNBT compound) {
+        numSentinels = compound.getInt("sentinels");
     }
 
-    public void writeToNBT(NBTTagCompound compound) {
-        compound.setInteger("sentinels", numSentinels);
+    public void writeToNBT(CompoundNBT compound) {
+        compound.putInt("sentinels", numSentinels);
     }
 
 }

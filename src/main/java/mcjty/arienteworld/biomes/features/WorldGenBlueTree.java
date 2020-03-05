@@ -1,17 +1,13 @@
 package mcjty.arienteworld.biomes.features;
 
-import net.minecraft.block.BlockVine;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.BlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenHugeTrees;
 
 import java.util.Random;
 
-public class WorldGenBlueTree extends WorldGenHugeTrees {
+public class WorldGenBlueTree {} /* @todo 1.15 extends WorldGenHugeTrees {
 
     public WorldGenBlueTree(int baseHeightIn, int extraRandomHeightIn, BlockState woodMetadataIn, BlockState leavesMetadataIn) {
         super(false, baseHeightIn, extraRandomHeightIn, woodMetadataIn, leavesMetadataIn);
@@ -118,3 +114,4 @@ public class WorldGenBlueTree extends WorldGenHugeTrees {
         return state.getBlock().isAir(state, world, pos) || state.getBlock().isLeaves(state, world, pos);
     }
 }
+*/

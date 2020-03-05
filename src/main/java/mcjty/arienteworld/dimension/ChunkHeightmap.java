@@ -1,7 +1,8 @@
 package mcjty.arienteworld.dimension;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.ChunkPrimer;
 
 /**
@@ -11,13 +12,13 @@ public class ChunkHeightmap {
     private byte heightmap[] = new byte[16*16];
 
     public ChunkHeightmap(ChunkPrimer primer) {
-        char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
+        BlockState air = Blocks.AIR.getDefaultState();
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                int index = (x << 12) | (z << 8);
                 int y = 255;
-                while (y > 0 && primer.data[index + y] == air) {
+                while (y > 0 && primer.getBlockState(pos.setPos(x, y, z)) == air) {
                     y--;
                 }
                 heightmap[z * 16 + x] = (byte) y;

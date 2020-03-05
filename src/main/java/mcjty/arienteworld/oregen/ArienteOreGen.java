@@ -1,26 +1,6 @@
 package mcjty.arienteworld.oregen;
 
-import mcjty.ariente.api.MarbleColor;
-import mcjty.arienteworld.ArienteStuff;
-import mcjty.arienteworld.blocks.ModBlocks;
-import mcjty.arienteworld.config.WorldgenConfiguration;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.feature.WorldGenMinable;
-import net.minecraftforge.event.world.ChunkDataEvent;
-import net.minecraftforge.fml.common.IWorldGenerator;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.ArrayDeque;
-import java.util.Random;
-
-public class ArienteOreGen implements IWorldGenerator {
+public class ArienteOreGen {} /* @todo 1.15 implements IWorldGenerator {
 
     public static final String RETRO_NAME = "ArienteGen";
     public static ArienteOreGen instance = new ArienteOreGen();
@@ -85,7 +65,7 @@ public class ArienteOreGen implements IWorldGenerator {
 
     @SubscribeEvent
     public void handleChunkSaveEvent(ChunkDataEvent.Save event) {
-        NBTTagCompound genTag = event.getData().getCompoundTag(RETRO_NAME);
+        CompoundNBT genTag = event.getData().getCompoundTag(RETRO_NAME);
         if (!genTag.hasKey("generated")) {
             // If we did not have this key then this is a new chunk and we will have proper ores generated.
             // Otherwise we are saving a chunk for which ores are not yet generated.
@@ -99,7 +79,7 @@ public class ArienteOreGen implements IWorldGenerator {
         int dim = event.getWorld().provider.getDimension();
 
         boolean regen = false;
-        NBTTagCompound tag = (NBTTagCompound) event.getData().getTag(RETRO_NAME);
+        CompoundNBT tag = (CompoundNBT) event.getData().getTag(RETRO_NAME);
         NBTTagList list = null;
         Pair<Integer,Integer> cCoord = Pair.of(event.getChunk().x, event.getChunk().z);
 
@@ -127,3 +107,4 @@ public class ArienteOreGen implements IWorldGenerator {
     }
 
 }
+*/

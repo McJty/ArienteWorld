@@ -1,58 +1,31 @@
 package mcjty.arienteworld.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mcjty.arienteworld.dimension.EditMode;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
+public class CommandSyncChunk implements Command<CommandSource> {
 
-public class CommandSyncChunk implements ICommand {
+    private static final CommandSyncChunk CMD = new CommandSyncChunk();
 
-    @Override
-    public String getName() {
-        return "ar_sync";
+    public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher) {
+        return Commands.literal("sync")
+                .requires(cs -> cs.hasPermissionLevel(2))
+                .executes(CMD);
     }
 
     @Override
-    public String getUsage(ICommandSender sender) {
-        return getName();
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        EditMode.syncChunk((EntityPlayer) sender);
-        sender.sendMessage(new TextComponentString("Chunk synced to other parts!"));
-    }
-
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] args, int index) {
-        return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return getName().compareTo(o.getName());
+    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        PlayerEntity player = context.getSource().asPlayer();
+        EditMode.syncChunk(player);
+        player.sendMessage(new StringTextComponent("Chunk synced to other parts!"));
+        return 0;
     }
 }

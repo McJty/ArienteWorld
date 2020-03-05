@@ -10,23 +10,36 @@ import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.dimension.features.FeatureTools;
 import mcjty.arienteworld.dimension.features.IFeature;
 import mcjty.lib.tileentity.GenericTileEntity;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.NoiseChunkGenerator;
+import net.minecraft.world.gen.OverworldGenSettings;
+import net.minecraft.world.gen.WorldGenRegion;
+import net.minecraft.world.spawner.AbstractSpawner;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static mcjty.arienteworld.dimension.ArienteLandscapeCity.CITY_LEVEL;
 
-public class ArienteChunkGenerator implements IChunkGenerator {
+public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSettings> {
 
     private final World worldObj;
     private Random random;
@@ -35,7 +48,8 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     private List<Biome.SpawnListEntry> mobs = null;
     private Map<ChunkPos, Map<String, Double>> activeFeatureCache = new HashMap<>();
 
-    private MapGenBase caveGenerator = new MapGenCaves();
+    // @todo 1.15
+//    private MapGenBase caveGenerator = new MapGenCaves();
     private ArienteTerrainGenerator terraingen = new ArienteTerrainGenerator();
     private IslandsTerrainGenerator islandsGen = new IslandsTerrainGenerator();
     private ArienteDungeonGenerator dungeonGenerator = new ArienteDungeonGenerator();
@@ -45,16 +59,34 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     private Map<ChunkPos, ChunkPrimer> cachedPrimers = new HashMap<>();
     private Map<ChunkPos, ChunkHeightmap> cachedHeightmaps = new HashMap<>();
 
-    public ArienteChunkGenerator(World worldObj) {
-        this.worldObj = worldObj;
-        long seed = worldObj.getSeed();
+    public ArienteChunkGenerator(IWorld worldObj, BiomeProvider biomeProvider, int horizontalNoiseGranularityIn, int verticalNoiseGranularityIn, int p_i49931_5_, OverworldGenSettings settings, boolean usePerlin) {
+        super(worldObj, biomeProvider, horizontalNoiseGranularityIn, verticalNoiseGranularityIn, p_i49931_5_, settings, usePerlin);
+        this.worldObj = worldObj.getWorld();
+        long seed = this.worldObj.getSeed();
         this.random = new Random((seed + 516) * 314);
-        terraingen.setup(worldObj, random, ArienteStuff.marble.getDefaultState());
-        islandsGen.setup(worldObj, worldObj.getSeed());
+        terraingen.setup(this.worldObj, random, ArienteStuff.marble.getDefaultState());
+        islandsGen.setup(this.worldObj, this.worldObj.getSeed());
 //        islandgen.setup(worldObj, random, this, 40);
 //        island2gen.setup(worldObj, new Random((seed + 314) * 516), this, 40);
-        caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
+
+        // @todo 1.15
+//        caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
         dungeonGenerator.initialize(this);
+    }
+
+    @Override
+    protected double[] getBiomeNoiseColumn(int noiseX, int noiseZ) {
+        return new double[0];
+    }
+
+    @Override
+    protected double func_222545_a(double p_222545_1_, double p_222545_3_, int p_222545_5_) {
+        return 0;
+    }
+
+    @Override
+    protected void fillNoiseColumn(double[] noiseColumn, int noiseX, int noiseZ) {
+
     }
 
     // Get a heightmap for a chunk. If needed calculate (and cache) a primer
@@ -76,9 +108,9 @@ public class ArienteChunkGenerator implements IChunkGenerator {
     }
 
     public ChunkPrimer generatePrimer(int chunkX, int chunkZ) {
-        ChunkPrimer chunkprimer = new ChunkPrimer();
+        ChunkPrimer chunkprimer = null; // @todo 1.15 new ChunkPrimer();
 
-        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, chunkX * 4 - 2, chunkZ * 4 - 2, 10, 10);
+//        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, chunkX * 4 - 2, chunkZ * 4 - 2, 10, 10);
 
         terraingen.generate(chunkX, chunkZ, chunkprimer, this.biomesForGeneration);
         islandsGen.setBlocksInChunk(chunkX, chunkZ, chunkprimer);
@@ -115,7 +147,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             this.varianceNoise = new NoiseGeneratorPerlin(random, 4);
         }
         this.varianceBuffer = this.varianceNoise.getRegion(this.varianceBuffer, (x * 16), (z * 16), 16, 16, 1.0 / 16.0, 1.0 / 16.0, 1.0D);
-        char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
+        BlockState air = Blocks.AIR.getDefaultState();
 
         if (CityTools.isDungeonChunk(x, z)) {
             ChunkPos center = CityTools.getNearestDungeonCenter(x, z);
@@ -124,8 +156,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                 int height = city.getHeight(this);
                 for (int dx = 0; dx < 16; dx++) {
                     for (int dz = 0; dz < 16; dz++) {
-                        int index = (dx << 12) | (dz << 8) + height;
-                        PrimerTools.setBlockStateRange(primer, index, index + 128 - height, air);
+                        PrimerTools.setBlockStateRange(primer, dx, height, dz, 128, air);
                     }
                 }
             }
@@ -166,7 +197,7 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                     }
                     int dh = mindist * 2 + height + (int) vr;
                     int index = (dx << 12) | (dz << 8) + dh;
-                    PrimerTools.setBlockStateRangeSafe(primer, index, index + 128 - dh, air);
+                    PrimerTools.setBlockStateRangeSafe(primer, dx, dh, dz, 128, air);
                 }
             }
         }
@@ -262,13 +293,15 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         }
     }
 
-    @Override
+    // @todo 1.15
     public Chunk generateChunk(int chunkX, int chunkZ) {
         ChunkPrimer chunkprimer = getChunkPrimer(chunkX, chunkZ);
 
-        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
+        // @todo 1.15
+//        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
         terraingen.replaceBiomeBlocks(chunkX, chunkZ, chunkprimer, biomesForGeneration);
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ, worldObj, biomesForGeneration);
         if (isLandscapeCityChunk) {
             ArienteLandscapeCity.generate(chunkX, chunkZ, chunkprimer, dungeonGenerator);
@@ -276,30 +309,27 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             // Check all adjacent chunks and see if we need to generate a wall
             if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX-1, chunkZ, worldObj, null)) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
-                    int index = (0 << 12) | (dz << 8);
-                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
-                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                    PrimerTools.setBlockStateRange(chunkprimer, 0, CITY_LEVEL-2, dz,CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.setBlockState(pos.setPos(0, CITY_LEVEL+6, dz), dungeonGenerator.getCityWallTop(), false);
                 }
             }
             if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX+1, chunkZ, worldObj, null)) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
-                    int index = (15 << 12) | (dz << 8);
-                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
-                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                    PrimerTools.setBlockStateRange(chunkprimer, 15, CITY_LEVEL-2, dz,CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.setBlockState(pos.setPos(15, CITY_LEVEL+6, dz), dungeonGenerator.getCityWallTop(), false);
                 }
             }
             if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ-1, worldObj, null)) {
                 for (int dx = 0 ; dx < 16 ; dx++) {
-                    int index = (dx << 12) | (0 << 8);
-                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
-                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                    PrimerTools.setBlockStateRange(chunkprimer, dx, CITY_LEVEL-2, 0, CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.setBlockState(pos.setPos(dx, CITY_LEVEL+6, 0), dungeonGenerator.getCityWallTop(), false);
                 }
             }
             if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ+1, worldObj, null)) {
                 for (int dx = 0 ; dx < 16 ; dx++) {
                     int index = (dx << 12) | (15 << 8);
-                    PrimerTools.setBlockStateRange(chunkprimer, index + CITY_LEVEL-2, index + CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
-                    chunkprimer.data[index+CITY_LEVEL+6] = dungeonGenerator.getCityWallTop();
+                    PrimerTools.setBlockStateRange(chunkprimer, dx, CITY_LEVEL-2, 15, CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
+                    chunkprimer.setBlockState(pos.setPos(dx, CITY_LEVEL+6, 15), dungeonGenerator.getCityWallTop(), false);
                 }
             }
         }
@@ -311,57 +341,82 @@ public class ArienteChunkGenerator implements IChunkGenerator {
             fixForNearbyCity(chunkprimer, chunkX, chunkZ);
         }
 
-        caveGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer);
+        // @todo 1.15
+//        caveGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer);
         dungeonGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer);
         LevitatorNetworkGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer, this);
 
-        Chunk chunk = new Chunk(this.worldObj, chunkprimer, chunkX, chunkZ);
+        Chunk chunk = null; // @todo 1.15 new Chunk(this.worldObj, chunkprimer, chunkX, chunkZ);
 
-        byte[] biomeArray = chunk.getBiomeArray();
-        for (int i = 0; i < biomeArray.length; ++i) {
-            biomeArray[i] = (byte)Biome.getIdForBiome(this.biomesForGeneration[i]);
-        }
+        // @todo 1.15
+//        byte[] biomeArray = chunk.getBiomeArray();
+//        for (int i = 0; i < biomeArray.length; ++i) {
+//            biomeArray[i] = (byte)Biome.getIdForBiome(this.biomesForGeneration[i]);
+//        }
 
-        chunk.generateSkylightMap();
+        // @todo 1.15
+//        chunk.generateSkylightMap();
         return chunk;
     }
 
     @Override
-    public void populate(int x, int z) {
-        int i = x * 16;
-        int j = z * 16;
-        BlockPos blockpos = new BlockPos(i, 0, j);
-
-        this.random.setSeed(this.worldObj.getSeed());
-        long k = this.random.nextLong() / 2L * 2L + 1L;
-        long l = this.random.nextLong() / 2L * 2L + 1L;
-        this.random.setSeed((long)x * k + (long)z * l ^ this.worldObj.getSeed());
-
-        Biome biome = this.worldObj.getBiome(blockpos.add(16, 0, 16));
-        biome.decorate(this.worldObj, this.random, new BlockPos(i, 0, j));
-        WorldEntitySpawner.performWorldGenSpawning(this.worldObj, biome, i + 8, j + 8, 16, 16, this.random);
-
-        if (CityTools.isDungeonChunk(x, z)) {
-            fixTileEntities(x, z);
-        }
-
-        if (CityTools.isStationChunk(x, z)) {
-            BuildingPart part = CityTools.getStationPart(x, z);
-            if (part != null) {
-                fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight(), false);
-            }
-        }
-
-        if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, worldObj, biomesForGeneration)) {
-            if (!CityTools.isDungeonChunk(x, z)) {
-                int height = ArienteLandscapeCity.getBuildingYOffset(x, z);
-                Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(x, z);
-                List<BuildingPart> parts = Collections.singletonList(AssetRegistries.PARTS.get(part.getKey()));
-                Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(x, z, parts, height, part.getValue());
-                fixTileEntities(x, z, true, equipment);
-            }
-        }
+    public void func_225551_a_(WorldGenRegion p_225551_1_, IChunk p_225551_2_) {
+        // @todo 1.15
     }
+
+    @Override
+    public int getGroundHeight() {
+        return 0;   // @todo 1.15
+    }
+
+    @Override
+    public void makeBase(IWorld worldIn, IChunk chunkIn) {
+        // @todo 1.15
+    }
+
+    @Override
+    public int func_222529_a(int p_222529_1_, int p_222529_2_, Heightmap.Type heightmapType) {
+        // @todo 1.15
+        return 0;
+    }
+
+    // @todo 1.15
+//    @Override
+//    public void populate(int x, int z) {
+//        int i = x * 16;
+//        int j = z * 16;
+//        BlockPos blockpos = new BlockPos(i, 0, j);
+//
+//        this.random.setSeed(this.worldObj.getSeed());
+//        long k = this.random.nextLong() / 2L * 2L + 1L;
+//        long l = this.random.nextLong() / 2L * 2L + 1L;
+//        this.random.setSeed((long)x * k + (long)z * l ^ this.worldObj.getSeed());
+//
+//        Biome biome = this.worldObj.getBiome(blockpos.add(16, 0, 16));
+//        biome.decorate(this.worldObj, this.random, new BlockPos(i, 0, j));
+//        WorldEntitySpawner.performWorldGenSpawning(this.worldObj, biome, i + 8, j + 8, 16, 16, this.random);
+//
+//        if (CityTools.isDungeonChunk(x, z)) {
+//            fixTileEntities(x, z);
+//        }
+//
+//        if (CityTools.isStationChunk(x, z)) {
+//            BuildingPart part = CityTools.getStationPart(x, z);
+//            if (part != null) {
+//                fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight(), false);
+//            }
+//        }
+//
+//        if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, worldObj, biomesForGeneration)) {
+//            if (!CityTools.isDungeonChunk(x, z)) {
+//                int height = ArienteLandscapeCity.getBuildingYOffset(x, z);
+//                Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(x, z);
+//                List<BuildingPart> parts = Collections.singletonList(AssetRegistries.PARTS.get(part.getKey()));
+//                Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(x, z, parts, height, part.getValue());
+//                fixTileEntities(x, z, true, equipment);
+//            }
+//        }
+//    }
 
     public static void registerStationLevitatorTodo(ChunkPos chunkPos, BlockPos pos) {
         stationLevitatorTodo.put(chunkPos, pos);
@@ -397,11 +452,11 @@ public class ArienteChunkGenerator implements IChunkGenerator {
                         ((ICityEquipment)te).load(equipment.get(p));
                     }
 
-                    if (te instanceof TileEntityMobSpawner && equipment.containsKey(p)) {
-                        TileEntityMobSpawner spawner = (TileEntityMobSpawner) te;
-                        MobSpawnerBaseLogic logic = spawner.getSpawnerBaseLogic();
+                    if (te instanceof MobSpawnerTileEntity && equipment.containsKey(p)) {
+                        MobSpawnerTileEntity spawner = (MobSpawnerTileEntity) te;
+                        AbstractSpawner logic = spawner.getSpawnerBaseLogic();
                         Map<String, Object> map = equipment.get(p);
-                        logic.setEntityId(new ResourceLocation((String)map.get("mob")));
+                        logic.setEntityType(ForgeRegistries.ENTITIES.getValue(new ResourceLocation((String)map.get("mob"))));
                         te.markDirty();
                         BlockState state = worldObj.getBlockState(p);
                         worldObj.notifyBlockUpdate(p, state, state, 3);
@@ -438,14 +493,16 @@ public class ArienteChunkGenerator implements IChunkGenerator {
         return equipment;
     }
 
-    @Override
-    public boolean generateStructures(Chunk chunkIn, int x, int z) {
-        return false;
-    }
+    // @todo 1.15
+//    @Override
+//    public boolean generateStructures(Chunk chunkIn, int x, int z) {
+//        return false;
+//    }
+
 
     @Override
-    public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
-        return this.worldObj.getBiome(pos).getSpawnableList(creatureType);
+    public List<Biome.SpawnListEntry> getPossibleCreatures(EntityClassification creatureType, BlockPos pos) {
+        return this.worldObj.getBiome(pos).getSpawns(creatureType);
 //        if (creatureType == EnumCreatureType.MONSTER){
 //            if (mobs == null) {
 //                mobs = Lists.newArrayList(
@@ -457,19 +514,20 @@ public class ArienteChunkGenerator implements IChunkGenerator {
 //        return ImmutableList.of();
     }
 
-    @Nullable
-    @Override
-    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
-        return null;
-    }
-
-    @Override
-    public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
-        return false;
-    }
-
-    @Override
-    public void recreateStructures(Chunk chunkIn, int x, int z) {
-
-    }
+    // @todo 1.15
+//    @Nullable
+//    @Override
+//    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
+//        return null;
+//    }
+//
+//    @Override
+//    public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
+//        return false;
+//    }
+//
+//    @Override
+//    public void recreateStructures(Chunk chunkIn, int x, int z) {
+//
+//    }
 }

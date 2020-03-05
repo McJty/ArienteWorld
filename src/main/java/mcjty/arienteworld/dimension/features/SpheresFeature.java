@@ -2,10 +2,11 @@ package mcjty.arienteworld.dimension.features;
 
 import mcjty.ariente.api.MarbleColor;
 import mcjty.arienteworld.ArienteStuff;
-import net.minecraft.block.Block;
+import mcjty.arienteworld.dimension.NoiseGeneratorPerlin;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.gen.NoiseGeneratorPerlin;
 
 import java.util.Random;
 
@@ -38,21 +39,21 @@ public class SpheresFeature implements IFeature {
         int radius = random.nextInt(6) + 6;
         int centery = random.nextInt(60) + 40;
 
-        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLUE));
+        BlockState block = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLUE);
         int centerx = 8 + (dx) * 16;
         int centerz = 8 + (dz) * 16;
         double sqradius = radius * radius;
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = 0 ; x < 16 ; x++) {
             double dxdx = (x-centerx) * (x-centerx);
             for (int z = 0 ; z < 16 ; z++) {
                 double dzdz = (z-centerz) * (z-centerz);
-                int index = (x * 16 + z) * 256;
                 for (int y = centery-radius ; y <= centery+radius ; y++) {
                     double dydy = (y-centery) * (y-centery);
                     double sqdist = dxdx + dydy + dzdz;
                     if (sqdist <= sqradius) {
-                        primer.data[index + y] = block;
+                        primer.setBlockState(pos.setPos(x, y, z), block, false);
                     }
                 }
             }

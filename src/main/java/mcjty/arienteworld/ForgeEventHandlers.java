@@ -8,44 +8,51 @@ import mcjty.arienteworld.cities.BuildingPart;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityIndex;
 import mcjty.arienteworld.cities.CityTools;
-import mcjty.arienteworld.config.ConfigSetup;
+import mcjty.arienteworld.commands.ModCommands;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
+import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.arienteworld.dimension.EditMode;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.passive.IAnimals;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class ForgeEventHandlers {
 
     @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (ConfigSetup.mainConfig.hasChanged()) {
-            ConfigSetup.mainConfig.save();
-        }
+    public void serverLoad(FMLServerStartingEvent event) {
+        ModCommands.register(event.getCommandDispatcher());
     }
+
+    // @todo 1.15
+//    @SubscribeEvent
+//    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+//        if (ConfigSetup.mainConfig.hasChanged()) {
+//            ConfigSetup.mainConfig.save();
+//        }
+//    }
 
     @SubscribeEvent
     public void onCheckSpawn(LivingSpawnEvent.CheckSpawn event) {
         if (event.isSpawner()) {
             return;
         }
-        if (event.getWorld().provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
+        if (event.getWorld().getDimension().getType() == DimensionRegister.dimensionType) {
             if (event.getEntity() instanceof IArienteMob) {
                 // These can always spawn
                 return;
             }
-            if (event.getEntity() instanceof EntityMob) {
+            if (event.getEntity() instanceof MobEntity) {
                 BlockPos pos = event.getEntity().getPosition();
                 int chunkX = pos.getX()>>4;
                 int chunkZ = pos.getZ()>>4;
@@ -56,20 +63,20 @@ public class ForgeEventHandlers {
                     return;
                 }
                 // Check if this city is still alive
-                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) event.getWorld()).getChunkProvider().chunkGenerator);
+                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) event.getWorld()).getChunkProvider().getChunkGenerator());
                 City city = CityTools.getNearestDungeon(generator, chunkX, chunkZ);
                 if (city != null) {
-                    CityAISystem cityAISystem = CityAISystem.getCityAISystem(event.getWorld());
+                    CityAISystem cityAISystem = CityAISystem.getCityAISystem(event.getWorld().getWorld());
                     CityAI cityAI = cityAISystem.getCityAI(city.getCenter());
                     if (cityAI != null) {
-                        if (!cityAI.isDead(event.getWorld())) {
+                        if (!cityAI.isDead(event.getWorld().getWorld())) {
                             event.setResult(Event.Result.DENY);
                         }
                     }
                 }
                 return;
             }
-            if (event.getEntity() instanceof IAnimals) {
+            if (event.getEntity() instanceof AnimalEntity) {
                 event.setResult(Event.Result.DENY);
             }
         }
@@ -81,11 +88,11 @@ public class ForgeEventHandlers {
 //    }
 
     private void onBlockBreakNormal(BlockEvent.BreakEvent event) {
-        World world = event.getWorld();
+        World world = event.getWorld().getWorld();
         BlockPos pos = event.getPos();
         TileEntity te = world.getTileEntity(pos);
-        if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
-            EntityPlayer player = event.getPlayer();
+        if (world.getDimension().getType() == DimensionRegister.dimensionType) {
+            PlayerEntity player = event.getPlayer();
             if (te instanceof IAlarmMode) {
                 boolean highAlert = ((IAlarmMode) te).isHighAlert();
                 alertCity(world, pos, player, highAlert);
@@ -95,10 +102,10 @@ public class ForgeEventHandlers {
         }
     }
 
-    private void alertCity(World world, BlockPos pos, EntityPlayer player, boolean highAlert) {
+    private void alertCity(World world, BlockPos pos, PlayerEntity player, boolean highAlert) {
         int cx = pos.getX() >> 4;
         int cz = pos.getZ() >> 4;
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
         if (CityTools.isDungeonChunk(cx, cz)) {
             City city = CityTools.getNearestDungeon(generator, cx, cz);
             CityAISystem cityAISystem = CityAISystem.getCityAISystem(world);
@@ -120,15 +127,15 @@ public class ForgeEventHandlers {
             onBlockBreakNormal(event);
             return;
         }
-        World world = event.getWorld();
+        World world = event.getWorld().getWorld();
         if (!world.isRemote) {
-            if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
+            if (world.getDimension().getType() == DimensionRegister.dimensionType) {
                 BlockPos pos = event.getPos();
                 City city = CityTools.getNearestDungeon(world, pos);
                 if (city != null) {
-                    Pair<BuildingPart, Integer> pair = EditMode.getCurrentPart(city, event.getWorld(), event.getPos());
+                    Pair<BuildingPart, Integer> pair = EditMode.getCurrentPart(city, event.getWorld().getWorld(), event.getPos());
                     if (pair != null) {
-                        EditMode.breakBlock(city, event.getWorld(), pair.getKey(), pos.getX() & 0xf, pos.getY() - pair.getRight(), pos.getZ() & 0xf);
+                        EditMode.breakBlock(city, event.getWorld().getWorld(), pair.getKey(), pos.getX() & 0xf, pos.getY() - pair.getRight(), pos.getZ() & 0xf);
                     }
                 }
             }
@@ -136,19 +143,19 @@ public class ForgeEventHandlers {
     }
 
     @SubscribeEvent
-    public void onBlockPlace(BlockEvent.PlaceEvent event) {
+    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
         if (!EditMode.editMode) {
             return;
         }
-        World world = event.getWorld();
+        World world = event.getWorld().getWorld();
         if (!world.isRemote) {
-            if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
+            if (world.getDimension().getType() == DimensionRegister.dimensionType) {
                 BlockPos pos = event.getPos();
                 City city = CityTools.getNearestDungeon(world, pos);
                 if (city != null) {
-                    Pair<BuildingPart, Integer> pair = EditMode.getCurrentPart(city, event.getWorld(), event.getPos());
+                    Pair<BuildingPart, Integer> pair = EditMode.getCurrentPart(city, event.getWorld().getWorld(), event.getPos());
                     if (pair != null) {
-                        EditMode.copyBlock(city, event.getWorld(), event.getPlacedBlock(), pair.getKey(), pos.getX() & 0xf, pos.getY() - pair.getRight(), pos.getZ() & 0xf);
+                        EditMode.copyBlock(city, event.getWorld().getWorld(), event.getPlacedBlock(), pair.getKey(), pos.getX() & 0xf, pos.getY() - pair.getRight(), pos.getZ() & 0xf);
                     }
                 }
             }

@@ -3,14 +3,15 @@ package mcjty.arienteworld.cities;
 import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.ArienteDungeonGenerator;
+import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.WorldTools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +39,7 @@ public class CityTools {
 
     public static Map<String, Integer> getVariantSelections(ChunkPos center) {
         if (!cachedVariantSelections.containsKey(center)) {
-            long seed = DimensionManager.getWorld(0).getSeed();
+            long seed = WorldTools.getOverworld().getSeed();
             Random random = new Random(seed + center.z * 198491317L + center.x * 776531419L);
             random.nextFloat();
             City city = getCity(center);
@@ -118,7 +119,7 @@ public class CityTools {
     }
 
     private static String getRandomDungeonName(ChunkPos c) {
-        long seed = DimensionManager.getWorld(0).getSeed();
+        long seed = WorldTools.getOverworld().getSeed();
         Random random = new Random(seed + c.x * 903932899L + c.z * 776531419L);
         return NameGenerator.randomName(random);
     }
@@ -127,7 +128,7 @@ public class CityTools {
     private static CityPlan getRandomDungeonPlan(ChunkPos c) {
         int chunkX = c.x;
         int chunkZ = c.z;
-        long seed = DimensionManager.getWorld(0).getSeed();
+        long seed = WorldTools.getOverworld().getSeed();
         Random random = new Random(seed + chunkX * 198491317L + chunkZ * 776531419L);
         random.nextFloat();
         random.nextFloat();
@@ -154,7 +155,7 @@ public class CityTools {
 
     @Nullable
     public static City getNearestDungeon(World world, BlockPos pos) {
-        ArienteChunkGenerator generator = (ArienteChunkGenerator)(((WorldServer)world).getChunkProvider().chunkGenerator);
+        ArienteChunkGenerator generator = (ArienteChunkGenerator)(((ServerWorld)world).getChunkProvider().getChunkGenerator());
         int cx = pos.getX() >> 4;
         int cz = pos.getZ() >> 4;
         return getNearestDungeon(generator, cx, cz);
@@ -185,9 +186,9 @@ public class CityTools {
         int chunkZ = cc.z;
         int cx = (chunkX & ~0xf);
         int cz = (chunkZ & ~0xf);
-        MinecraftServer server = DimensionManager.getWorld(0).getMinecraftServer();
-        WorldServer world = server.getWorld(WorldgenConfiguration.DIMENSION_ID.get());
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (world.getChunkProvider().chunkGenerator);
+        MinecraftServer server = WorldTools.getOverworld().getServer();
+        ServerWorld world = server.getWorld(DimensionRegister.dimensionType);
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (world.getChunkProvider().getChunkGenerator());
         int minHeight = ArienteDungeonGenerator.getPortalHeight(generator, cx, cz);
         return new BlockPos(cx * 16 + 8, minHeight + 2, cz * 16 + 8);
     }
@@ -276,7 +277,7 @@ public class CityTools {
         if (partChar != ' ') {
             List<String> parts = partPalette.get(partChar).getPalette();
 
-            long seed = DimensionManager.getWorld(0).getSeed();
+            long seed = WorldTools.getOverworld().getSeed();
             Random random = new Random(x * 23567813L + z * 923568029L + randomSeed + seed);
             random.nextFloat();
             random.nextFloat();

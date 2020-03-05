@@ -1,57 +1,56 @@
 package mcjty.arienteworld.commands;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
-public class CommandFindCity implements ICommand {
+public class CommandFindCity implements Command<CommandSource> {
 
-    @Override
-    public String getName() {
-        return "ar_findcity";
+    private static final CommandFindCity CMD = new CommandFindCity();
+
+    public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher) {
+        return Commands.literal("findcity")
+                .requires(cs -> cs.hasPermissionLevel(2))
+                .then(Commands.argument("name", StringArgumentType.word())
+                        .executes(CMD));
     }
 
     @Override
-    public String getUsage(ICommandSender sender) {
-        return getName() + " [<city type>]";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        EntityPlayer player = (EntityPlayer) sender;
+    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        PlayerEntity player = context.getSource().asPlayer();
         BlockPos start = player.getPosition();
         int cx = (start.getX() >> 4);
         int cz = (start.getZ() >> 4);
         Optional<ChunkPos> cityCenter;
-        if (args.length > 0) {
-            cityCenter = findNearbyCityCenter(cx, cz, args[0]);
+
+        String name = context.getArgument("name", String.class);
+
+        if (!name.isEmpty()) {
+            cityCenter = findNearbyCityCenter(cx, cz, name);
         } else {
             cityCenter = findNearbyCityCenter(cx, cz);
         }
 
         if (!cityCenter.isPresent()) {
-            sender.sendMessage(new TextComponentString("No nearby city!"));
+            player.sendMessage(new StringTextComponent("No nearby city!"));
         } else {
-            sender.sendMessage(new TextComponentString("Nearest city at: " + cityCenter.get().x * 16 + "," + cityCenter.get().z * 16));
+            player.sendMessage(new StringTextComponent("Nearest city at: " + cityCenter.get().x * 16 + "," + cityCenter.get().z * 16));
         }
+        return 0;
     }
 
 
@@ -110,25 +109,5 @@ public class CommandFindCity implements ICommand {
         cityCenter = CityTools.getNearestCityCenterO(cx, cz + 10);
         return cityCenter;
 
-    }
-
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean isUsernameIndex(String[] args, int index) {
-        return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return getName().compareTo(o.getName());
     }
 }

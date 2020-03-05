@@ -41,7 +41,7 @@ public interface IArienteSystem {
 
     void fixNetworks(World world, BlockPos pos);
 
-    BlockRailBase.EnumRailDirection getBeamDirection(BlockState state);
+    RailShape getBeamDirection(BlockState state);
 
     boolean hasWorkingUpgrade(ItemStack armor, ArmorUpgradeType type);
 

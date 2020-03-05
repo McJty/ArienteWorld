@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class CompiledPalette {
 
-    private final Map<PaletteIndex, Character> palette = new HashMap<>();
+    private final Map<PaletteIndex, BlockState> palette = new HashMap<>();
 
     private static final Map<String, CompiledPalette> compiledPaletteMap = new HashMap<>();
 
@@ -42,7 +42,7 @@ public class CompiledPalette {
         for (Palette p : palettes) {
             for (Map.Entry<PaletteIndex, BlockState> entry : p.getPalette().entrySet()) {
                 BlockState value = entry.getValue();
-                palette.put(entry.getKey(), (char) Block.BLOCK_STATE_IDS.get((value)));
+                palette.put(entry.getKey(), value);
             }
         }
     }
@@ -53,15 +53,14 @@ public class CompiledPalette {
 
     public BlockState getStraight(PaletteIndex c) {
         try {
-            Character o = palette.get(c);
-            return Block.BLOCK_STATE_IDS.getByValue((Character) o);
+            return palette.get(c);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public Character get(PaletteIndex c) {
+    public BlockState get(PaletteIndex c) {
         return palette.get(c);
     }
 }

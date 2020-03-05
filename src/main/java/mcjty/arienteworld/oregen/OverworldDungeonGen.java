@@ -1,27 +1,16 @@
 package mcjty.arienteworld.oregen;
 
 import mcjty.ariente.api.IWarper;
-import mcjty.ariente.api.MarbleColor;
-import mcjty.ariente.api.TechType;
-import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.config.WorldgenConfiguration;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Random;
 
-import static mcjty.ariente.api.MarbleColor.COLOR;
-import static mcjty.ariente.api.TechType.TYPE;
-import static net.minecraft.block.BlockSlab.HALF;
-
-public class OverworldDungeonGen implements IWorldGenerator {
+public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
 
     public static OverworldDungeonGen instance = new OverworldDungeonGen();
 
@@ -102,7 +91,7 @@ public class OverworldDungeonGen implements IWorldGenerator {
                     "fffffffffffff"
             }
     };
-
+*/
     public static BlockPos getNearestDungeon(World world, BlockPos pos) {
         ChunkPos cp = new ChunkPos(pos);
         if (isValidDungeonChunk(world, cp.x, cp.z)) {
@@ -140,9 +129,7 @@ public class OverworldDungeonGen implements IWorldGenerator {
     }
 
 
-    /**
-     * Return true if this chunk can contain a dungeon and the warper is still present
-     */
+    /// Return true if this chunk can contain a dungeon and the warper is still present
     private static boolean isValidDungeonChunk(World world, int chunkX, int chunkZ) {
         if (isDungeonChunk(world, chunkX, chunkZ)) {
             BlockPos pos = getDungeonPos(world, chunkX, chunkZ);
@@ -160,12 +147,10 @@ public class OverworldDungeonGen implements IWorldGenerator {
         return false;
     }
 
-    /**
-     * Return true if this chunk can contain a dungeon
-     */
+    /// Return true if this chunk can contain a dungeon
     private static boolean isDungeonChunk(World world, int chunkX, int chunkZ) {
         // Only for the overworld!
-        if (world.provider.getDimension() == 0) {
+        if (world.getDimension().getType() == DimensionType.OVERWORLD) {
             Random rnd = new Random(world.getSeed() + chunkX * 198491317L + chunkZ * 776531419L);
             rnd.nextFloat();
             return rnd.nextFloat() < WorldgenConfiguration.OVERWORLD_DUNGEON_CHANCE.get();
@@ -180,6 +165,7 @@ public class OverworldDungeonGen implements IWorldGenerator {
         return rnd.nextInt(25) + 8;
     }
 
+/*
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         if (isDungeonChunk(world, chunkX, chunkZ)) {
@@ -244,4 +230,4 @@ public class OverworldDungeonGen implements IWorldGenerator {
         }
 
     }
-}
+*/}

@@ -2,13 +2,13 @@ package mcjty.arienteworld.dimension.features;
 
 import mcjty.ariente.api.MarbleColor;
 import mcjty.arienteworld.ArienteStuff;
-import mcjty.arienteworld.dimension.GeneratorTools;
+import mcjty.arienteworld.dimension.NoiseGeneratorPerlin;
 import mcjty.arienteworld.dimension.PrimerTools;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.gen.NoiseGeneratorPerlin;
 
 import java.util.Random;
 
@@ -44,21 +44,22 @@ public class SpikesFeature implements IFeature {
         Random random = new Random(world.getSeed() + chunkX * 899809363L + chunkZ * 953485367L);
         random.nextFloat();
 
-        char block1 = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
-        char block2 = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.DARKBLUE));
-        char blockG = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.GRAY));
-        char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
+        BlockState block1 = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
+        BlockState block2 = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.DARKBLUE);
+        BlockState blockG = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.GRAY);
+        BlockState air = Blocks.AIR.getDefaultState();
 
         int radius = random.nextInt(4) + 2;
         int centerx = random.nextInt(10) + 3;
         int centerz = random.nextInt(10) + 3;
 
         int index = (centerx << 12) | (centerz << 8);
-        int centery = PrimerTools.findTopBlock(primer, index, 200, air)-5;
+        int centery = PrimerTools.findTopBlock(primer, centerx, 0, centerz, 200, air)-5;
         if (centery < 1) {
             centery = 1;
         }
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = centerx - radius / 2; x <= centerx + radius / 2; x++) {
             int distx = Math.abs(x-centerx);
             for (int z = centerz - radius / 2; z <= centerz + radius / 2; z++) {
@@ -67,15 +68,16 @@ public class SpikesFeature implements IFeature {
                 index = (x * 16 + z) * 256 + centery;
                 int y = 0;
                 while (y+centery < 255) {
-                    if (primer.data[index+y-1] != air) {
+                    if (primer.getBlockState(pos.setPos(x, centery+y-1, z)) != air) {
+                        pos.setPos(x, centery+y, z);
                         float factor = 1.0f - y / (120.0f - avgdist * 3);
                         if (random.nextFloat() < factor) {
                             if (random.nextFloat() > (y-10) / 5.0f) {
-                                primer.data[index+y] = blockG;
+                                primer.setBlockState(pos, blockG, false);
                             } else if (random.nextFloat() > (y-20) / 6.0f) {
-                                primer.data[index+y] = block2;
+                                primer.setBlockState(pos, block2, false);
                             } else {
-                                primer.data[index+y] = block1;
+                                primer.setBlockState(pos, block1, false);
                             }
                         }
                         y++;

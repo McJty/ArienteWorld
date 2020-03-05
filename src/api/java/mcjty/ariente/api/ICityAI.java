@@ -1,7 +1,7 @@
 package mcjty.ariente.api;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,9 +24,9 @@ public interface ICityAI {
 
     BlockPos requestNewSentinelPosition(World world, int sentinelId);
 
-    void playerSpotted(EntityPlayer player);
+    void playerSpotted(PlayerEntity player);
 
-    void alertCity(EntityPlayer player);
+    void alertCity(PlayerEntity player);
 
     String getKeyId();
 

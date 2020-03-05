@@ -1,19 +1,6 @@
 package mcjty.arienteworld.oregen;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.set.hash.THashSet;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Random;
-
-public class WorldTickHandler {
+public class WorldTickHandler {} /* @todo 1.15 {
 
     public static WorldTickHandler instance = new WorldTickHandler();
 
@@ -22,11 +9,11 @@ public class WorldTickHandler {
 
     @SubscribeEvent
     public void tickEnd(TickEvent.WorldTickEvent event) {
-        if (event.side != Side.SERVER) {
+        if (event.side != LogicalSide.SERVER) {
             return;
         }
         World world = event.world;
-        int dim = world.provider.getDimension();
+        int dim = world.getDimension().getType().getId();   // @todo 1.15 don't do ID
 
         if (event.phase == TickEvent.Phase.END) {
             ArrayDeque<RetroChunkCoord> chunks = chunksToGen.get(dim);
@@ -79,4 +66,4 @@ public class WorldTickHandler {
         }
     }
 
-}
+}*/

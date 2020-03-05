@@ -5,17 +5,18 @@ import mcjty.ariente.api.ICityAISystem;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.config.LootConfiguration;
-import mcjty.arienteworld.config.WorldgenConfiguration;
+import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.arienteworld.oregen.OverworldDungeonGen;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 public class ArienteWorldImplementation implements IArienteWorld {
 
     @Override
-    public int getDimension() {
-        return WorldgenConfiguration.DIMENSION_ID.get();
+    public DimensionType getDimension() {
+        return DimensionRegister.dimensionType;
     }
 
     @Override

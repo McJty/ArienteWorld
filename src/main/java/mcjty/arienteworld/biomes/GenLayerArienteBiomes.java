@@ -1,8 +1,8 @@
 package mcjty.arienteworld.biomes;
 
+import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.BiomeLayer;
-import net.minecraft.world.gen.layer.IntCache;
 
 public class GenLayerArienteBiomes extends BiomeLayer {
 
@@ -15,27 +15,28 @@ public class GenLayerArienteBiomes extends BiomeLayer {
             ModBiomes.arienteCity
     });
 
-    public GenLayerArienteBiomes(long l) {
-        super(l);
+    public GenLayerArienteBiomes(WorldType type, int l) {
+        super(type, l);
     }
 
-    @Override
-    public int[] getInts(int x, int z, int width, int depth) {
-        int dest[] = IntCache.getIntCache(width * depth);
-        for (int dz = 0; dz < depth; dz++) {
-            for (int dx = 0; dx < width; dx++) {
-                initChunkSeed(dx + x, dz + z);
-                dest[dx + dz * width] = Biome.getIdForBiome(commonBiomes[nextInt(commonBiomes.length)]);
-//                if (nextInt(RARE_BIOME_CHANCE) == 0) {
-//                    // make rare biome
-//                    dest[dx + dz * width] = Biome.getIdForBiome(rareBiomes[nextInt(rareBiomes.length)]);
-//                } else {
-//                    // make common biome
-//                    dest[dx + dz * width] = Biome.getIdForBiome(commonBiomes[nextInt(commonBiomes.length)]);
-//                }
-            }
-
-        }
-        return dest;
-    }
+    // @todo 1.15
+//    @Override
+//    public int[] getInts(int x, int z, int width, int depth) {
+//        int dest[] = IntCache.getIntCache(width * depth);
+//        for (int dz = 0; dz < depth; dz++) {
+//            for (int dx = 0; dx < width; dx++) {
+//                initChunkSeed(dx + x, dz + z);
+//                dest[dx + dz * width] = Biome.getIdForBiome(commonBiomes[nextInt(commonBiomes.length)]);
+////                if (nextInt(RARE_BIOME_CHANCE) == 0) {
+////                    // make rare biome
+////                    dest[dx + dz * width] = Biome.getIdForBiome(rareBiomes[nextInt(rareBiomes.length)]);
+////                } else {
+////                    // make common biome
+////                    dest[dx + dz * width] = Biome.getIdForBiome(commonBiomes[nextInt(commonBiomes.length)]);
+////                }
+//            }
+//
+//        }
+//        return dest;
+//    }
 }

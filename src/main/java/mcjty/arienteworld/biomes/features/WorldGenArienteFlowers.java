@@ -3,14 +3,12 @@ package mcjty.arienteworld.biomes.features;
 import mcjty.arienteworld.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenerator;
 
 import java.util.Random;
 
-public class WorldGenArienteFlowers extends WorldGenerator {
+public class WorldGenArienteFlowers {} /* @todo 1.15 extends WorldGenerator {
 
     public static final BlockState BLACK_BUSH = ModBlocks.blackBush.getDefaultState();
     public static final BlockState DARK_GRASS = ModBlocks.darkGrass.getDefaultState();
@@ -44,4 +42,4 @@ public class WorldGenArienteFlowers extends WorldGenerator {
 
         return true;
     }
-}
+}*/

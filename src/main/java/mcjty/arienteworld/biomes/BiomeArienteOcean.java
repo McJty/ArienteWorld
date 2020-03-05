@@ -16,11 +16,12 @@ public class BiomeArienteOcean extends AbstractArienteBiome {
         FEATURE_STRENGTHS.put(GlowBubbleFeature.FEATURE_GLOWBUBBLES, 1.0);
     }
 
-    public BiomeArienteOcean(BiomeProperties properties) {
+    public BiomeArienteOcean(Builder properties) {
         super(properties);
-        this.decorator.treesPerChunk = 0;
-        this.decorator.extraTreeChance = 0;
-        this.decorator.flowersPerChunk = 0;
+        // @todo 1.15
+//        this.decorator.treesPerChunk = 0;
+//        this.decorator.extraTreeChance = 0;
+//        this.decorator.flowersPerChunk = 0;
     }
 
     @Override

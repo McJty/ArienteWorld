@@ -1,14 +1,14 @@
 package mcjty.arienteworld.config;
 
-import mcjty.lib.thirteen.ConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class AIConfiguration {
 
     private static final String CATEGORY_AI = "ai";
 
-    public static ConfigSpec.IntValue ALERT_TIME;
+    public static ForgeConfigSpec.IntValue ALERT_TIME;
 
-    public static void init(ConfigSpec.Builder SERVER_BUILDER, ConfigSpec.Builder CLIENT_BUILDER) {
+    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("AI settings").push(CATEGORY_AI);
 
         ALERT_TIME = SERVER_BUILDER

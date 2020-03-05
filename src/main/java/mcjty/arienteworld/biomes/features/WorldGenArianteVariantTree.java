@@ -1,20 +1,9 @@
 package mcjty.arienteworld.biomes.features;
 
-import mcjty.arienteworld.blocks.ModBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+public class WorldGenArianteVariantTree {} /* @todo 1.15 extends WorldGenAbstractTree {
 
-import java.util.Random;
-
-public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
-
-    private static final BlockState WOOD = ModBlocks.bluelog.getDefaultState();
-    private static final BlockState LEAVES = ModBlocks.blueleaves.getDefaultState();
+    private static final BlockState WOOD = Registration.BLUELOG.get().getDefaultState();
+    private static final BlockState LEAVES = Registration.BLUELEAVES.get().getDefaultState();
 
     public WorldGenArianteVariantTree() {
         super(false);
@@ -49,8 +38,8 @@ public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
 
                 for (int j2 = 0; j2 < i; ++j2) {
                     if (j2 >= i1 && j1 > 0) {
-                        k1 += enumfacing.getFrontOffsetX();
-                        l1 += enumfacing.getFrontOffsetZ();
+                        k1 += enumfacing.getXOffset();
+                        l1 += enumfacing.getZOffset();
                         --j1;
                     }
 
@@ -136,7 +125,7 @@ public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
         int i = pos.getX();
         int j = pos.getY();
         int k = pos.getZ();
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+        BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
         for (int l = 0; l <= height + 1; ++l) {
             int i1 = 1;
@@ -181,4 +170,4 @@ public class WorldGenArianteVariantTree extends WorldGenAbstractTree {
         BlockState state = world.getBlockState(pos);
         state.getBlock().onPlantGrow(state, world, pos, source);
     }
-}
+}*/

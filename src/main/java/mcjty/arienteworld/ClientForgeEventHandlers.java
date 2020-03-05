@@ -1,14 +1,16 @@
 package mcjty.arienteworld;
 
 import mcjty.arienteworld.config.WorldgenConfiguration;
+import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.arienteworld.dimension.EditMode;
 import mcjty.arienteworld.dimension.EditModeClient;
-import net.minecraft.entity.player.EntityPlayer;
+import mcjty.lib.McJtyLib;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ClientForgeEventHandlers {
 
@@ -23,7 +25,7 @@ public class ClientForgeEventHandlers {
 
     @SubscribeEvent
     public void onWorldtick(TickEvent.WorldTickEvent event) {
-        World world = ArienteWorld.proxy.getClientWorld();
+        World world = McJtyLib.proxy.getClientWorld();
         if (world == null) {
             return;
         }
@@ -31,11 +33,8 @@ public class ClientForgeEventHandlers {
         ambienceTicks--;
         if (ambienceTicks <= 0) {
             ambienceTicks = world.rand.nextInt(12000) + 6000;
-            if (WorldgenConfiguration.DIMENSION_ID == null) {
-                return;
-            }
-            if (world.provider.getDimension() == WorldgenConfiguration.DIMENSION_ID.get()) {
-                EntityPlayer player = ArienteWorld.proxy.getClientPlayer();
+            if (world.getDimension().getType() == DimensionRegister.dimensionType) {
+                PlayerEntity player = McJtyLib.proxy.getClientPlayer();
                 world.playSound(player, player.getPosition(), ModSounds.ambient, SoundCategory.AMBIENT, 0.5f,
                         0.8F + world.rand.nextFloat() * 0.2F);
             }

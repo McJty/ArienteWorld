@@ -1,16 +1,13 @@
 package mcjty.arienteworld.dimension;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.gen.NoiseGeneratorOctaves;
-import net.minecraft.world.gen.NoiseGeneratorPerlin;
 
 import java.util.Random;
-
-import static mcjty.arienteworld.dimension.GeneratorTools.setBlockState;
 
 public class ArienteTerrainGenerator {
     private World world;
@@ -68,16 +65,15 @@ public class ArienteTerrainGenerator {
         this.noiseGen6 = new NoiseGeneratorOctaves(rand, 16);
         NoiseGeneratorOctaves mobSpawnerNoise = new NoiseGeneratorOctaves(rand, 8);
 
-        net.minecraftforge.event.terraingen.InitNoiseGensEvent.ContextOverworld ctx =
-                new net.minecraftforge.event.terraingen.InitNoiseGensEvent.ContextOverworld(noiseGen1, noiseGen2, noiseGen3, surfaceNoise, noiseGen5, noiseGen6, mobSpawnerNoise);
-        ctx = net.minecraftforge.event.terraingen.TerrainGen.getModdedNoiseGenerators(world, rand, ctx);
-        this.noiseGen1 = ctx.getLPerlin1();
-        this.noiseGen2 = ctx.getLPerlin2();
-        this.noiseGen3 = ctx.getPerlin();
-        this.surfaceNoise = ctx.getHeight();
-//        this.field_185983_b = ctx.getScale();
-        this.noiseGen6 = ctx.getDepth();
-//        this.field_185985_d = ctx.getForest();
+        // @todo 1.15
+//        net.minecraftforge.event.terraingen.InitNoiseGensEvent.ContextOverworld ctx =
+//                new net.minecraftforge.event.terraingen.InitNoiseGensEvent.ContextOverworld(noiseGen1, noiseGen2, noiseGen3, surfaceNoise, noiseGen5, noiseGen6, mobSpawnerNoise);
+//        ctx = net.minecraftforge.event.terraingen.TerrainGen.getModdedNoiseGenerators(world, rand, ctx);
+//        this.noiseGen1 = ctx.getLPerlin1();
+//        this.noiseGen2 = ctx.getLPerlin2();
+//        this.noiseGen3 = ctx.getPerlin();
+//        this.surfaceNoise = ctx.getHeight();
+//        this.noiseGen6 = ctx.getDepth();
     }
 
 
@@ -100,8 +96,8 @@ public class ArienteTerrainGenerator {
 
                 for (int l1 = -b0; l1 <= b0; ++l1) {
                     for (int i2 = -b0; i2 <= b0; ++i2) {
-                        float baseHeight = biome.getBaseHeight();
-                        float variation = biome.getHeightVariation();
+                        float baseHeight = 0; // @todo 1.15 biome.getBaseHeight();
+                        float variation = 0; // @todo 1.15 biome.getHeightVariation();
 
                         if (amplified && baseHeight > 0.0F) {
                             baseHeight = 1.0F + baseHeight * 2.0F;
@@ -178,6 +174,7 @@ public class ArienteTerrainGenerator {
 
     public void generate(int chunkX, int chunkZ, ChunkPrimer primer, Biome[] biomesForGeneration) {
         generateHeightmap(chunkX * 4, 0, chunkZ * 4, biomesForGeneration);
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         byte waterLevel = 63;
         for (int x4 = 0; x4 < 4; ++x4) {
             int l = x4 * 5;
@@ -209,7 +206,9 @@ public class ArienteTerrainGenerator {
                         int height = (height32 * 8) + h;
 
                         for (int x = 0; x < 4; ++x) {
-                            int index = ((x + (x4 * 4)) << 12) | ((0 + (z4 * 4)) << 8) | height;
+                            int index = height;
+                            int sx = x + (x4 * 4);
+                            int sz = 0 + (z4 * 4);
                             short maxheight = 256;
                             index -= maxheight;
                             double d14 = 0.25D;
@@ -218,14 +217,15 @@ public class ArienteTerrainGenerator {
 
                             for (int z = 0; z < 4; ++z) {
                                 index += maxheight;
+                                pos.setPos(sx, index, sz);
                                 if (height < 2) {
-                                    setBlockState(primer, index, Blocks.BEDROCK.getDefaultState());
+                                    primer.setBlockState(pos, Blocks.BEDROCK.getDefaultState(), false);
                                 } else if ((d15 += d16) > 0.0D) {
-                                    setBlockState(primer, index, baseBlock);
+                                    primer.setBlockState(pos, baseBlock, false);
                                 } else if (height32 * 8 + h < 63) {
-                                    setBlockState(primer, index, Blocks.WATER.getDefaultState());
+                                    primer.setBlockState(pos, Blocks.WATER.getDefaultState(), false);   // @todo optimize
                                 } else {
-                                    setBlockState(primer, index, Blocks.AIR.getDefaultState());
+                                    primer.setBlockState(pos, Blocks.AIR.getDefaultState(), false); // @todo optimize
                                 }
                             }
 
@@ -250,7 +250,8 @@ public class ArienteTerrainGenerator {
         for (int i = 0; i < 16; ++i) {
             for (int j = 0; j < 16; ++j) {
                 Biome biome = biomesIn[j + i * 16];
-                biome.genTerrainBlocks(this.world, this.rand, primer, x * 16 + i, z * 16 + j, this.depthBuffer[j + i * 16]);
+                // @todo 1.15
+//                biome.genTerrainBlocks(this.world, this.rand, primer, x * 16 + i, z * 16 + j, this.depthBuffer[j + i * 16]);
             }
         }
     }

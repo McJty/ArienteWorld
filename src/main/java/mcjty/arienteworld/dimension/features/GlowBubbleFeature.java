@@ -1,14 +1,12 @@
 package mcjty.arienteworld.dimension.features;
 
 import mcjty.arienteworld.ArienteStuff;
-import mcjty.arienteworld.dimension.PrimerTools;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockStainedGlass;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumDyeColor;
+import mcjty.arienteworld.dimension.NoiseGeneratorPerlin;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.gen.NoiseGeneratorPerlin;
 
 import java.util.Random;
 
@@ -42,27 +40,29 @@ public class GlowBubbleFeature implements IFeature {
         int centery = random.nextInt(7) + 40;
 
 //        char block = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLUE));
-        char block = (char) Block.BLOCK_STATE_IDS.get(Blocks.STAINED_GLASS.getDefaultState().with(BlockStainedGlass.COLOR, EnumDyeColor.BLUE));
-        char inner = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.fluxGlow.getDefaultState());
-        char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
+//        char block = (char) Block.BLOCK_STATE_IDS.get(Blocks.STAINED_GLASS.getDefaultState().with(BlockStainedGlass.COLOR, EnumDyeColor.BLUE));
+        BlockState block = Blocks.AIR.getDefaultState(); // @todo 1.15  should be stained glass!
+        BlockState inner = ArienteStuff.fluxGlow.getDefaultState();
+        BlockState air = Blocks.AIR.getDefaultState();
         int centerx = 8 + (dx) * 16;
         int centerz = 8 + (dz) * 16;
 
         double sqradius = radius * radius;
         double innerRadius = (((double) radius) - 1.5f) * (((double) radius) - 1.5f);
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int x = 0 ; x < 16 ; x++) {
             double dxdx = (x-centerx) * (x-centerx);
             for (int z = 0 ; z < 16 ; z++) {
                 double dzdz = (z-centerz) * (z-centerz);
-                int index = (x * 16 + z) * 256;
                 for (int y = centery-radius ; y <= centery+radius ; y++) {
                     double dydy = (y-centery) * (y-centery);
                     double sqdist = dxdx + dydy + dzdz;
+                    pos.setPos(x, y, z);
                     if (sqdist < innerRadius) {
-                        primer.data[index + y] = inner;
+                        primer.setBlockState(pos, inner, false);
                     } else if (sqdist <= sqradius) {
-                        primer.data[index + y] = block;
+                        primer.setBlockState(pos, block, false);
                     }
                 }
             }

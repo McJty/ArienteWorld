@@ -3,7 +3,7 @@ package mcjty.arienteworld.varia;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -29,8 +29,8 @@ public class Tools {
                 throw new RuntimeException("Cannot find block: '" + split[0] + "'!");
             }
             try {
-                int meta = Integer.parseInt(split[1]);
-                return value.getStateFromMeta(meta);
+//                int meta = Integer.parseInt(split[1]);
+                return value.getDefaultState(); // @todo 1.15 meta?
             } catch (NumberFormatException e) {
                 throw new RuntimeException("Bad meta for: '" + s + "'!");
             }
@@ -44,12 +44,8 @@ public class Tools {
     }
 
     public static String stateToString(BlockState state) {
-        int meta = state.getBlock().getMetaFromState(state);
-        if (meta == 0) {
-            return state.getBlock().getRegistryName().toString();
-        } else {
-            return state.getBlock().getRegistryName().toString() + "@" + meta;
-        }
+        // @todo 1.15 no meta
+        return state.getBlock().getRegistryName().toString();
     }
 
     public static String getRandomFromList(Random random, List<Pair<Float, String>> list) {

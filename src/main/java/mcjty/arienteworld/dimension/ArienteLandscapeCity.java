@@ -6,8 +6,10 @@ import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.biomes.IArienteBiome;
 import mcjty.arienteworld.cities.*;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -150,7 +152,8 @@ public class ArienteLandscapeCity {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!cityChunkCache.containsKey(pos)) {
             if (biomesForGeneration == null) {
-                biomesForGeneration = world.getBiomeProvider().getBiomes(biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
+                // @todo 1.15
+//                biomesForGeneration = world.getBiomeProvider().getBiomes(biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
             }
             cityChunkCache.put(pos, hasCityBiomes(biomesForGeneration));
         }
@@ -223,8 +226,8 @@ public class ArienteLandscapeCity {
     );
 
     public static void generate(int chunkX, int chunkZ, ChunkPrimer primer, ArienteDungeonGenerator cityGenerator) {
-        char baseChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState());
-        char fillChar = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
+        BlockState baseChar = ArienteStuff.marble.getDefaultState();
+        BlockState fillChar = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
 
         boolean undergroundDungeon = false;
         if (CityTools.isDungeonChunk(chunkX, chunkZ)) {
@@ -295,21 +298,22 @@ public class ArienteLandscapeCity {
         }
 
         if (undergroundPark) {
-            char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
-            char marble = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.marble_smooth.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK));
-            char tech = (char) Block.BLOCK_STATE_IDS.get(ArienteStuff.blackmarble_techpat.getDefaultState().with(TechType.TYPE, TechType.LINES));
+            BlockState air = Blocks.AIR.getDefaultState();
+            BlockState marble = ArienteStuff.marble_smooth.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
+            BlockState tech = ArienteStuff.blackmarble_techpat.getDefaultState().with(TechType.TYPE, TechType.LINES);
             int layerHeight = CITY_LEVEL + CITYLEV_HEIGHT + 6;
             if (start < layerHeight) {
                 PrimerTools.fillChunk(primer, air, start, layerHeight);
             }
+            BlockPos.Mutable pos = new BlockPos.Mutable();
             for (int dx = 0 ; dx < 16 ; dx++) {
                 for (int dz = 0; dz < 16; dz++) {
-                    int index = (dx << 12) | (dz << 8) + layerHeight;
-                    if (primer.data[index] != air) {
+                    pos.setPos(dx, layerHeight, dz);
+                    if (primer.getBlockState(pos) != air) {
                         if (dx == 6 || dx == 9 || dz == 6 || dz == 9) {
-                            primer.data[index] = tech;
+                            primer.setBlockState(pos, tech, false);
                         } else {
-                            primer.data[index] = marble;
+                            primer.setBlockState(pos, marble, false);
                         }
                     }
                 }
@@ -318,14 +322,14 @@ public class ArienteLandscapeCity {
     }
 
     private static boolean isChunkOccupied(ChunkPrimer primer, int y1, int y2) {
-        char air = (char) Block.BLOCK_STATE_IDS.get(Blocks.AIR.getDefaultState());
+        BlockState air = Blocks.AIR.getDefaultState();
 
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int dx = 0 ; dx < 16 ; dx += 2) {
             for (int dz = 0 ; dz < 16 ; dz += 2) {
-                int index = (dx << 12) | (dz << 8);
                 int y = y1;
                 while (y <= y2) {
-                    if (primer.data[index + y] != air) {
+                    if (primer.getBlockState(pos.setPos(dx, y, dz)) != air) {
                         return true;
                     }
                     y += 2;

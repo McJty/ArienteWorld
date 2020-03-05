@@ -2,7 +2,6 @@ package mcjty.arienteworld.ai;
 
 import mcjty.ariente.api.*;
 import mcjty.arienteworld.ArienteStuff;
-import mcjty.arienteworld.blocks.ModBlocks;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityPlan;
 import mcjty.arienteworld.cities.CityTools;
@@ -10,34 +9,36 @@ import mcjty.arienteworld.cities.Loot;
 import mcjty.arienteworld.config.AIConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.setup.ModSetup;
+import mcjty.arienteworld.setup.Registration;
 import mcjty.hologui.api.IHoloGuiEntity;
-import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.lib.varia.WeightedRandom;
+import mcjty.lib.varia.WorldTools;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.RailShape;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -112,9 +113,9 @@ public class CityAI implements ICityAI {
             City city = CityTools.getCity(center);
             ModSetup.arienteSystem.addSecurity(stack, getStorageKeyId());
             ModSetup.arienteSystem.setDescription(stack, "City: " + city.getName());
-            EntityItem entityitem = new EntityItem(world, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, stack);
+            ItemEntity entityitem = new ItemEntity(world, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, stack);
             entityitem.setDefaultPickupDelay();
-            world.spawnEntity(entityitem);
+            world.addEntity(entityitem);
             setAlarmType(world, AlarmType.DEAD);
         }
     }
@@ -249,7 +250,7 @@ public class CityAI implements ICityAI {
             AtomicInteger drones = new AtomicInteger(0);
             AtomicInteger sentinels = new AtomicInteger(0);
             AxisAlignedBB boundingbox = getSoldierBoundingbox();
-            world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(ctr).grow(dimX, 200, dimZ),
+            world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(ctr).grow(dimX, 200, dimZ),
                     entity -> {
                         if (entity instanceof ISoldier) {
                             if (boundingbox != null) {
@@ -322,12 +323,12 @@ public class CityAI implements ICityAI {
                 Entity entity = world.getEntityByID(levitator);
                 if (entity != null) {
                     for (Entity passenger : entity.getPassengers()) {
-                        if (!(passenger instanceof IHoloGuiEntity) && !(passenger instanceof EntityPlayer)) {
-                            passenger.setDead();
+                        if (!(passenger instanceof IHoloGuiEntity) && !(passenger instanceof PlayerEntity)) {
+                            passenger.remove();
                         }
                     }
 
-                    entity.setDead();
+                    entity.remove();
                 }
                 levitator = -1;
             } else {
@@ -342,7 +343,7 @@ public class CityAI implements ICityAI {
 
                     BlockPos pos = path.start;
                     BlockState state = world.getBlockState(pos);
-                    BlockRailBase.EnumRailDirection dir = ModSetup.arienteSystem.getBeamDirection(state);
+                    RailShape dir = ModSetup.arienteSystem.getBeamDirection(state);
                     double d0 = 0.0D;
 
                     if (dir.isAscending()) {
@@ -357,11 +358,11 @@ public class CityAI implements ICityAI {
                         levitator.changeSpeed(50);
                     }
                     levitator.setDesiredDestination(path.end);
-                    world.spawnEntity(entity);
+                    world.addEntity(entity);
                     this.levitator = entity.getEntityId();
 
-                    EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, path.direction, center, SoldierBehaviourType.SOLDIER_FIGHTER, false);
-                    soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
+                    LivingEntity soldier = ModSetup.arienteSystem.createSoldier(world, pos, path.direction, center, SoldierBehaviourType.SOLDIER_FIGHTER, false);
+                    soldier.setHeldItem(Hand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
                     soldier.startRiding(entity);
                 }
             }
@@ -371,11 +372,11 @@ public class CityAI implements ICityAI {
     private void dismountAndKill(IFluxLevitatorEntity levitatorEntity) {
         Entity ent = (Entity) levitatorEntity;
         for (Entity passenger : ent.getPassengers()) {
-            if (!(passenger instanceof IHoloGuiEntity) && !(passenger instanceof EntityPlayer)) {
-                passenger.dismountRidingEntity();
+            if (!(passenger instanceof IHoloGuiEntity) && !(passenger instanceof PlayerEntity)) {
+                passenger.stopRiding();
             }
         }
-        ent.setDead();
+        ent.remove();
         levitator = -1;
     }
 
@@ -419,7 +420,7 @@ public class CityAI implements ICityAI {
     private LevitatorPath findValidBeam(World world) {
         CityAISystem system = CityAISystem.getCityAISystem(world);
         List<LevitatorPath> positions = new ArrayList<>();
-        for (Direction facing : Direction.HORIZONTALS) {
+        for (Direction facing : OrientationTools.HORIZONTAL_DIRECTION_VALUES) {
             ChunkPos otherCoord = new ChunkPos(center.x + facing.getDirectionVec().getX() * 16,
                     center.z + facing.getDirectionVec().getZ() * 16);
             CityAI otherCity = system.getCityAI(otherCoord);
@@ -483,8 +484,8 @@ public class CityAI implements ICityAI {
         List<BlockPos> players = new ArrayList<>();
         for (Map.Entry<UUID, BlockPos> entry : watchingPlayers.entrySet()) {
             UUID uuid = entry.getKey();
-            EntityPlayerMP player = world.getMinecraftServer().getPlayerList().getPlayerByUUID(uuid);
-            if (player != null && player.getEntityWorld().provider.getDimension() == world.provider.getDimension()) {
+            PlayerEntity player = world.getServer().getPlayerList().getPlayerByUUID(uuid);
+            if (player != null && player.getEntityWorld().getDimension().getType() == world.getDimension().getType()) {
                 BlockPos pos = entry.getValue();    // Use the last known position
                 double sq = pos.distanceSq(new BlockPos(center.x * 16 + 8, 50, center.z * 16 + 8));
                 if (sq < 80 * 80) {
@@ -508,7 +509,7 @@ public class CityAI implements ICityAI {
 
             City city = CityTools.getCity(center);
             CityPlan plan = city.getPlan();
-            ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
+            ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
             int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
             int desiredMinimumCount = 0;
@@ -600,7 +601,7 @@ public class CityAI implements ICityAI {
         int avoidNearby = 3;
         do {
             pos = new ArrayList<>(soldierPositions.keySet()).get(random.nextInt(soldierPositions.size()));
-            EntityPlayer closestPlayer = world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 10, false);
+            PlayerEntity closestPlayer = world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 10, false);
             if (closestPlayer == null) {
                 avoidNearby = 0;
             } else {
@@ -611,71 +612,71 @@ public class CityAI implements ICityAI {
         System.out.println("CityAI.spawnSoldier at " + pos);
 
         Direction facing = soldierPositions.get(pos);
-        EntityLivingBase entity = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER,
+        LivingEntity entity = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER,
                 random.nextDouble() < plan.getMasterChance());
-        entity.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));    // @todo need a lasergun
+        entity.setHeldItem(Hand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));    // @todo need a lasergun
 
         if (random.nextFloat() < plan.getPowerArmorChance()) {
-            entity.setItemStackToSlot(EntityEquipmentSlot.HEAD, createNiceHelmet());
-            entity.setItemStackToSlot(EntityEquipmentSlot.FEET, createNiceBoots());
-            entity.setItemStackToSlot(EntityEquipmentSlot.CHEST, createNiceChestplate(plan));
-            entity.setItemStackToSlot(EntityEquipmentSlot.LEGS, createNiceLegs());
+            entity.setItemStackToSlot(EquipmentSlotType.HEAD, createNiceHelmet());
+            entity.setItemStackToSlot(EquipmentSlotType.FEET, createNiceBoots());
+            entity.setItemStackToSlot(EquipmentSlotType.CHEST, createNiceChestplate(plan));
+            entity.setItemStackToSlot(EquipmentSlotType.LEGS, createNiceLegs());
         }
     }
 
     private ItemStack createNiceHelmet() {
         ItemStack helmet = new ItemStack(ArienteStuff.powerSuitHelmet);
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
-        helmet.setTagCompound(compound);
+        CompoundNBT compound = new CompoundNBT();
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
+        helmet.setTag(compound);
         return helmet;
     }
 
 
     private ItemStack createNiceBoots() {
         ItemStack helmet = new ItemStack(ArienteStuff.powerSuitBoots);
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
-        helmet.setTagCompound(compound);
+        CompoundNBT compound = new CompoundNBT();
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
+        helmet.setTag(compound);
         return helmet;
     }
 
 
     private ItemStack createNiceChestplate(CityPlan plan) {
         ItemStack helmet = new ItemStack(ArienteStuff.powerSuitChest);
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
+        CompoundNBT compound = new CompoundNBT();
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
         if (random.nextFloat() < plan.getForcefieldChance()) {
-            compound.setBoolean(ArmorUpgradeType.ENERGY.getModuleKey(), true);
-            compound.setBoolean(ArmorUpgradeType.FORCEFIELD.getModuleKey(), true);
-            compound.setBoolean(ArmorUpgradeType.FORCEFIELD.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.FORCEFIELD.getModuleKey()));
+            compound.putBoolean(ArmorUpgradeType.ENERGY.getModuleKey(), true);
+            compound.putBoolean(ArmorUpgradeType.FORCEFIELD.getModuleKey(), true);
+            compound.putBoolean(ArmorUpgradeType.FORCEFIELD.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.FORCEFIELD.getModuleKey()));
         }
-        helmet.setTagCompound(compound);
+        helmet.setTag(compound);
         return helmet;
     }
 
 
     private ItemStack createNiceLegs() {
         ItemStack helmet = new ItemStack(ArienteStuff.powerSuitLegs);
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
-        compound.setBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
-        helmet.setTagCompound(compound);
+        CompoundNBT compound = new CompoundNBT();
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getModuleKey(), true);
+        compound.putBoolean(ArmorUpgradeType.ARMOR.getWorkingKey(), compound.getBoolean(ArmorUpgradeType.ARMOR.getModuleKey()));
+        helmet.setTag(compound);
         return helmet;
     }
 
 
     private void spawnDrone(World world, int height) {
         // Too few drones. Spawn a new one
-        EntityLivingBase entity = ModSetup.arienteSystem.createDrone(world, center);
+        LivingEntity entity = ModSetup.arienteSystem.createDrone(world, center);
         int cx = center.x * 16 + 8;
         int cy = height;
         int cz = center.z * 16 + 8;
         entity.setPosition(cx, cy, cz);
-        world.spawnEntity(entity);
+        world.addEntity(entity);
     }
 
     private void handleSentinels(World world, EntityInfo info) {
@@ -694,7 +695,7 @@ public class CityAI implements ICityAI {
             if (info.getCountSentinel(world) == 0) {
                 City city = CityTools.getCity(center);
                 CityPlan plan = city.getPlan();
-                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
+                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
                 int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
                 for (int i = 0; i < settings.getNumSentinels(); i++) {
 //                    System.out.println("revive: i = " + i);
@@ -721,7 +722,7 @@ public class CityAI implements ICityAI {
     }
 
     @Override
-    public BlockPos requestNewSoldierPosition(World world, EntityLivingBase currentTarget) {
+    public BlockPos requestNewSoldierPosition(World world, LivingEntity currentTarget) {
         // Sometimes we let a solider pick a different location independent of target
         if (random.nextFloat() > .6) {
             return null;
@@ -744,7 +745,7 @@ public class CityAI implements ICityAI {
     }
 
     @Override
-    public BlockPos requestNewDronePosition(World world, EntityLivingBase currentTarget) {
+    public BlockPos requestNewDronePosition(World world, LivingEntity currentTarget) {
         BlockPos target;
         if (currentTarget != null) {
             target = currentTarget.getPosition();
@@ -769,7 +770,7 @@ public class CityAI implements ICityAI {
 
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
         int droneHeight = plan.getSentinelRelHeight() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
         int angleI = (sentinelAngleOffset + sentinelId * 12 / settings.getNumSentinels()) % 12;
@@ -791,9 +792,9 @@ public class CityAI implements ICityAI {
     }
 
     @Override
-    public void playerSpotted(EntityPlayer player) {
+    public void playerSpotted(PlayerEntity player) {
         // The scramble module helps protect against player allertness
-        ItemStack helmet = player.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+        ItemStack helmet = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
         if (helmet.getItem() == ArienteStuff.powerSuitHelmet) {
             if (ModSetup.arienteSystem.hasWorkingUpgrade(helmet, ArmorUpgradeType.SCRAMBLE)) {
                 return;
@@ -804,7 +805,7 @@ public class CityAI implements ICityAI {
     }
 
     @Override
-    public void alertCity(EntityPlayer player) {
+    public void alertCity(PlayerEntity player) {
         if (findFirstValidAICore(player.getEntityWorld()) == null) {
             // City is dead
             return;
@@ -818,7 +819,7 @@ public class CityAI implements ICityAI {
         watchingPlayers.put(player.getUniqueID(), player.getPosition());    // Register the last known position
     }
 
-    public void highAlertMode(EntityPlayer player) {
+    public void highAlertMode(PlayerEntity player) {
         alertCity(player);
         highAlert = true;
     }
@@ -860,15 +861,15 @@ public class CityAI implements ICityAI {
                             BlockPos p = new BlockPos(x, y, z);
                             BlockState state = world.getBlockState(p);
                             Block block = state.getBlock();
-                            if (block == ModBlocks.guardDummy) {
-                                guardPositions.put(p, state.getValue(BaseBlock.FACING_HORIZ));
-                                world.setBlockToAir(p);
-                            } else if (block == ModBlocks.soldierDummy) {
-                                soldierPositions.put(p, state.getValue(BaseBlock.FACING_HORIZ));
-                                world.setBlockToAir(p);
-                            } else if (block == ModBlocks.masterSoldierDummy) {
-                                masterSoldierPositions.put(p, state.getValue(BaseBlock.FACING_HORIZ));
-                                world.setBlockToAir(p);
+                            if (block == Registration.GUARD_DUMMY.get()) {
+                                guardPositions.put(p, state.get(BlockStateProperties.HORIZONTAL_FACING));
+                                world.setBlockState(p, Blocks.AIR.getDefaultState());
+                            } else if (block == Registration.SOLDIER_DUMMY.get()) {
+                                soldierPositions.put(p, state.get(BlockStateProperties.HORIZONTAL_FACING));
+                                world.setBlockState(p, Blocks.AIR.getDefaultState());
+                            } else if (block == Registration.MASTER_SOLDIER_DUMMY.get()) {
+                                masterSoldierPositions.put(p, state.get(BlockStateProperties.HORIZONTAL_FACING));
+                                world.setBlockState(p, Blocks.AIR.getDefaultState());
                             } else {
                                 TileEntity te = world.getTileEntity(p);
                                 if (te instanceof ICityEquipment) {
@@ -971,7 +972,7 @@ public class CityAI implements ICityAI {
     }
 
     private void createSettings(World world) {
-        long seed = DimensionManager.getWorld(0).getSeed();
+        long seed = WorldTools.getOverworld(world).getSeed();
         Random rnd = new Random(seed + center.x * 567000003533L + center.z * 234516783139L);
         rnd.nextFloat();
         rnd.nextFloat();
@@ -994,8 +995,8 @@ public class CityAI implements ICityAI {
         for (Map.Entry<BlockPos, Direction> entry : guardPositions.entrySet()) {
             BlockPos pos = entry.getKey();
             Direction facing = entry.getValue();
-            EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_GUARD, false);
-            soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
+            LivingEntity soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_GUARD, false);
+            soldier.setHeldItem(Hand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
     }
 
@@ -1003,8 +1004,8 @@ public class CityAI implements ICityAI {
         for (Map.Entry<BlockPos, Direction> entry : masterSoldierPositions.entrySet()) {
             BlockPos pos = entry.getKey();
             Direction facing = entry.getValue();
-            EntityLivingBase soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER, true);
-            soldier.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
+            LivingEntity soldier = ModSetup.arienteSystem.createSoldier(world, pos, facing, center, SoldierBehaviourType.SOLDIER_FIGHTER, true);
+            soldier.setHeldItem(Hand.MAIN_HAND, new ItemStack(ArienteStuff.energySabre));
         }
     }
 
@@ -1051,7 +1052,7 @@ public class CityAI implements ICityAI {
     private void initSentinels(World world) {
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((WorldServer) world).getChunkProvider().chunkGenerator);
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
         int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
         int numSentinels = settings.getNumSentinels();
@@ -1062,127 +1063,127 @@ public class CityAI implements ICityAI {
     }
 
     private void createSentinel(World world, int i, int height) {
-        EntityLivingBase entity = ModSetup.arienteSystem.createSentinel(world, i, center);
+        LivingEntity entity = ModSetup.arienteSystem.createSentinel(world, i, center);
         int cx = center.x * 16 + 8;
         int cy = height;
         int cz = center.z * 16 + 8;
         entity.setPosition(cx, cy, cz);
-        world.spawnEntity(entity);
+        world.addEntity(entity);
     }
 
     public void enableEditMode(World world) {
         for (Map.Entry<BlockPos, Direction> entry : guardPositions.entrySet()) {
-            world.setBlockState(entry.getKey(), ModBlocks.guardDummy.getDefaultState().with(BaseBlock.FACING_HORIZ, entry.getValue()));
+            world.setBlockState(entry.getKey(), Registration.GUARD_DUMMY.get().getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING, entry.getValue()));
         }
         for (Map.Entry<BlockPos, Direction> entry : soldierPositions.entrySet()) {
-            world.setBlockState(entry.getKey(), ModBlocks.soldierDummy.getDefaultState().with(BaseBlock.FACING_HORIZ, entry.getValue()));
+            world.setBlockState(entry.getKey(), Registration.SOLDIER_DUMMY.get().getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING, entry.getValue()));
         }
         for (Map.Entry<BlockPos, Direction> entry : masterSoldierPositions.entrySet()) {
-            world.setBlockState(entry.getKey(), ModBlocks.masterSoldierDummy.getDefaultState().with(BaseBlock.FACING_HORIZ, entry.getValue()));
+            world.setBlockState(entry.getKey(), Registration.MASTER_SOLDIER_DUMMY.get().getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING, entry.getValue()));
         }
     }
 
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(CompoundNBT nbt) {
         initialized = nbt.getBoolean("initialized");
         settings = null;
         if (initialized) {
-            if (nbt.hasKey("settings")) {
+            if (nbt.contains("settings")) {
                 settings = new CityAISettings();
-                settings.readFromNBT(nbt.getCompoundTag("settings"));
+                settings.readFromNBT(nbt.getCompound("settings"));
             }
             keyId = nbt.getString("keyId");
             storageKeyId = nbt.getString("storageKeyId");
             forcefieldId = nbt.getString("forcefieldId");
             watchingPlayers.clear();
-            if (nbt.hasKey("players")) {
-                NBTTagList list = nbt.getTagList("players", Constants.NBT.TAG_COMPOUND);
-                for (int i = 0; i < list.tagCount(); i++) {
-                    NBTTagCompound tc = list.getCompoundTagAt(i);
+            if (nbt.contains("players")) {
+                ListNBT list = nbt.getList("players", Constants.NBT.TAG_COMPOUND);
+                for (int i = 0; i < list.size(); i++) {
+                    CompoundNBT tc = list.getCompound(i);
                     UUID uuid = tc.getUniqueId("id");
-                    BlockPos pos = NBTUtil.getPosFromTag(tc);
+                    BlockPos pos = NBTUtil.readBlockPos(tc);
                     watchingPlayers.put(uuid, pos);
                 }
 
             }
-            sentinelMovementTicks = nbt.getInteger("sentinelMovementTicks");
-            sentinelAngleOffset = nbt.getInteger("sentinelAngleOffset");
-            onAlert = nbt.getInteger("onAlert");
+            sentinelMovementTicks = nbt.getInt("sentinelMovementTicks");
+            sentinelAngleOffset = nbt.getInt("sentinelAngleOffset");
+            onAlert = nbt.getInt("onAlert");
             highAlert = nbt.getBoolean("highAlert");
-            droneTicker = nbt.getInteger("droneTicker");
-            readMapFromNBT(nbt.getTagList("guards", Constants.NBT.TAG_COMPOUND), guardPositions);
-            readMapFromNBT(nbt.getTagList("soldierPositions", Constants.NBT.TAG_COMPOUND), soldierPositions);
-            readMapFromNBT(nbt.getTagList("masterSoldierPositions", Constants.NBT.TAG_COMPOUND), masterSoldierPositions);
-            levitator = nbt.getInteger("levitator");
-            levitatorTicker = nbt.getInteger("levitatorTicker");
+            droneTicker = nbt.getInt("droneTicker");
+            readMapFromNBT(nbt.getList("guards", Constants.NBT.TAG_COMPOUND), guardPositions);
+            readMapFromNBT(nbt.getList("soldierPositions", Constants.NBT.TAG_COMPOUND), soldierPositions);
+            readMapFromNBT(nbt.getList("masterSoldierPositions", Constants.NBT.TAG_COMPOUND), masterSoldierPositions);
+            levitator = nbt.getInt("levitator");
+            levitatorTicker = nbt.getInt("levitatorTicker");
         }
     }
 
-    public void writeToNBT(NBTTagCompound compound) {
-        compound.setBoolean("initialized", initialized);
+    public void writeToNBT(CompoundNBT compound) {
+        compound.putBoolean("initialized", initialized);
         if (initialized) {
             if (settings != null) {
-                NBTTagCompound tc = new NBTTagCompound();
+                CompoundNBT tc = new CompoundNBT();
                 settings.writeToNBT(tc);
-                compound.setTag("settings", tc);
+                compound.put("settings", tc);
             }
 
-            compound.setString("keyId", keyId);
-            compound.setString("storageKeyId", storageKeyId);
-            compound.setString("forcefieldId", forcefieldId);
+            compound.putString("keyId", keyId);
+            compound.putString("storageKeyId", storageKeyId);
+            compound.putString("forcefieldId", forcefieldId);
             if (!watchingPlayers.isEmpty()) {
-                NBTTagList list = new NBTTagList();
+                ListNBT list = new ListNBT();
                 for (Map.Entry<UUID, BlockPos> entry : watchingPlayers.entrySet()) {
-                    NBTTagCompound tc = NBTUtil.createPosTag(entry.getValue());
-                    tc.setUniqueId("id", entry.getKey());
-                    list.appendTag(tc);
+                    CompoundNBT tc = NBTUtil.writeBlockPos(entry.getValue());
+                    tc.putUniqueId("id", entry.getKey());
+                    list.add(tc);
                 }
-                compound.setTag("players", list);
+                compound.put("players", list);
             }
-            compound.setInteger("sentinelMovementTicks", sentinelMovementTicks);
-            compound.setInteger("sentinelAngleOffset", sentinelAngleOffset);
-            compound.setInteger("onAlert", onAlert);
-            compound.setBoolean("highAlert", highAlert);
-            compound.setInteger("droneTicker", droneTicker);
-            compound.setTag("guards", writeMapToNBT(guardPositions));
-            compound.setTag("soldierPositions", writeMapToNBT(soldierPositions));
-            compound.setTag("masterSoldierPositions", writeMapToNBT(masterSoldierPositions));
-            compound.setInteger("levitator", levitator);
-            compound.setInteger("levitatorTicker", levitatorTicker);
+            compound.putInt("sentinelMovementTicks", sentinelMovementTicks);
+            compound.putInt("sentinelAngleOffset", sentinelAngleOffset);
+            compound.putInt("onAlert", onAlert);
+            compound.putBoolean("highAlert", highAlert);
+            compound.putInt("droneTicker", droneTicker);
+            compound.put("guards", writeMapToNBT(guardPositions));
+            compound.put("soldierPositions", writeMapToNBT(soldierPositions));
+            compound.put("masterSoldierPositions", writeMapToNBT(masterSoldierPositions));
+            compound.putInt("levitator", levitator);
+            compound.putInt("levitatorTicker", levitatorTicker);
         }
     }
 
-    private NBTTagList writeSetToNBT(Set<BlockPos> set) {
-        NBTTagList list = new NBTTagList();
+    private ListNBT writeSetToNBT(Set<BlockPos> set) {
+        ListNBT list = new ListNBT();
         for (BlockPos pos : set) {
-            list.appendTag(NBTUtil.createPosTag(pos));
+            list.add(NBTUtil.writeBlockPos(pos));
         }
         return list;
     }
 
-    private void readSetFromNBT(NBTTagList list, Set<BlockPos> set) {
+    private void readSetFromNBT(ListNBT list, Set<BlockPos> set) {
         set.clear();
-        for (int i = 0; i < list.tagCount(); i++) {
-            BlockPos pos = NBTUtil.getPosFromTag(list.getCompoundTagAt(i));
+        for (int i = 0; i < list.size(); i++) {
+            BlockPos pos = NBTUtil.readBlockPos(list.getCompound(i));
             set.add(pos);
         }
     }
 
-    private NBTTagList writeMapToNBT(Map<BlockPos, Direction> map) {
-        NBTTagList list = new NBTTagList();
+    private ListNBT writeMapToNBT(Map<BlockPos, Direction> map) {
+        ListNBT list = new ListNBT();
         for (Map.Entry<BlockPos, Direction> entry : map.entrySet()) {
-            NBTTagCompound tc = NBTUtil.createPosTag(entry.getKey());
-            tc.setInteger("facing", entry.getValue().ordinal());
-            list.appendTag(tc);
+            CompoundNBT tc = NBTUtil.writeBlockPos(entry.getKey());
+            tc.putInt("facing", entry.getValue().ordinal());
+            list.add(tc);
         }
         return list;
     }
 
-    private void readMapFromNBT(NBTTagList list, Map<BlockPos, Direction> map) {
+    private void readMapFromNBT(ListNBT list, Map<BlockPos, Direction> map) {
         map.clear();
-        for (int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound tc = list.getCompoundTagAt(i);
-            BlockPos pos = NBTUtil.getPosFromTag(tc);
-            Direction facing = Direction.VALUES[tc.getInteger("facing")];
+        for (int i = 0; i < list.size(); i++) {
+            CompoundNBT tc = list.getCompound(i);
+            BlockPos pos = NBTUtil.readBlockPos(tc);
+            Direction facing = OrientationTools.DIRECTION_VALUES[tc.getInt("facing")];
             map.put(pos, facing);
         }
     }
