@@ -7,6 +7,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 
 import java.util.Random;
 
@@ -33,7 +34,7 @@ public class GlowBubbleFeature implements IFeature {
     }
 
     @Override
-    public void generate(IWorld world, ChunkPrimer primer, int chunkX, int chunkZ, int dx, int dz) {
+    public void generate(IWorld world, IChunk primer, int chunkX, int chunkZ, int dx, int dz) {
         Random random = new Random(world.getSeed() + (chunkZ+dz) * 838037023L + (chunkX+dx) * 825719033L);
         random.nextFloat();
         int radius = random.nextInt(6) + 6;

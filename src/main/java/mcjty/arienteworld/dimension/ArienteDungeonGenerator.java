@@ -8,8 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +87,7 @@ public class ArienteDungeonGenerator {
         }
     }
 
-    public void generate(World worldIn, int x, int z, ChunkPrimer primer) {
+    public void generate(int x, int z, IChunk primer) {
         if (CityTools.isPortalChunk(x, z)) {
             int minHeight = getPortalHeight(generator, x, z);
             generatePart(primer, "portal", AssetRegistries.PARTS.get("portal"), Transform.ROTATE_NONE, 4, minHeight, 4);
@@ -142,7 +142,7 @@ public class ArienteDungeonGenerator {
         return minHeight;
     }
 
-    private void fillDown(ChunkPrimer primer, int lowestY, int dx, int dz) {
+    private void fillDown(IChunk primer, int lowestY, int dx, int dz) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         int y = lowestY-1;
         int index = (dx << 12) | (dz << 8);
@@ -157,7 +157,7 @@ public class ArienteDungeonGenerator {
         }
     }
 
-    public int generatePart(ChunkPrimer primer, String palette,
+    public int generatePart(IChunk primer, String palette,
                                     BuildingPart part,
                                     Transform transform,
                                     int ox, int oy, int oz) {

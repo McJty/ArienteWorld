@@ -3,6 +3,7 @@ package mcjty.arienteworld.dimension.features;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 
 import java.util.Random;
 
@@ -21,5 +22,5 @@ public interface IFeature {
      * Geneate this feature in the chunk at chunkX, chunkZ. The relative coordinates
      * of the feature are given with dx, dz. So the center chunk of the feature will be at 0,0
      */
-    void generate(IWorld world, ChunkPrimer primer, int chunkX, int chunkZ, int dx, int dz);
+    void generate(IWorld world, IChunk primer, int chunkX, int chunkZ, int dx, int dz);
 }

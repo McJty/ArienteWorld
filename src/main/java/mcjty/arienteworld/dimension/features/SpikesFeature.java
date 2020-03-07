@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 
 import java.util.Random;
 
@@ -36,7 +37,7 @@ public class SpikesFeature implements IFeature {
     }
 
     @Override
-    public void generate(IWorld world, ChunkPrimer primer, int chunkX, int chunkZ, int dx, int dz) {
+    public void generate(IWorld world, IChunk primer, int chunkX, int chunkZ, int dx, int dz) {
 
         if (dx != 0 || dz != 0) {
             return;

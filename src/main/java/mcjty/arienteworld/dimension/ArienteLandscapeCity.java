@@ -5,15 +5,14 @@ import mcjty.ariente.api.TechType;
 import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.biomes.IArienteBiome;
 import mcjty.arienteworld.cities.*;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -148,10 +147,12 @@ public class ArienteLandscapeCity {
 
     private static Biome[] biomesForGeneration;
 
-    public static boolean isLandscapeCityChunk(int chunkX, int chunkZ, World world, @Nullable Biome[] biomesForGeneration) {
+    public static boolean isLandscapeCityChunk(int chunkX, int chunkZ, IWorld world, @Nullable Biome[] biomesForGeneration) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!cityChunkCache.containsKey(pos)) {
             if (biomesForGeneration == null) {
+                Biome biome = world.getBiomeManager().getBiome(new BlockPos(pos.getXStart() + 8, world.getSeaLevel(), pos.getZStart() + 8));
+                biomesForGeneration = new Biome[] { biome };    // @todo 1.15
                 // @todo 1.15
 //                biomesForGeneration = world.getBiomeProvider().getBiomes(biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
             }
@@ -225,7 +226,7 @@ public class ArienteLandscapeCity {
             Pair.of("citylev_cross", Transform.ROTATE_NONE)         // 1111: OK
     );
 
-    public static void generate(int chunkX, int chunkZ, ChunkPrimer primer, ArienteDungeonGenerator cityGenerator) {
+    public static void generate(int chunkX, int chunkZ, IChunk primer, ArienteDungeonGenerator cityGenerator) {
         BlockState baseChar = ArienteStuff.marble.getDefaultState();
         BlockState fillChar = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
 
@@ -321,7 +322,7 @@ public class ArienteLandscapeCity {
         }
     }
 
-    private static boolean isChunkOccupied(ChunkPrimer primer, int y1, int y2) {
+    private static boolean isChunkOccupied(IChunk primer, int y1, int y2) {
         BlockState air = Blocks.AIR.getDefaultState();
 
         BlockPos.Mutable pos = new BlockPos.Mutable();

@@ -264,6 +264,7 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
         return (int) h;
     }
 
+    @Override
     public ArienteDungeonGenerator getDungeonGenerator() {
         return dungeonGenerator;
     }
@@ -348,8 +349,8 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
 
         // @todo 1.15
 //        caveGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer);
-        dungeonGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer);
-        LevitatorNetworkGenerator.generate(this.worldObj, chunkX, chunkZ, chunkprimer, this);
+        dungeonGenerator.generate(chunkX, chunkZ, chunkprimer);
+        LevitatorNetworkGenerator.generate(chunkX, chunkZ, chunkprimer, this);
 
         Chunk chunk = null; // @todo 1.15 new Chunk(this.worldObj, chunkprimer, chunkX, chunkZ);
 

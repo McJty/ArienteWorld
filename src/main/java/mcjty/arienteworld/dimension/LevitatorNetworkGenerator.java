@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 
 import static mcjty.ariente.api.EnumFacingUpDown.FACING;
 import static mcjty.ariente.api.MarbleColor.COLOR;
@@ -63,7 +64,7 @@ public class LevitatorNetworkGenerator {
     }
 
 
-    public static void generate(World world, int chunkX, int chunkZ, ChunkPrimer primer, ArienteChunkGenerator generator) {
+    public static void generate(int chunkX, int chunkZ, IChunk primer, IArienteChunkGenerator generator) {
         if (CityTools.isDungeonChunk(chunkX, chunkZ)) {
             City city = CityTools.getNearestDungeon(chunkX, chunkZ);
             if (city != null && city.getPlan().isUnderground()) {
@@ -154,7 +155,7 @@ public class LevitatorNetworkGenerator {
         }
     }
 
-    private static BlockPos createElevatorShaft(int chunkX, int chunkZ, ChunkPrimer primer, ArienteChunkGenerator generator, int lowest, int startz) {
+    private static BlockPos createElevatorShaft(int chunkX, int chunkZ, IChunk primer, IArienteChunkGenerator generator, int lowest, int startz) {
         ChunkPos center = CityTools.getNearestDungeonCenter(chunkX, chunkZ);
         City city = CityTools.getCity(center);
         int cityBottom = CityTools.getLowestHeight(city, generator, chunkX, chunkZ);
@@ -183,7 +184,7 @@ public class LevitatorNetworkGenerator {
         return new BlockPos(chunkX * 16 + 2, CityTools.getStationHeight(), chunkZ * 16 + startz+1);
     }
 
-    private static void fillInner(ChunkPrimer primer, int dx, int dz) {
+    private static void fillInner(IChunk primer, int dx, int dz) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         primer.setBlockState(pos.setPos(dx, 30, dz), blueMarble, false);
         for (int y = 1 ; y < 6 ; y++) {
@@ -192,7 +193,7 @@ public class LevitatorNetworkGenerator {
         primer.setBlockState(pos.setPos(dx, 30+6, dz), blueMarble, false);
     }
 
-    private static void fillInnerRamp(ChunkPrimer primer, int dx, int dz, BlockState rampBlock, BlockState rampBlockUp) {
+    private static void fillInnerRamp(IChunk primer, int dx, int dz, BlockState rampBlock, BlockState rampBlockUp) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         primer.setBlockState(pos.setPos(dx, 30, dz), blueMarble, false);
         primer.setBlockState(pos.setPos(dx, 31, dz), rampBlock, false);
@@ -203,7 +204,7 @@ public class LevitatorNetworkGenerator {
         primer.setBlockState(pos.setPos(dx, 36, dz), blueMarble, false);
     }
 
-    private static void fillSide(ChunkPrimer primer, int dx, int dz) {
+    private static void fillSide(IChunk primer, int dx, int dz) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         primer.setBlockState(pos.setPos(dx, 30, dz), blueMarble, false);
         for (int y = 1 ; y < 6 ; y++) {
@@ -212,7 +213,7 @@ public class LevitatorNetworkGenerator {
         primer.setBlockState(pos.setPos(dx, 30+6, dz), blueMarble, false);
     }
 
-    private static void fillGlowingSide(ChunkPrimer primer, int dx, int dz) {
+    private static void fillGlowingSide(IChunk primer, int dx, int dz) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         primer.setBlockState(pos.setPos(dx, 30, dz), blueMarble, false);
         for (int y = 1 ; y < 6 ; y++) {
@@ -221,7 +222,7 @@ public class LevitatorNetworkGenerator {
         primer.setBlockState(pos.setPos(dx, 30+6, dz), blueMarble, false);
     }
 
-    private static void fillHorizontalBeam(ChunkPrimer primer, int dx, int dz) {
+    private static void fillHorizontalBeam(IChunk primer, int dx, int dz) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         primer.setBlockState(pos.setPos(dx, 30, dz), blueMarble, false);
         primer.setBlockState(pos.setPos(dx, 31, dz), airChar, false);
@@ -232,7 +233,7 @@ public class LevitatorNetworkGenerator {
         primer.setBlockState(pos.setPos(dx, 36, dz), blueMarble, false);
     }
 
-    private static void fillVerticalBeam(ChunkPrimer primer, int dx, int dz) {
+    private static void fillVerticalBeam(IChunk primer, int dx, int dz) {
         BlockPos.Mutable pos = new BlockPos.Mutable();
         primer.setBlockState(pos.setPos(dx, 30, dz), blueMarble, false);
         primer.setBlockState(pos.setPos(dx, 31, dz), airChar, false);
