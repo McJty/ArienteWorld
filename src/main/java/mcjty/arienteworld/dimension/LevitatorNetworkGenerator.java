@@ -65,7 +65,7 @@ public class LevitatorNetworkGenerator {
 
     public static void generate(World world, int chunkX, int chunkZ, ChunkPrimer primer, ArienteChunkGenerator generator) {
         if (CityTools.isDungeonChunk(chunkX, chunkZ)) {
-            City city = CityTools.getNearestDungeon(generator, chunkX, chunkZ);
+            City city = CityTools.getNearestDungeon(chunkX, chunkZ);
             if (city != null && city.getPlan().isUnderground()) {
                 return;
             }

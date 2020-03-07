@@ -3,6 +3,7 @@ package mcjty.arienteworld.cities;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.ArienteLandscapeCity;
 import mcjty.arienteworld.dimension.ChunkHeightmap;
+import mcjty.arienteworld.dimension.IArienteChunkGenerator;
 import net.minecraft.util.math.ChunkPos;
 
 public class City {
@@ -35,7 +36,7 @@ public class City {
         return height;
     }
 
-    public int getHeight(ArienteChunkGenerator generator) {
+    public int getHeight(IArienteChunkGenerator generator) {
         if (height == -1) {
             if (plan.isUnderground()) {
                 height = 40;

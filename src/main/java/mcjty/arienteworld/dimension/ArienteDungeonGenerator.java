@@ -19,7 +19,7 @@ public class ArienteDungeonGenerator {
 
     private static Set<Character> rotatableChars = null;
     private boolean initialized = false;
-    private ArienteChunkGenerator generator;
+    private IArienteChunkGenerator generator;
 
     private BlockState airChar;
     private BlockState baseChar;
@@ -27,7 +27,7 @@ public class ArienteDungeonGenerator {
     private BlockState cityWallChar;
     private BlockState cityWallTop;
 
-    public void initialize(ArienteChunkGenerator generator) {
+    public void initialize(IArienteChunkGenerator generator) {
         this.generator = generator;
         if (!initialized) {
             airChar = Blocks.AIR.getDefaultState();
@@ -95,7 +95,7 @@ public class ArienteDungeonGenerator {
             return;
         }
 
-        City city = CityTools.getNearestDungeon(generator, x, z);
+        City city = CityTools.getNearestDungeon(x, z);
         if (city != null) {
             List<BuildingPart> parts = CityTools.getBuildingParts(city, x, z);
             if (!parts.isEmpty()) {
@@ -128,7 +128,7 @@ public class ArienteDungeonGenerator {
         }
     }
 
-    public static int getPortalHeight(ArienteChunkGenerator generator, int x, int z) {
+    public static int getPortalHeight(IArienteChunkGenerator generator, int x, int z) {
         ChunkHeightmap heightmap = generator.getHeightmap(x, z);
         int minHeight = 160;
         for (int dx = 4 ; dx <= 10 ; dx++) {

@@ -247,8 +247,7 @@ public class EditMode {
         int cx = (start.getX() >> 4);
         int cz = (start.getZ() >> 4);
 
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
-        City city = CityTools.getNearestDungeon(generator, cx, cz);
+        City city = CityTools.getNearestDungeon(cx, cz);
         if (city == null || !CityTools.isDungeonChunk(cx, cz)) {
             // Check if it is a landscape city chunk
             Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(cx, cz);
@@ -404,14 +403,14 @@ public class EditMode {
             return true;
         }
 
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
-        City city = CityTools.getNearestDungeon(generator, cx, cz);
+        City city = CityTools.getNearestDungeon(cx, cz);
         if (city == null) {
             return false;
         }
 
         CityPlan plan = city.getPlan();
 
+        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
         loadCityOrStation(player, city.getCenter(), plan, 0,
                 (x, z) -> CityTools.getLowestHeight(city, generator, x, z),
                 (x, z) -> CityTools.getBuildingParts(city, x, z), true);
@@ -527,7 +526,7 @@ public class EditMode {
         }
 
         ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
-        City city = CityTools.getNearestDungeon(generator, cx, cz);
+        City city = CityTools.getNearestDungeon(cx, cz);
         if (city == null || !CityTools.isDungeonChunk(cx, cz)) {
             try {
                 saveLandscapeCityPart(player, generator, cx, cz);

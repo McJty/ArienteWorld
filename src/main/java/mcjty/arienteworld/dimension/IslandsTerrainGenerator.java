@@ -7,6 +7,7 @@ import net.minecraft.block.ChorusFlowerBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
@@ -16,7 +17,7 @@ import java.util.Random;
 public class IslandsTerrainGenerator {
 
     private Random rand;
-    private World world;
+    private IWorld world;
 
     protected static final BlockState AIR = Blocks.AIR.getDefaultState();
     private NoiseGeneratorOctaves lperlinNoise1;
@@ -36,7 +37,7 @@ public class IslandsTerrainGenerator {
     private int chunkX = 0;
     private int chunkZ = 0;
 
-    public void setup(World world, long seed) {
+    public void setup(IWorld world, long seed) {
         this.world = world;
         this.rand = new Random(seed);
         this.lperlinNoise1 = new NoiseGeneratorOctaves(this.rand, 16);

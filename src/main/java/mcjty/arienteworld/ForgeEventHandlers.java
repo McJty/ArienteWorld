@@ -9,8 +9,6 @@ import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityIndex;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.commands.ModCommands;
-import mcjty.arienteworld.config.WorldgenConfiguration;
-import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.arienteworld.dimension.EditMode;
 import net.minecraft.entity.MobEntity;
@@ -19,7 +17,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -63,8 +60,7 @@ public class ForgeEventHandlers {
                     return;
                 }
                 // Check if this city is still alive
-                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) event.getWorld()).getChunkProvider().getChunkGenerator());
-                City city = CityTools.getNearestDungeon(generator, chunkX, chunkZ);
+                City city = CityTools.getNearestDungeon(chunkX, chunkZ);
                 if (city != null) {
                     CityAISystem cityAISystem = CityAISystem.getCityAISystem(event.getWorld().getWorld());
                     CityAI cityAI = cityAISystem.getCityAI(city.getCenter());
@@ -105,9 +101,8 @@ public class ForgeEventHandlers {
     private void alertCity(World world, BlockPos pos, PlayerEntity player, boolean highAlert) {
         int cx = pos.getX() >> 4;
         int cz = pos.getZ() >> 4;
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
         if (CityTools.isDungeonChunk(cx, cz)) {
-            City city = CityTools.getNearestDungeon(generator, cx, cz);
+            City city = CityTools.getNearestDungeon(cx, cz);
             CityAISystem cityAISystem = CityAISystem.getCityAISystem(world);
             CityAI cityAI = cityAISystem.getCityAI(city.getCenter());
             if (cityAI != null) {

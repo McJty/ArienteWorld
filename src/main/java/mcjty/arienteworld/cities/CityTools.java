@@ -4,6 +4,7 @@ import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.ArienteDungeonGenerator;
 import mcjty.arienteworld.dimension.DimensionRegister;
+import mcjty.arienteworld.dimension.IArienteChunkGenerator;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.WorldTools;
 import net.minecraft.server.MinecraftServer;
@@ -139,14 +140,13 @@ public class CityTools {
         return plan;
     }
 
-    public static City getNearestDungeon(ArienteChunkGenerator generator, int chunkX, int chunkZ) {
+    public static City getNearestDungeon(int chunkX, int chunkZ) {
         ChunkPos center = getNearestDungeonCenter(chunkX, chunkZ);
         if (center == null) {
             return null;
         }
         City city = cities.get(center);
         if (city == null) {
-//            ChunkHeightmap heightmap = generator.getHeightmap(center.getChunkX(), center.getChunkZ());
             city = new City(center, getRandomDungeonPlan(center), getRandomDungeonName(center), -1);
             cacheCity(center, city);
         }
@@ -155,10 +155,9 @@ public class CityTools {
 
     @Nullable
     public static City getNearestDungeon(World world, BlockPos pos) {
-        ArienteChunkGenerator generator = (ArienteChunkGenerator)(((ServerWorld)world).getChunkProvider().getChunkGenerator());
         int cx = pos.getX() >> 4;
         int cz = pos.getZ() >> 4;
-        return getNearestDungeon(generator, cx, cz);
+        return getNearestDungeon(cx, cz);
     }
 
     @Nullable
@@ -198,7 +197,7 @@ public class CityTools {
         return Optional.ofNullable(getNearestDungeonCenter(chunkX, chunkZ));
     }
 
-    public static int getLowestHeight(City city, ArienteChunkGenerator generator, int x, int z) {
+    public static int getLowestHeight(City city, IArienteChunkGenerator generator, int x, int z) {
         BuildingPart cellar = getPart(x, z, getDungeonIndex(x, z), city.getPlan(), city.getPlan().getCellar(), 13);
         if (cellar != null) {
             return city.getHeight(generator) - cellar.getSliceCount();

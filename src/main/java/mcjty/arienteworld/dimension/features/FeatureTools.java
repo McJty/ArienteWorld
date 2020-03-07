@@ -1,6 +1,7 @@
 package mcjty.arienteworld.dimension.features;
 
 import mcjty.arienteworld.biomes.IArienteBiome;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
@@ -12,7 +13,7 @@ import java.util.Random;
 
 public class FeatureTools {
 
-    public static boolean isFeatureCenter(IFeature feature, double strength, World world, int chunkX, int chunkZ) {
+    public static boolean isFeatureCenter(IFeature feature, double strength, IWorld world, int chunkX, int chunkZ) {
         double factor = feature.getFactor(world, chunkX, chunkZ);
         Random random = feature.getRandom(world, chunkX, chunkZ);
         random.nextFloat();

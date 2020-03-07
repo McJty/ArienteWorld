@@ -21,7 +21,7 @@ public class ArienteDimension extends Dimension {
 
     @Override
     public ChunkGenerator<?> createChunkGenerator() {
-        return new ArienteChunkGenerator(world, new ArienteBiomeProvider(world),
+        return new ArienteChunkGeneratorNew(world, new ArienteBiomeProvider(world),
                 4, 8, 256, new OverworldGenSettings(), true);
     }
 

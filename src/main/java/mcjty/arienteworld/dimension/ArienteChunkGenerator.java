@@ -41,7 +41,7 @@ import java.util.Random;
 
 import static mcjty.arienteworld.dimension.ArienteLandscapeCity.CITY_LEVEL;
 
-public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSettings> {
+public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSettings> implements IArienteChunkGenerator {
 
     private final World worldObj;
     private Random random;
@@ -92,6 +92,7 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
     }
 
     // Get a heightmap for a chunk. If needed calculate (and cache) a primer
+    @Override
     public ChunkHeightmap getHeightmap(int chunkX, int chunkZ) {
         ChunkPos key = new ChunkPos(chunkX, chunkZ);
         if (cachedHeightmaps.containsKey(key)) {
@@ -427,7 +428,7 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
     }
 
     private void fixTileEntities(int x, int z) {
-        City city = CityTools.getNearestDungeon(this, x, z);
+        City city = CityTools.getNearestDungeon(x, z);
         List<BuildingPart> parts = CityTools.getBuildingParts(city, x, z);
         int lowestY = CityTools.getLowestHeight(city, this, x, z);
         fixTileEntities(x, z, parts, lowestY, false);

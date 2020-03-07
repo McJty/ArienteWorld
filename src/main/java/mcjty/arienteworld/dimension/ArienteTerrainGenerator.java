@@ -3,6 +3,7 @@ package mcjty.arienteworld.dimension;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
@@ -11,7 +12,7 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import java.util.Random;
 
 public class ArienteTerrainGenerator {
-    private World world;
+    private IWorld world;
     private Random rand;
 
     private double[] depthBuffer = new double[256];
@@ -52,7 +53,7 @@ public class ArienteTerrainGenerator {
         amplified = a;
     }
 
-    public void setup(World world, Random rand, BlockState baseBlock) {
+    public void setup(IWorld world, Random rand, BlockState baseBlock) {
         this.rand = rand;
         this.world = world;
         this.baseBlock = baseBlock;
