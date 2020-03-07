@@ -187,7 +187,7 @@ public class CityTools {
         int cz = (chunkZ & ~0xf);
         MinecraftServer server = WorldTools.getOverworld().getServer();
         ServerWorld world = server.getWorld(DimensionRegister.dimensionType);
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (world.getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (world.getChunkProvider().getChunkGenerator());
         int minHeight = ArienteDungeonGenerator.getPortalHeight(generator, cx, cz);
         return new BlockPos(cx * 16 + 8, minHeight + 2, cz * 16 + 8);
     }

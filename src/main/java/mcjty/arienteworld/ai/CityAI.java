@@ -8,6 +8,7 @@ import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.cities.Loot;
 import mcjty.arienteworld.config.AIConfiguration;
 import mcjty.arienteworld.dimension.ArienteChunkGenerator;
+import mcjty.arienteworld.dimension.IArienteChunkGenerator;
 import mcjty.arienteworld.setup.ModSetup;
 import mcjty.arienteworld.setup.Registration;
 import mcjty.hologui.api.IHoloGuiEntity;
@@ -509,7 +510,7 @@ public class CityAI implements ICityAI {
 
             City city = CityTools.getCity(center);
             CityPlan plan = city.getPlan();
-            ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
+            IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
             int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
             int desiredMinimumCount = 0;
@@ -695,7 +696,7 @@ public class CityAI implements ICityAI {
             if (info.getCountSentinel(world) == 0) {
                 City city = CityTools.getCity(center);
                 CityPlan plan = city.getPlan();
-                ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
+                IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
                 int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
                 for (int i = 0; i < settings.getNumSentinels(); i++) {
 //                    System.out.println("revive: i = " + i);
@@ -770,7 +771,7 @@ public class CityAI implements ICityAI {
 
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
         int droneHeight = plan.getSentinelRelHeight() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
         int angleI = (sentinelAngleOffset + sentinelId * 12 / settings.getNumSentinels()) % 12;
@@ -1052,7 +1053,7 @@ public class CityAI implements ICityAI {
     private void initSentinels(World world) {
         City city = CityTools.getCity(center);
         CityPlan plan = city.getPlan();
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
         int droneHeight = plan.getDroneHeightOffset() + CityTools.getLowestHeight(city, generator, center.x, center.z);
 
         int numSentinels = settings.getNumSentinels();

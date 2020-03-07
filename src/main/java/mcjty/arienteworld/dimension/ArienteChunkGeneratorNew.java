@@ -14,6 +14,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.OctavesNoiseGenerator;
 import net.minecraft.world.gen.OverworldGenSettings;
@@ -91,6 +92,12 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
         noiseColumn[0] = (double)lvt_5_1_ + this.getNoiseDepthAt(noiseX, noiseZ);
         noiseColumn[1] = (double)lvt_4_1_;
         return noiseColumn;
+    }
+
+    @Override
+    public void makeBase(IWorld worldIn, IChunk chunkIn) {
+        super.makeBase(worldIn, chunkIn);
+        islandsGen.setBlocksInChunk(chunkIn.getPos().x, chunkIn.getPos().z, chunkIn);
     }
 
     private double getNoiseDepthAt(int noiseX, int noiseZ) {

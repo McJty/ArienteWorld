@@ -37,7 +37,7 @@ public class EditMode {
     public static boolean editMode = false;
 
     public static Pair<BuildingPart, Integer> getCurrentPart(City city, World world, BlockPos pos) {
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
         int cx = pos.getX() >> 4;
         int cz = pos.getZ() >> 4;
         List<BuildingPart> parts = CityTools.getBuildingParts(city, cx, cz);
@@ -213,7 +213,7 @@ public class EditMode {
 
     private static void updateCity(PlayerEntity player, City city) {
         player.sendStatusMessage(new StringTextComponent(TextFormatting.GREEN + "Updated city!"), false);
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
 
         CityPlan plan = city.getPlan();
 
@@ -223,7 +223,7 @@ public class EditMode {
     }
 
     private static PartPalette getCurrentPartPalette(PlayerEntity player, City city, BlockPos pos, int cx, int cz) {
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
         int lowesty = CityTools.getLowestHeight(city, generator, cx, cz);
         List<PartPalette> partPalettes = CityTools.getPartPalettes(city, cx, cz);
         PartPalette found = null;
@@ -318,7 +318,7 @@ public class EditMode {
 
         BlockPos pos = player.getPosition();
         ChunkPos coord = BlockPosTools.getChunkCoordFromPos(pos);
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
         int lowesty = CityTools.getLowestHeight(city, generator, coord.x, coord.z);
         List<BuildingPart> parts = CityTools.getBuildingParts(city, coord.x, coord.z);
 
@@ -350,7 +350,7 @@ public class EditMode {
         cx = city.getCenter().x;
         cz = city.getCenter().z;
 
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
 
         for (int dx = cx - dimX / 2 - 1; dx <= cx + dimX / 2 + 1; dx++) {
             for (int dz = cz - dimZ / 2 - 1; dz <= cz + dimZ / 2 + 1; dz++) {
@@ -377,7 +377,7 @@ public class EditMode {
         cx = city.getCenter().x;
         cz = city.getCenter().z;
 
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) world).getChunkProvider().getChunkGenerator());
 
         for (int dx = cx - dimX / 2 - 1; dx <= cx + dimX / 2 + 1; dx++) {
             for (int dz = cz - dimZ / 2 - 1; dz <= cz + dimZ / 2 + 1; dz++) {
@@ -410,7 +410,7 @@ public class EditMode {
 
         CityPlan plan = city.getPlan();
 
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
         loadCityOrStation(player, city.getCenter(), plan, 0,
                 (x, z) -> CityTools.getLowestHeight(city, generator, x, z),
                 (x, z) -> CityTools.getBuildingParts(city, x, z), true);
@@ -525,7 +525,7 @@ public class EditMode {
             return;
         }
 
-        ArienteChunkGenerator generator = (ArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
+        IArienteChunkGenerator generator = (IArienteChunkGenerator) (((ServerWorld) player.getEntityWorld()).getChunkProvider().getChunkGenerator());
         City city = CityTools.getNearestDungeon(cx, cz);
         if (city == null || !CityTools.isDungeonChunk(cx, cz)) {
             try {
@@ -550,7 +550,7 @@ public class EditMode {
         }
     }
 
-    private static void saveLandscapeCityPart(PlayerEntity player, ArienteChunkGenerator generator, int cx, int cz) throws FileNotFoundException {
+    private static void saveLandscapeCityPart(PlayerEntity player, IArienteChunkGenerator generator, int cx, int cz) throws FileNotFoundException {
         CityPlan dummyPlan = new CityPlan("dummy");
         dummyPlan.addPlan("a");
         dummyPlan.setPalette(ArienteLandscapeCity.CITY_PALETTE);

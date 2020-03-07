@@ -11,6 +11,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunk;
 
 import java.util.Random;
 
@@ -48,7 +49,7 @@ public class IslandsTerrainGenerator {
         this.islandNoise = new NoiseGeneratorSimplex(this.rand);
     }
 
-    public void setBlocksInChunk(int x, int z, ChunkPrimer primer) {
+    public void setBlocksInChunk(int x, int z, IChunk primer) {
         int i = 2;
         int j = 3;
         int k = 33;
