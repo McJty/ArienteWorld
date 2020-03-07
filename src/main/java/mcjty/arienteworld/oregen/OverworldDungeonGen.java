@@ -1,19 +1,29 @@
 package mcjty.arienteworld.oregen;
 
 import mcjty.ariente.api.IWarper;
+import mcjty.ariente.api.MarbleColor;
+import mcjty.ariente.api.TechType;
+import mcjty.arienteworld.ArienteStuff;
 import mcjty.arienteworld.config.WorldgenConfiguration;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
 
 import java.util.Random;
 
-public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
+import static mcjty.ariente.api.MarbleColor.COLOR;
+import static mcjty.ariente.api.TechType.TYPE;
 
-    public static OverworldDungeonGen instance = new OverworldDungeonGen();
+public class OverworldDungeonGen {
 
     private static String[][] dungeon = {
             {
@@ -92,7 +102,7 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
                     "fffffffffffff"
             }
     };
-*/
+
     public static BlockPos getNearestDungeon(World world, BlockPos pos) {
         ChunkPos cp = new ChunkPos(pos);
         if (isValidDungeonChunk(world, cp.x, cp.z)) {
@@ -166,9 +176,7 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
         return rnd.nextInt(25) + 8;
     }
 
-/*
-    @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+    public static void generate(Random random, int chunkX, int chunkZ, IWorld world, ChunkGenerator<? extends GenerationSettings> generator) {
         if (isDungeonChunk(world, chunkX, chunkZ)) {
             BlockPos dungeonPos = getDungeonPos(world, chunkX, chunkZ);
             int midx = dungeonPos.getX();
@@ -183,7 +191,7 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
                         BlockPos pos = new BlockPos(midx + dx - level.length / 2, midy + dy, midz + dz - slice.length() / 2);
                         switch (c) {
                             case ' ':
-                                world.setBlockToAir(pos);
+                                world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
                                 break;
                             case 'a':
                                 setBlock(random, world, pos, 15,
@@ -201,7 +209,7 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
                                 break;
                             case 's':
                                 world.setBlockState(pos, ArienteStuff.marbleSlabBlock.getDefaultState()
-                                        .with(HALF, BlockSlab.EnumBlockHalf.BOTTOM)
+                                        .with(SlabBlock.TYPE, SlabType.BOTTOM)
                                         .with(COLOR, MarbleColor.BLACK), 2);
                                 break;
                             case 'x':
@@ -217,7 +225,7 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
         }
     }
 
-    private static void setBlock(Random random, World world, BlockPos pos, int chances, BlockState common, BlockState s1, BlockState s2) {
+    private static void setBlock(Random random, IWorld world, BlockPos pos, int chances, BlockState common, BlockState s1, BlockState s2) {
         switch (random.nextInt(chances)) {
             case 0:
                 world.setBlockState(pos, s1, 2);
@@ -231,4 +239,4 @@ public class OverworldDungeonGen { /* @todo 1.15 implements IWorldGenerator {
         }
 
     }
-*/}
+}

@@ -25,7 +25,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static mcjty.ariente.Ariente.MODID;
+import static mcjty.arienteworld.ArienteWorld.MODID;
 
 public class Registration {
 

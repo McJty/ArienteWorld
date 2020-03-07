@@ -3523,11 +3523,11 @@
     "palette": [
       {
         "char": "ba",
-        "block": "ariente:alarm@2"
+        "block": "ariente:alarm@facing=north"
       },
       {
         "char": " a",
-        "block": "ariente:alarm@3"
+        "block": "ariente:alarm@facing=south"
       },
       {
         "char": "y ",
@@ -3535,11 +3535,11 @@
       },
       {
         "char": "X ",
-        "block": "ariente:storage@2"
+        "block": "ariente:storage@facing=north"
       },
       {
         "char": "7 ",
-        "block": "ariente:lock@2"
+        "block": "ariente:lock@facing=north"
       },
       {
         "char": "u ",
@@ -3547,27 +3547,27 @@
       },
       {
         "char": "T ",
-        "block": "arienteworld:guard_dummy@1"
+        "block": "arienteworld:guard_dummy@facing=south"
       },
       {
         "char": "3 ",
-        "block": "arienteworld:soldier_dummy@3"
+        "block": "arienteworld:soldier_dummy@facing=east"
       },
       {
         "char": "q ",
-        "block": "ariente:negarite_generator@2"
+        "block": "ariente:negarite_generator@facing=west"
       },
       {
         "char": "P ",
-        "block": "ariente:blacktech@5"
+        "block": "ariente:blacktech@type=red_lines_glow"
       },
       {
         "char": "m ",
-        "block": "ariente:flatlight@4"
+        "block": "ariente:flatlight@facing=west"
       },
       {
         "char": "L ",
-        "block": "ariente:door_marker@2"
+        "block": "ariente:door_marker@facing=south"
       },
       {
         "char": "+ ",
@@ -3575,15 +3575,15 @@
       },
       {
         "char": "i ",
-        "block": "ariente:marble@3"
+        "block": "ariente:marble@color=black"
       },
       {
         "char": "H ",
-        "block": "ariente:marble_slab@2"
+        "block": "ariente:marble_slab@color=blue,type=bottom"
       },
       {
         "char": "e ",
-        "block": "ariente:marble_smooth@3"
+        "block": "ariente:marble_smooth@color=black"
       },
       {
         "char": "D ",
@@ -3595,59 +3595,59 @@
       },
       {
         "char": "ca",
-        "block": "ariente:alarm@5"
+        "block": "ariente:alarm@facing=east"
       },
       {
         "char": "a ",
-        "block": "ariente:marble_smooth@1"
+        "block": "ariente:marble_smooth@color=white"
       },
       {
         "char": "z ",
-        "block": "ariente:netcable@1"
+        "block": "ariente:netcable@color=posirite"
       },
       {
         "char": "Y ",
-        "block": "minecraft:stained_glass_pane@15"
+        "block": "minecraft:stained_glass_pane@color=black"
       },
       {
         "char": "8 ",
-        "block": "ariente:lock@3"
+        "block": "ariente:lock@facing=south"
       },
       {
         "char": "v ",
-        "block": "ariente:posirite_generator@2"
+        "block": "ariente:posirite_generator@facing=west"
       },
       {
         "char": "U ",
-        "block": "arienteworld:guard_dummy@3"
+        "block": "arienteworld:guard_dummy@facing=east"
       },
       {
         "char": "4 ",
-        "block": "arienteworld:soldier_dummy@2"
+        "block": "arienteworld:soldier_dummy@facing=south"
       },
       {
         "char": "r ",
-        "block": "ariente:negarite_generator@3"
+        "block": "ariente:negarite_generator@facing=east"
       },
       {
         "char": "Q ",
-        "block": "ariente:door_marker@3"
+        "block": "ariente:door_marker@facing=east"
       },
       {
         "char": "0 ",
-        "block": "ariente:marble_slab@11"
+        "block": "ariente:marble_slab@color=black,type=top"
       },
       {
         "char": "n ",
-        "block": "ariente:blacktech@1"
+        "block": "ariente:blacktech@type=lines"
       },
       {
         "char": "M ",
-        "block": "ariente:blacktech@6"
+        "block": "ariente:blacktech@type=panel"
       },
       {
         "char": "j ",
-        "block": "ariente:flatlight@5"
+        "block": "ariente:flatlight@facing=east"
       },
       {
         "char": "I ",
@@ -3655,11 +3655,11 @@
       },
       {
         "char": "( ",
-        "block": "ariente:wireless_lock@3"
+        "block": "ariente:wireless_lock@facing=south"
       },
       {
         "char": "f ",
-        "block": "minecraft:stained_glass_pane@7"
+        "block": "minecraft:stained_glass_pane@color=pink"
       },
       {
         "char": "E ",
@@ -3667,11 +3667,11 @@
       },
       {
         "char": "$ ",
-        "block": "ariente:signal_receiver@5"
+        "block": "ariente:signal_receiver@facing=east"
       },
       {
         "char": "b ",
-        "block": "ariente:marble@1"
+        "block": "ariente:marble@color=white"
       },
       {
         "char": "A ",
@@ -3683,11 +3683,11 @@
       },
       {
         "char": "^ ",
-        "block": "ariente:marble_slab@10"
+        "block": "ariente:marble_slab@color=lime,type=top"
       },
       {
         "char": "Z ",
-        "block": "ariente:storage@3"
+        "block": "ariente:storage@facing=south"
       },
       {
         "char": "9 ",
@@ -3699,11 +3699,11 @@
       },
       {
         "char": "V ",
-        "block": "ariente:storage@5"
+        "block": "ariente:storage@facing=east"
       },
       {
         "char": "5 ",
-        "block": "arienteworld:soldier_dummy@1"
+        "block": "arienteworld:soldier_dummy@facing=south"
       },
       {
         "char": "s ",
@@ -3715,31 +3715,31 @@
       },
       {
         "char": "1 ",
-        "block": "ariente:double_marble_slab@3"
+        "block": "ariente:double_marble_slab@color=black,type=bottom"
       },
       {
         "char": "o ",
-        "block": "ariente:blacktech@3"
+        "block": "ariente:blacktech@type=red_var1"
       },
       {
         "char": "N ",
-        "block": "ariente:blacktech@4"
+        "block": "ariente:blacktech@type=lines_glow"
       },
       {
         "char": "- ",
-        "block": "arienteworld:master_soldier_dummy@3"
+        "block": "arienteworld:master_soldier_dummy@facing=east"
       },
       {
         "char": "k ",
-        "block": "ariente:flatlight@3"
+        "block": "ariente:flatlight@facing=south"
       },
       {
         "char": "J ",
-        "block": "ariente:marble_slab@1"
+        "block": "ariente:marble_slab@color=white"
       },
       {
         "char": ") ",
-        "block": "ariente:wireless_lock@4"
+        "block": "ariente:wireless_lock@facing=west"
       },
       {
         "char": "g ",
@@ -3747,11 +3747,11 @@
       },
       {
         "char": "F ",
-        "block": "arienteworld:guard_dummy@2"
+        "block": "arienteworld:guard_dummy@facing=west"
       },
       {
         "char": "% ",
-        "block": "ariente:wireless_button@4"
+        "block": "ariente:wireless_button@facing=west"
       },
       {
         "char": "c ",
@@ -3763,19 +3763,19 @@
       },
       {
         "char": "aa",
-        "block": "ariente:alarm@4"
+        "block": "ariente:alarm@facing=west"
       },
       {
         "char": "_ ",
-        "block": "ariente:wireless_lock@5"
+        "block": "ariente:wireless_lock@facing=east"
       },
       {
         "char": "x ",
-        "block": "ariente:connector@1"
+        "block": "ariente:connector@color=posirite"
       },
       {
         "char": "W ",
-        "block": "ariente:marble_slab@5"
+        "block": "ariente:marble_slab@color=red"
       },
       {
         "char": "6 ",
@@ -3783,7 +3783,7 @@
       },
       {
         "char": "t ",
-        "block": "ariente:ramp@2"
+        "block": "ariente:ramp@facing=west"
       },
       {
         "char": "S ",
@@ -3791,31 +3791,31 @@
       },
       {
         "char": "2 ",
-        "block": "ariente:ramp@3"
+        "block": "ariente:ramp@facing=east"
       },
       {
         "char": "p ",
-        "block": "ariente:blacktech@2"
+        "block": "ariente:blacktech@type=var1"
       },
       {
         "char": "O ",
-        "block": "ariente:marble_slab@3"
+        "block": "ariente:marble_slab@color=black,type=bottom"
       },
       {
         "char": "l ",
-        "block": "ariente:flatlight@2"
+        "block": "ariente:flatlight@facing=north"
       },
       {
         "char": "K ",
-        "block": "ariente:storage@4"
+        "block": "ariente:storage@facing=west"
       },
       {
         "char": "* ",
-        "block": "ariente:marble_slab@9"
+        "block": "ariente:marble_slab@color=white,type=top"
       },
       {
         "char": "h ",
-        "block": "ariente:door_marker@1"
+        "block": "ariente:door_marker@facing=north"
       },
       {
         "char": "G ",
@@ -3823,7 +3823,7 @@
       },
       {
         "char": "d ",
-        "block": "ariente:marble_pilar@3"
+        "block": "ariente:marble_pilar@color=black"
       },
       {
         "char": "C ",

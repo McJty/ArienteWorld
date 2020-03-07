@@ -191,15 +191,15 @@
       },
       {
         "char": "d ",
-        "block": "arienteworld:guard_dummy@1"
+        "block": "arienteworld:guard_dummy@facing=south"
       },
       {
         "char": "c ",
-        "block": "arienteworld:soldier_dummy@3"
+        "block": "arienteworld:soldier_dummy@facing=east"
       },
       {
         "char": "b ",
-        "block": "arienteworld:guard_dummy@3"
+        "block": "arienteworld:guard_dummy@facing=east"
       }
     ]
   }

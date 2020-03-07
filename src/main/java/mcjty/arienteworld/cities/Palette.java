@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import mcjty.arienteworld.varia.Tools;
+import mcjty.lib.varia.BlockTools;
 import net.minecraft.block.BlockState;
 
 import java.util.HashMap;
@@ -69,7 +69,7 @@ public class Palette implements IAsset {
                     new PaletteIndex(cidx.charAt(0), ' ');
             if (o.has("block")) {
                 String block = o.get("block").getAsString();
-                BlockState state = Tools.stringToState(block);
+                BlockState state = BlockTools.readBlockState(block);
                 palette.put(c, state);
             } else {
                 throw new RuntimeException("Illegal palette!");
@@ -95,8 +95,8 @@ public class Palette implements IAsset {
             PaletteIndex idx = entry.getKey();
             o.add("char", new JsonPrimitive(String.valueOf(idx.getI1()) + idx.getI2()));
             if (entry.getValue() instanceof BlockState) {
-                BlockState state = (BlockState) entry.getValue();
-                o.add("block", new JsonPrimitive(Tools.stateToString(state)));
+                BlockState state = entry.getValue();
+                o.add("block", new JsonPrimitive(BlockTools.writeBlockState(state)));
             }
             array.add(o);
         }

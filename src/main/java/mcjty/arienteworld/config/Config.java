@@ -11,6 +11,9 @@ public class Config {
         AIConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
         WorldgenConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
         LootConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
+
+        COMMON_CONFIG = COMMON_BUILDER.build();
+        CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
     public static ForgeConfigSpec COMMON_CONFIG;
@@ -36,12 +39,6 @@ public class Config {
 
     // @todo 1.15
 //    public static Configuration mainConfig;
-
-    public static void init() {
-//        mainConfig = new Configuration(new File(ArienteWorld.setup.getModConfigDir().getPath(), "arienteworld.cfg"));
-        COMMON_CONFIG = COMMON_BUILDER.build();
-        CLIENT_CONFIG = CLIENT_BUILDER.build();
-    }
 
 //    public static void postInit() {
 //        if (mainConfig.hasChanged()) {

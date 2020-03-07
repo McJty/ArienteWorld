@@ -1,6 +1,7 @@
 package mcjty.arienteworld.oregen;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
@@ -17,6 +18,8 @@ public class OverworldDungeonFeature extends Feature<NoFeatureConfig> {
 
     @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        return false;
+        ChunkPos cp = new ChunkPos(pos);
+        OverworldDungeonGen.generate(rand, cp.x, cp.z, worldIn, generator);
+        return true;
     }
 }

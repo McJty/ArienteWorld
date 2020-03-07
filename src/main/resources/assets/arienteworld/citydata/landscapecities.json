@@ -8179,19 +8179,19 @@
       },
       {
         "char": "y ",
-        "block": "ariente:flatlight@2"
+        "block": "ariente:flatlight@facing=north"
       },
       {
         "char": "u ",
-        "block": "minecraft:stained_glass@3"
+        "block": "minecraft:stained_glass@color=light_blue"
       },
       {
         "char": "3 ",
-        "block": "ariente:marble_slab@6"
+        "block": "ariente:marble_slab@color=darkblue"
       },
       {
         "char": "q ",
-        "block": "ariente:ramp@2"
+        "block": "ariente:ramp@facing=west"
       },
       {
         "char": "P ",
@@ -8199,27 +8199,27 @@
       },
       {
         "char": "m ",
-        "block": "ariente:marble@2"
+        "block": "ariente:marble@color=blue"
       },
       {
         "char": "L ",
-        "block": "ariente:pattern@1"
+        "block": "ariente:pattern@type=lines"
       },
       {
         "char": "ka",
-        "block": "ariente:slope@6"
+        "block": "ariente:slope@facing=west_up"
       },
       {
         "char": "i ",
-        "block": "ariente:blacktech@6"
+        "block": "ariente:blacktech@type=panel"
       },
       {
         "char": "H ",
-        "block": "ariente:marble_slab@3"
+        "block": "ariente:marble_slab@color=black,type=bottom"
       },
       {
         "char": "ga",
-        "block": "ariente:slope@4"
+        "block": "ariente:slope@facing=north_up"
       },
       {
         "char": "e ",
@@ -8227,23 +8227,23 @@
       },
       {
         "char": "D ",
-        "block": "ariente:slope@1"
+        "block": "ariente:slope@facing=south"
       },
       {
         "char": "a ",
-        "block": "ariente:marble_smooth@3"
+        "block": "ariente:marble_smooth@color=black"
       },
       {
         "char": "z ",
-        "block": "ariente:blacktech@4"
+        "block": "ariente:blacktech@type=lines_glow"
       },
       {
         "char": "v ",
-        "block": "ariente:ramp@3"
+        "block": "ariente:ramp@facing=east"
       },
       {
         "char": "4 ",
-        "block": "ariente:marble_smooth@6"
+        "block": "ariente:marble_smooth@color=darkblue"
       },
       {
         "char": "r ",
@@ -8251,27 +8251,27 @@
       },
       {
         "char": "Q ",
-        "block": "ariente:storage@3"
+        "block": "ariente:storage@facing=south"
       },
       {
         "char": "n ",
-        "block": "ariente:flatlight@5"
+        "block": "ariente:flatlight@facing=east"
       },
       {
         "char": "M ",
-        "block": "ariente:door_marker@3"
+        "block": "ariente:door_marker@facing=east"
       },
       {
         "char": "la",
-        "block": "ariente:flux_beam@3"
+        "block": "ariente:flux_beam@facing=east"
       },
       {
         "char": "j ",
-        "block": "ariente:blacktech@3"
+        "block": "ariente:blacktech@type=red_var1"
       },
       {
         "char": "I ",
-        "block": "ariente:marble_slab@11"
+        "block": "ariente:marble_slab@color=black,type=top"
       },
       {
         "char": "ha",
@@ -8279,19 +8279,19 @@
       },
       {
         "char": "f ",
-        "block": "ariente:blacktech@5"
+        "block": "ariente:blacktech@type=red_lines_glow"
       },
       {
         "char": "E ",
-        "block": "ariente:slope@3"
+        "block": "ariente:slope@facing=east"
       },
       {
         "char": "b ",
-        "block": "ariente:marble_pilar@3"
+        "block": "ariente:marble_pilar@color=black"
       },
       {
         "char": "A ",
-        "block": "ariente:flatlight@4"
+        "block": "ariente:flatlight@facing=west"
       },
       {
         "char": "  ",
@@ -8303,7 +8303,7 @@
       },
       {
         "char": "5 ",
-        "block": "ariente:door_marker@2"
+        "block": "ariente:door_marker@facing=south"
       },
       {
         "char": "s ",
@@ -8311,7 +8311,7 @@
       },
       {
         "char": "R ",
-        "block": "ariente:storage@2"
+        "block": "ariente:storage@facing=north"
       },
       {
         "char": "o ",
@@ -8323,11 +8323,11 @@
       },
       {
         "char": "ma",
-        "block": "ariente:slope@7"
+        "block": "ariente:slope@facing=east_up"
       },
       {
         "char": "k ",
-        "block": "ariente:storage@4"
+        "block": "ariente:storage@facing=west"
       },
       {
         "char": "J ",
@@ -8335,7 +8335,7 @@
       },
       {
         "char": "ia",
-        "block": "ariente:flux_beam@1"
+        "block": "ariente:flux_beam@facing=south"
       },
       {
         "char": "g ",
@@ -8347,35 +8347,35 @@
       },
       {
         "char": "ea",
-        "block": "minecraft:stained_glass@9"
+        "block": "minecraft:stained_glass@color=cyan"
       },
       {
         "char": "c ",
-        "block": "ariente:blacktech@2"
+        "block": "ariente:blacktech@type=var1"
       },
       {
         "char": "B ",
-        "block": "ariente:slope@2"
+        "block": "ariente:slope@facing=west"
       },
       {
         "char": "x ",
-        "block": "ariente:flatlight@3"
+        "block": "ariente:flatlight@facing=south"
       },
       {
         "char": "t ",
-        "block": "ariente:ramp@1"
+        "block": "ariente:ramp@facing=south"
       },
       {
         "char": "2 ",
-        "block": "ariente:marble_pilar@6"
+        "block": "ariente:marble_pilar@color=darkblue"
       },
       {
         "char": "p ",
-        "block": "ariente:double_marble_slab@3"
+        "block": "ariente:double_marble_slab@color=black,type=bottom"
       },
       {
         "char": "O ",
-        "block": "ariente:marble_slab@11"
+        "block": "ariente:marble_slab@color=black,type=top"
       },
       {
         "char": ". ",
@@ -8391,15 +8391,15 @@
       },
       {
         "char": "K ",
-        "block": "ariente:door_marker@1"
+        "block": "ariente:door_marker@facing=north"
       },
       {
         "char": "ja",
-        "block": "ariente:slope@5"
+        "block": "ariente:slope@facing=south_up"
       },
       {
         "char": "h ",
-        "block": "ariente:marble@3"
+        "block": "ariente:marble@color=black"
       },
       {
         "char": "G ",
@@ -8407,11 +8407,11 @@
       },
       {
         "char": "fa",
-        "block": "ariente:marble@6"
+        "block": "ariente:marble@color=darkblue"
       },
       {
         "char": "d ",
-        "block": "ariente:blacktech@1"
+        "block": "ariente:blacktech@type=lines"
       },
       {
         "char": "C ",

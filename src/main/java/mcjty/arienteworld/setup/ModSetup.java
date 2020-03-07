@@ -1,7 +1,11 @@
 package mcjty.arienteworld.setup;
 
+import mcjty.ariente.api.IArienteMod;
 import mcjty.ariente.api.IArienteSystem;
+import mcjty.arienteworld.ArienteWorld;
 import mcjty.arienteworld.ForgeEventHandlers;
+import mcjty.arienteworld.cities.AssetRegistries;
+import mcjty.arienteworld.config.Config;
 import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.oregen.WorldGen;
 import mcjty.lib.compat.MainCompatHandler;
@@ -14,10 +18,14 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 
 public class ModSetup extends DefaultModSetup {
 
@@ -54,6 +62,8 @@ public class ModSetup extends DefaultModSetup {
                 );
             }
         }
+
+        readAssets();
     }
 
     @Override
@@ -61,35 +71,29 @@ public class ModSetup extends DefaultModSetup {
         MainCompatHandler.registerWaila();
         MainCompatHandler.registerTOP();
 //        HoloGuiCompatibility.register();
-        for (ModInfo mod : ModList.get().getMods()) {
-            if ("ariente".equals(mod.getModId())) {
-                // @todo 1.15 how to do this?
-//                if (mod.getMod() instanceof IArienteMod) {
-//                    arienteSystem = ((IArienteMod) container.getMod()).getSystem();
-//                } else {
-//                    Logging.logError("Cannot find a valid Ariente mod!");
-//                }
-                break;
+        arienteSystem = ModList.get()
+                .getModContainerById("ariente")
+                .map(ModContainer::getMod)
+                .filter(mod -> mod instanceof IArienteMod)
+                .map(mod -> ((IArienteMod) mod).getSystem())
+                .orElseThrow(() -> new RuntimeException("Cannot find Ariente mod!"));
+    }
+
+    private void readAssets() {
+        AssetRegistries.reset();
+        for (String path : Config.ASSETS) {
+            if (path.startsWith("/")) {
+                try(InputStream inputstream = ArienteWorld.class.getResourceAsStream(path)) {
+                    AssetRegistries.load(inputstream, path);
+                } catch (IOException ex) {
+                    throw new UncheckedIOException(ex);
+                }
+            } else if (path.startsWith("$")) {
+//                File file = new File(getModConfigDir().getPath() + File.separator + path.substring(1));
+//                AssetRegistries.load(file);
+            } else {
+                throw new RuntimeException("Invalid path for ariente resource in 'assets' config!");
             }
         }
     }
-
-    // @todo 1.15
-//    public void postInit() {
-//        AssetRegistries.reset();
-//        for (String path : ConfigSetup.ASSETS) {
-//            if (path.startsWith("/")) {
-//                try(InputStream inputstream = ArienteWorld.class.getResourceAsStream(path)) {
-//                    AssetRegistries.load(inputstream, path);
-//                } catch (IOException ex) {
-//                    throw new UncheckedIOException(ex);
-//                }
-//            } else if (path.startsWith("$")) {
-//                File file = new File(getModConfigDir().getPath() + File.separator + path.substring(1));
-//                AssetRegistries.load(file);
-//            } else {
-//                throw new RuntimeException("Invalid path for ariente resource in 'assets' config!");
-//            }
-//        }
-//    }
 }
