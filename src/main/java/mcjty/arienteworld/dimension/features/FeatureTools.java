@@ -3,6 +3,7 @@ package mcjty.arienteworld.dimension.features;
 import mcjty.arienteworld.biomes.IArienteBiome;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeManager;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,20 +21,38 @@ public class FeatureTools {
         return value < factor * strength;
     }
 
-    public static Map<String, Double> getActiveFeatures(Biome[] biomes) {
-        if (biomes.length == 0) {
-            return Collections.emptyMap();
-        }
+
+    // @todo 1.15 evaluate if doing this on a single biome is enough!
+//    public static Map<String, Double> getActiveFeatures(BiomeManager biomes) {
+//        if (biomes.length == 0) {
+//            return Collections.emptyMap();
+//        }
+//        Map<String, Double> activeFeatures = new HashMap<>();
+//        for (IFeature feature : FeatureRegistry.getFeatures()) {
+//            double f = 0.0;
+//            for (Biome biome : biomes) {
+//                if (biome instanceof IArienteBiome) {
+//                    IArienteBiome arienteBiome = (IArienteBiome) biome;
+//                    f += arienteBiome.getFeatureStrength(feature);
+//                }
+//            }
+//            f /= biomes.length;
+//            if (f > 0) {
+//                activeFeatures.put(feature.getId(), f);
+//            }
+//        }
+//        return activeFeatures;
+//    }
+
+    public static Map<String, Double> getActiveFeatures(Biome biome) {
         Map<String, Double> activeFeatures = new HashMap<>();
         for (IFeature feature : FeatureRegistry.getFeatures()) {
             double f = 0.0;
-            for (Biome biome : biomes) {
-                if (biome instanceof IArienteBiome) {
-                    IArienteBiome arienteBiome = (IArienteBiome) biome;
-                    f += arienteBiome.getFeatureStrength(feature);
-                }
+            if (biome instanceof IArienteBiome) {
+                IArienteBiome arienteBiome = (IArienteBiome) biome;
+                f += arienteBiome.getFeatureStrength(feature);
             }
-            f /= biomes.length;
+            f /= 1; // @todo was designed for more biomes
             if (f > 0) {
                 activeFeatures.put(feature.getId(), f);
             }

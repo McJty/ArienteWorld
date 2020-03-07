@@ -24,7 +24,7 @@ public class OverworldDungeonPlacement extends Placement<NoPlacementConfig> {
             return Stream.empty();
         }
         ChunkPos cp = new ChunkPos(pos);
-        if (OverworldDungeonGen.isValidDungeonChunk(worldIn, cp.x, cp.z)) {
+        if (OverworldDungeonGen.isDungeonChunk(worldIn, cp.x, cp.z)) {
             return Stream.of(OverworldDungeonGen.getDungeonPos(worldIn, cp.x, cp.z));
         } else {
             return Stream.empty();

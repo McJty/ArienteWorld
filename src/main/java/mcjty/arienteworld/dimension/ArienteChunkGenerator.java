@@ -18,9 +18,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.palette.UpgradeData;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
@@ -108,14 +110,14 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
     }
 
     public ChunkPrimer generatePrimer(int chunkX, int chunkZ) {
-        ChunkPrimer chunkprimer = null; // @todo 1.15 new ChunkPrimer();
+        ChunkPrimer chunkprimer = new ChunkPrimer(new ChunkPos(chunkX, chunkZ), UpgradeData.EMPTY); // @todo 1.15 new ChunkPrimer();
 
 //        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, chunkX * 4 - 2, chunkZ * 4 - 2, 10, 10);
 
-        terraingen.generate(chunkX, chunkZ, chunkprimer, this.biomesForGeneration);
+        terraingen.generate(chunkX, chunkZ, chunkprimer, worldObj.getBiomeManager());
         islandsGen.setBlocksInChunk(chunkX, chunkZ, chunkprimer);
 
-        generateActiveFeatures(chunkprimer, chunkX, chunkZ, true, this.biomesForGeneration);
+        generateActiveFeatures(chunkprimer, chunkX, chunkZ, true, worldObj.getBiomeManager());
 
         return chunkprimer;
     }
@@ -265,16 +267,17 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
         return dungeonGenerator;
     }
 
-    private Map<String, Double> getActiveFeatures(int chunkX, int chunkZ, Biome[] biomes) {
+    private Map<String, Double> getActiveFeatures(int chunkX, int chunkZ, BiomeManager biomes) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!activeFeatureCache.containsKey(pos)) {
-            Map<String, Double> activeFeatures = FeatureTools.getActiveFeatures(biomes);
+            // @todo 1.15 is this right?
+            Map<String, Double> activeFeatures = FeatureTools.getActiveFeatures(biomes.getBiome(new BlockPos(chunkX * 16 + 8, 64, chunkZ * 16 + 8)));
             activeFeatureCache.put(pos, activeFeatures);
         }
         return activeFeatureCache.get(pos);
     }
 
-    private void generateActiveFeatures(ChunkPrimer primer, int chunkX, int chunkZ, boolean base, Biome[] biomes) {
+    private void generateActiveFeatures(ChunkPrimer primer, int chunkX, int chunkZ, boolean base, BiomeManager biomes) {
         int size = 1;
         for (int dx = -size ; dx <= size ; dx++) {
             int cx = chunkX + dx;
@@ -294,11 +297,12 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
     }
 
     // @todo 1.15
-    public Chunk generateChunk(int chunkX, int chunkZ) {
-        ChunkPrimer chunkprimer = getChunkPrimer(chunkX, chunkZ);
+    public Chunk generateChunk(ChunkPrimer chunkprimer, int chunkX, int chunkZ) {
+//        ChunkPrimer chunkprimer = getChunkPrimer(chunkX, chunkZ);
 
         // @todo 1.15
 //        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
+
         terraingen.replaceBiomeBlocks(chunkX, chunkZ, chunkprimer, biomesForGeneration);
 
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -334,7 +338,7 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
             }
         }
 
-        generateActiveFeatures(chunkprimer, chunkX, chunkZ, false, this.biomesForGeneration);
+        generateActiveFeatures(chunkprimer, chunkX, chunkZ, false, worldObj.getBiomeManager());
 
         if (!isLandscapeCityChunk) {
             // Don't do this for city chunks
@@ -371,7 +375,7 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
 
     @Override
     public void makeBase(IWorld worldIn, IChunk chunkIn) {
-        // @todo 1.15
+//        generateChunk(chunkIn, chunkIn.getPos().x, chunkIn.getPos().z);
     }
 
     @Override

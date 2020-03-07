@@ -159,7 +159,7 @@ public class OverworldDungeonGen {
     }
 
     /// Return true if this chunk can contain a dungeon
-    private static boolean isDungeonChunk(IWorld world, int chunkX, int chunkZ) {
+    public static boolean isDungeonChunk(IWorld world, int chunkX, int chunkZ) {
         // Only for the overworld!
         if (world.getDimension().getType() == DimensionType.OVERWORLD) {
             Random rnd = new Random(world.getSeed() + chunkX * 198491317L + chunkZ * 776531419L);

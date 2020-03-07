@@ -1,6 +1,7 @@
 package mcjty.arienteworld;
 
 
+import mcjty.ariente.api.IArienteWorld;
 import mcjty.arienteworld.apiimpl.ArienteWorldImplementation;
 import mcjty.arienteworld.config.Config;
 import mcjty.arienteworld.setup.ModSetup;
@@ -12,7 +13,11 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 @Mod(ArienteWorld.MODID)
@@ -22,7 +27,6 @@ public class ArienteWorld implements ModBase {
 
     public static ModSetup setup = new ModSetup();
 
-    public static ArienteWorld instance;
     public static ArienteWorldImplementation arienteWorldImplementation = new ArienteWorldImplementation();
 
     public static IHoloGuiHandler guiHandler;
@@ -36,23 +40,17 @@ public class ArienteWorld implements ModBase {
         Registration.register();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent event) -> setup.init(event));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
     }
 
-
-    // @todo 1.15
-//    @Mod.EventHandler
-//    public void imcCallback(FMLInterModComms.IMCEvent event) {
-//        for (FMLInterModComms.IMCMessage message : event.getMessages()) {
-//            if (message.key.equalsIgnoreCase("getArienteWorld")) {
-//                Optional<Function<IArienteWorld, Void>> value = message.getFunctionValue(IArienteWorld.class, Void.class);
-//                if (value.isPresent()) {
-//                    value.get().apply(arienteWorldImplementation);
-//                } else {
-//                    setup.getLogger().warn("Some mod didn't return a valid result with getArienteWorld!");
-//                }
-//            }
-//        }
-//    }
+    private void processIMC(final InterModProcessEvent event) {
+        event.getIMCStream().forEach(message -> {
+            if ("getArienteWorld".equalsIgnoreCase(message.getMethod())) {
+                Supplier<Function<IArienteWorld, Void>> supplier = message.getMessageSupplier();
+                supplier.get().apply(arienteWorldImplementation);
+            }
+        });
+    }
 
     @Override
     public String getModId() {
