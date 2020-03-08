@@ -45,7 +45,6 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
 
     private final World worldObj;
     private Random random;
-    private Biome[] biomesForGeneration;
 
     private List<Biome.SpawnListEntry> mobs = null;
     private Map<ChunkPos, Map<String, Double>> activeFeatureCache = new HashMap<>();
@@ -113,9 +112,10 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
     public ChunkPrimer generatePrimer(int chunkX, int chunkZ) {
         ChunkPrimer chunkprimer = new ChunkPrimer(new ChunkPos(chunkX, chunkZ), UpgradeData.EMPTY); // @todo 1.15 new ChunkPrimer();
 
+        // @todo 1.15
 //        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, chunkX * 4 - 2, chunkZ * 4 - 2, 10, 10);
 
-        terraingen.generate(chunkX, chunkZ, chunkprimer, worldObj.getBiomeManager());
+        terraingen.generate(chunkX, chunkZ, chunkprimer, getBiomeProvider());
         islandsGen.setBlocksInChunk(chunkX, chunkZ, chunkprimer);
 
         generateActiveFeatures(chunkprimer, chunkX, chunkZ, true, worldObj.getBiomeManager());
@@ -304,34 +304,33 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
 
         // @todo 1.15
 //        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
-
-        terraingen.replaceBiomeBlocks(chunkX, chunkZ, chunkprimer, biomesForGeneration);
+//        terraingen.replaceBiomeBlocks(chunkX, chunkZ, chunkprimer, biomesForGeneration);
 
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ, worldObj, biomesForGeneration);
+        boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ, worldObj, getBiomeProvider());
         if (isLandscapeCityChunk) {
             ArienteLandscapeCity.generate(chunkX, chunkZ, chunkprimer, dungeonGenerator);
         } else {
             // Check all adjacent chunks and see if we need to generate a wall
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX-1, chunkZ, worldObj, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX-1, chunkZ, worldObj, getBiomeProvider())) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
                     PrimerTools.setBlockStateRange(chunkprimer, 0, CITY_LEVEL-2, dz,CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
                     chunkprimer.setBlockState(pos.setPos(0, CITY_LEVEL+6, dz), dungeonGenerator.getCityWallTop(), false);
                 }
             }
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX+1, chunkZ, worldObj, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX+1, chunkZ, worldObj, getBiomeProvider())) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
                     PrimerTools.setBlockStateRange(chunkprimer, 15, CITY_LEVEL-2, dz,CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
                     chunkprimer.setBlockState(pos.setPos(15, CITY_LEVEL+6, dz), dungeonGenerator.getCityWallTop(), false);
                 }
             }
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ-1, worldObj, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ-1, worldObj, getBiomeProvider())) {
                 for (int dx = 0 ; dx < 16 ; dx++) {
                     PrimerTools.setBlockStateRange(chunkprimer, dx, CITY_LEVEL-2, 0, CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
                     chunkprimer.setBlockState(pos.setPos(dx, CITY_LEVEL+6, 0), dungeonGenerator.getCityWallTop(), false);
                 }
             }
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ+1, worldObj, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ+1, worldObj, getBiomeProvider())) {
                 for (int dx = 0 ; dx < 16 ; dx++) {
                     int index = (dx << 12) | (15 << 8);
                     PrimerTools.setBlockStateRange(chunkprimer, dx, CITY_LEVEL-2, 15, CITY_LEVEL+6, dungeonGenerator.getCityWallChar());

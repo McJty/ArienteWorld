@@ -15,7 +15,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.palette.UpgradeData;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunk;
@@ -109,30 +108,30 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
 
 
         BlockPos.Mutable pos = new BlockPos.Mutable();
-        boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ, world, null /* @todo 1.15 find biomes? */ );
+        boolean isLandscapeCityChunk = ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ, world, getBiomeProvider());
         if (isLandscapeCityChunk) {
             ArienteLandscapeCity.generate(chunkX, chunkZ, chunk, dungeonGenerator);
         } else {
             // Check all adjacent chunks and see if we need to generate a wall
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX-1, chunkZ, world, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX-1, chunkZ, world, getBiomeProvider())) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
                     PrimerTools.setBlockStateRange(chunk, 0, CITY_LEVEL-2, dz,CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
                     chunk.setBlockState(pos.setPos(0, CITY_LEVEL+6, dz), dungeonGenerator.getCityWallTop(), false);
                 }
             }
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX+1, chunkZ, world, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX+1, chunkZ, world, getBiomeProvider())) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
                     PrimerTools.setBlockStateRange(chunk, 15, CITY_LEVEL-2, dz,CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
                     chunk.setBlockState(pos.setPos(15, CITY_LEVEL+6, dz), dungeonGenerator.getCityWallTop(), false);
                 }
             }
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ-1, world, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ-1, world, getBiomeProvider())) {
                 for (int dx = 0 ; dx < 16 ; dx++) {
                     PrimerTools.setBlockStateRange(chunk, dx, CITY_LEVEL-2, 0, CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
                     chunk.setBlockState(pos.setPos(dx, CITY_LEVEL+6, 0), dungeonGenerator.getCityWallTop(), false);
                 }
             }
-            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ+1, world, null)) {
+            if (ArienteLandscapeCity.isLandscapeCityChunk(chunkX, chunkZ+1, world, getBiomeProvider())) {
                 for (int dx = 0 ; dx < 16 ; dx++) {
                     int index = (dx << 12) | (15 << 8);
                     PrimerTools.setBlockStateRange(chunk, dx, CITY_LEVEL-2, 15, CITY_LEVEL+6, dungeonGenerator.getCityWallChar());
@@ -141,7 +140,7 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
             }
         }
 
-        generateActiveFeatures(chunk, chunkX, chunkZ, false, world.getBiomeManager());
+        generateActiveFeatures(chunk, chunkX, chunkZ, false, getBiomeProvider());
 
         if (!isLandscapeCityChunk) {
             // Don't do this for city chunks
@@ -337,28 +336,29 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
     public ChunkPrimer generatePrimer(int chunkX, int chunkZ) {
         ChunkPrimer chunkprimer = new ChunkPrimer(new ChunkPos(chunkX, chunkZ), UpgradeData.EMPTY); // @todo 1.15 new ChunkPrimer();
 
+        // @todo 1.15
 //        this.biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, chunkX * 4 - 2, chunkZ * 4 - 2, 10, 10);
 
-        terraingen.generate(chunkX, chunkZ, chunkprimer, world.getBiomeManager());
+        terraingen.generate(chunkX, chunkZ, chunkprimer, getBiomeProvider());
         islandsGen.setBlocksInChunk(chunkX, chunkZ, chunkprimer);
 
-        generateActiveFeatures(chunkprimer, chunkX, chunkZ, true, world.getBiomeManager());
+        generateActiveFeatures(chunkprimer, chunkX, chunkZ, true, getBiomeProvider());
 
         return chunkprimer;
     }
 
 
-    private Map<String, Double> getActiveFeatures(int chunkX, int chunkZ, BiomeManager biomes) {
+    private Map<String, Double> getActiveFeatures(int chunkX, int chunkZ, BiomeProvider biomes) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!activeFeatureCache.containsKey(pos)) {
             // @todo 1.15 is this right?
-            Map<String, Double> activeFeatures = FeatureTools.getActiveFeatures(biomes.getBiome(new BlockPos(chunkX * 16 + 8, 64, chunkZ * 16 + 8)));
+            Map<String, Double> activeFeatures = FeatureTools.getActiveFeatures(biomes.getNoiseBiome(chunkX * 16 + 8, 64, chunkZ * 16 + 8));
             activeFeatureCache.put(pos, activeFeatures);
         }
         return activeFeatureCache.get(pos);
     }
 
-    private void generateActiveFeatures(IChunk primer, int chunkX, int chunkZ, boolean base, BiomeManager biomes) {
+    private void generateActiveFeatures(IChunk primer, int chunkX, int chunkZ, boolean base, BiomeProvider biomes) {
         int size = 1;
         for (int dx = -size ; dx <= size ; dx++) {
             int cx = chunkX + dx;

@@ -7,6 +7,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.ChunkPrimer;
 
 import java.util.Random;
@@ -79,7 +80,7 @@ public class ArienteTerrainGenerator {
     }
 
 
-    private void generateHeightmap(int chunkX4, int chunkY4, int chunkZ4, BiomeManager biomesForGeneration) {
+    private void generateHeightmap(int chunkX4, int chunkY4, int chunkZ4, BiomeProvider biomesForGeneration) {
         this.noiseData4 = this.noiseGen6.generateNoiseOctaves(this.noiseData4, chunkX4, chunkZ4, 5, 5, 200.0D, 200.0D, 0.5D);
         this.noiseData1 = this.noiseGen3.generateNoiseOctaves(this.noiseData1, chunkX4, chunkY4, chunkZ4, 5, 33, 5, 8.555150000000001D, 4.277575000000001D, 8.555150000000001D);
         this.noiseData2 = this.noiseGen1.generateNoiseOctaves(this.noiseData2, chunkX4, chunkY4, chunkZ4, 5, 33, 5, 684.412D, 684.412D, 684.412D);
@@ -94,7 +95,8 @@ public class ArienteTerrainGenerator {
                 float f2 = 0.0F;
                 byte b0 = 2;
 
-                Biome biome = biomesForGeneration.getBiome(new BlockPos(chunkX4 / 4 + j1 * 2, 64, chunkZ4 / 4 + k1 * 2));
+                // @todo 1.15 64 should be sea level?
+                Biome biome = biomesForGeneration.getNoiseBiome(chunkX4 / 4 + j1 * 2, 64, chunkZ4 / 4 + k1 * 2);
 
 //                Biome biome = biomesForGeneration[j1 + 2 + (k1 + 2) * 10];
 
@@ -176,7 +178,7 @@ public class ArienteTerrainGenerator {
     }
 
 
-    public void generate(int chunkX, int chunkZ, ChunkPrimer primer, BiomeManager biomesForGeneration) {
+    public void generate(int chunkX, int chunkZ, ChunkPrimer primer, BiomeProvider biomesForGeneration) {
         generateHeightmap(chunkX * 4, 0, chunkZ * 4, biomesForGeneration);
         BlockPos.Mutable pos = new BlockPos.Mutable();
         byte waterLevel = 63;

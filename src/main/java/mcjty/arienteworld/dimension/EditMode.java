@@ -302,6 +302,7 @@ public class EditMode {
         }
 
         if (city == null) {
+            // @todo 1.15 biome provider?
             if (ArienteLandscapeCity.isLandscapeCityChunk(cx, cz, player.getEntityWorld(), null)) {
                 Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(cx, cz);
                 player.sendMessage(new StringTextComponent("Building part: " + part.getKey() + " (" + part.getRight() + ")"));

@@ -1,6 +1,7 @@
 package mcjty.arienteworld.biomes;
 
 import com.google.common.collect.ImmutableList;
+import mcjty.arienteworld.setup.Registration;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
@@ -54,8 +55,8 @@ public class ArienteBiomeProvider extends BiomeProvider {
     public static <T extends IArea, C extends IExtendedNoiseRandom<T>> ImmutableList<IAreaFactory<T>> buildOverworldProcedure(WorldType worldTypeIn, LongFunction<C> contextFactory) {
         IAreaFactory<T> layer = ArienteBiomeLayer.INSTANCE.apply(contextFactory.apply(200L));
         layer = ZoomLayer.FUZZY.apply(contextFactory.apply(2000L), layer);
-        layer = ZoomLayer.NORMAL.apply((IExtendedNoiseRandom<T>) contextFactory.apply(1001L), layer);
-        layer = ZoomLayer.NORMAL.apply((IExtendedNoiseRandom<T>) contextFactory.apply(1001L), layer);
+        layer = ZoomLayer.NORMAL.apply(contextFactory.apply(1001L), layer);
+        layer = ZoomLayer.NORMAL.apply(contextFactory.apply(1001L), layer);
         return ImmutableList.of(layer, layer, layer);
     }
 
@@ -63,6 +64,12 @@ public class ArienteBiomeProvider extends BiomeProvider {
     private static Set<Biome> getBiomes() {
         if (BIOMES == null) {
             BIOMES = new HashSet<>();
+            BIOMES.add(Registration.ARIENTE_PLAINS.get());
+            BIOMES.add(Registration.ARIENTE_HILLS.get());
+            BIOMES.add(Registration.ARIENTE_OCEAN.get());
+            BIOMES.add(Registration.ARIENTE_FOREST.get());
+            BIOMES.add(Registration.ARIENTE_ROUGH.get());
+            BIOMES.add(Registration.ARIENTE_CITY.get());
         }
         return BIOMES;
     }
