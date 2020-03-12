@@ -289,7 +289,7 @@
       },
       {
         "char": "n ",
-        "block": "ariente:door_marker@facing=south"
+        "block": "ariente:door_marker@facing=west"
       },
       {
         "char": "l ",
@@ -297,7 +297,7 @@
       },
       {
         "char": "j ",
-        "block": "ariente:door_marker@facing=north"
+        "block": "ariente:door_marker@facing=west"
       },
       {
         "char": "h ",
@@ -305,7 +305,7 @@
       },
       {
         "char": "f ",
-        "block": "ariente:door_marker@facing=east"
+        "block": "ariente:door_marker@facing=south"
       },
       {
         "char": "d ",

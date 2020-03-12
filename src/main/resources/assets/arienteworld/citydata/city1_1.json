@@ -1940,7 +1940,7 @@
       },
       {
         "char": "z ",
-        "block": "ariente:door_marker@facing=south"
+        "block": "ariente:door_marker@facing=west"
       },
       {
         "char": "x ",
