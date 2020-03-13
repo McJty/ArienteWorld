@@ -100,7 +100,7 @@ public class LevitatorNetworkGenerator {
                     elevatorPos = createElevatorShaft(chunkX, chunkZ, primer, generator, lowest, startz);
                 }
                 if (elevatorPos != null) {
-                    ArienteChunkGenerator.registerStationLevitatorTodo(new ChunkPos(chunkX, chunkZ), elevatorPos);
+                    ArienteChunkGeneratorNew.registerStationLevitatorTodo(new ChunkPos(chunkX, chunkZ), elevatorPos);
                 }
             }
         } else if (candidateX) {

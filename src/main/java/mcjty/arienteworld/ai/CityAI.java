@@ -7,7 +7,6 @@ import mcjty.arienteworld.cities.CityPlan;
 import mcjty.arienteworld.cities.CityTools;
 import mcjty.arienteworld.cities.Loot;
 import mcjty.arienteworld.config.AIConfiguration;
-import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.IArienteChunkGenerator;
 import mcjty.arienteworld.setup.ModSetup;
 import mcjty.arienteworld.setup.Registration;

@@ -1,7 +1,5 @@
 package mcjty.arienteworld.cities;
 
-import mcjty.arienteworld.config.WorldgenConfiguration;
-import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import mcjty.arienteworld.dimension.ArienteDungeonGenerator;
 import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.arienteworld.dimension.IArienteChunkGenerator;
@@ -11,7 +9,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;

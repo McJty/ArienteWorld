@@ -1,13 +1,20 @@
 package mcjty.arienteworld.dimension;
 
+import mcjty.ariente.api.ICityEquipment;
+import mcjty.ariente.api.IElevator;
+import mcjty.ariente.api.IStorageTile;
 import mcjty.arienteworld.ArienteStuff;
-import mcjty.arienteworld.cities.City;
-import mcjty.arienteworld.cities.CityTools;
+import mcjty.arienteworld.ai.CityAI;
+import mcjty.arienteworld.cities.*;
 import mcjty.arienteworld.dimension.features.FeatureRegistry;
 import mcjty.arienteworld.dimension.features.FeatureTools;
 import mcjty.arienteworld.dimension.features.IFeature;
+import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.tileentity.MobSpawnerTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -21,8 +28,14 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.OctavesNoiseGenerator;
 import net.minecraft.world.gen.OverworldGenSettings;
+import net.minecraft.world.spawner.AbstractSpawner;
+import net.minecraft.world.spawner.WorldEntitySpawner;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static mcjty.arienteworld.dimension.ArienteLandscapeCity.CITY_LEVEL;
@@ -38,6 +51,8 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
         }
 
     });
+
+    private static Map<ChunkPos, BlockPos> stationLevitatorTodo = new HashMap<>();
 
     private final OctavesNoiseGenerator depthNoise;
     private ArienteTerrainGenerator terraingen = new ArienteTerrainGenerator();
@@ -63,6 +78,11 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
 //        caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
         dungeonGenerator.initialize(this);
     }
+
+    public static void registerStationLevitatorTodo(ChunkPos chunkPos, BlockPos pos) {
+        stationLevitatorTodo.put(chunkPos, pos);
+    }
+
 
     @Override
     protected double[] getBiomeNoiseColumn(int noiseX, int noiseZ) {
@@ -331,6 +351,115 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
             cachedHeightmaps.put(key, heightmap);
             return heightmap;
         }
+    }
+
+    // @todo 1.15: need to call this somehow?
+    public void populate(int x, int z) {
+        int i = x * 16;
+        int j = z * 16;
+        BlockPos blockpos = new BlockPos(i, 0, j);
+
+        this.randomSeed.setSeed(this.world.getSeed());
+        long k = this.randomSeed.nextLong() / 2L * 2L + 1L;
+        long l = this.randomSeed.nextLong() / 2L * 2L + 1L;
+        this.randomSeed.setSeed((long)x * k + (long)z * l ^ this.world.getSeed());
+
+        Biome biome = this.world.getBiome(blockpos.add(16, 0, 16));
+//        biome.decorate(this.world, this.randomSeed, new BlockPos(i, 0, j));
+//        WorldEntitySpawner.performWorldGenSpawning(this.world, biome, i + 8, j + 8, 16, 16, this.randomSeed);
+
+        if (CityTools.isDungeonChunk(x, z)) {
+            fixTileEntities(x, z);
+        }
+
+        if (CityTools.isStationChunk(x, z)) {
+            BuildingPart part = CityTools.getStationPart(x, z);
+            if (part != null) {
+                fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight(), false);
+            }
+        }
+
+        if (ArienteLandscapeCity.isLandscapeCityChunk(x, z, world, getBiomeProvider())) {
+            if (!CityTools.isDungeonChunk(x, z)) {
+                int height = ArienteLandscapeCity.getBuildingYOffset(x, z);
+                Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(x, z);
+                List<BuildingPart> parts = Collections.singletonList(AssetRegistries.PARTS.get(part.getKey()));
+                Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(x, z, parts, height, part.getValue());
+                fixTileEntities(x, z, true, equipment);
+            }
+        }
+    }
+
+    private void fixTileEntities(int x, int z) {
+        City city = CityTools.getNearestDungeon(x, z);
+        List<BuildingPart> parts = CityTools.getBuildingParts(city, x, z);
+        int lowestY = CityTools.getLowestHeight(city, this, x, z);
+        fixTileEntities(x, z, parts, lowestY, false);
+    }
+
+    private void fixTileEntities(int chunkX, int chunkZ, List<BuildingPart> parts, int lowestY, boolean landscapeCity) {
+        Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(chunkX, chunkZ, parts, lowestY, Transform.ROTATE_NONE);
+        fixTileEntities(chunkX, chunkZ, landscapeCity, equipment);
+    }
+
+    private void fixTileEntities(int chunkX, int chunkZ, boolean landscapeCity, Map<BlockPos, Map<String, Object>> equipment) {
+        for (int dx = 0 ; dx < 16 ; dx++) {
+            for (int dy = 0 ; dy < 256 ; dy++) {
+                for (int dz = 0 ; dz < 16 ; dz++) {
+                    BlockPos p = new BlockPos(chunkX*16 + dx, dy, chunkZ*16 + dz);
+                    TileEntity te = world.getTileEntity(p);
+                    if (te instanceof GenericTileEntity) {
+                        BlockState state = world.getBlockState(p);
+                        world.setBlockState(p, state, 3);
+                        ((GenericTileEntity) te).markDirtyClient();
+                    }
+                    if (landscapeCity && te instanceof IStorageTile) {
+                        IStorageTile storageTile = (IStorageTile) te;
+                        CityAI.fillLoot(AssetRegistries.CITYPLANS.get("landscapecities"), storageTile);
+                    } else if (te instanceof ICityEquipment && equipment.containsKey(p)) {
+                        ((ICityEquipment)te).load(equipment.get(p));
+                    }
+
+                    if (te instanceof MobSpawnerTileEntity && equipment.containsKey(p)) {
+                        MobSpawnerTileEntity spawner = (MobSpawnerTileEntity) te;
+                        AbstractSpawner logic = spawner.getSpawnerBaseLogic();
+                        Map<String, Object> map = equipment.get(p);
+                        logic.setEntityType(ForgeRegistries.ENTITIES.getValue(new ResourceLocation((String)map.get("mob"))));
+                        te.markDirty();
+                        BlockState state = world.getBlockState(p);
+                        // @todo 1.15
+//                        world.notifyBlockUpdate(p, state, state, 3);
+                    }
+                }
+            }
+        }
+
+        ChunkPos coord = new ChunkPos(chunkX, chunkZ);
+        if (stationLevitatorTodo.containsKey(coord)) {
+            BlockPos levitatorPos = stationLevitatorTodo.get(coord);
+            TileEntity te = world.getTileEntity(levitatorPos);
+            if (te instanceof IElevator) {
+                IElevator elevatorTile = (IElevator) te;
+                ChunkPos center = CityTools.getNearestDungeonCenter(chunkX, chunkZ);
+                elevatorTile.setHeight(CityTools.getLowestHeight(CityTools.getCity(center), this, chunkX, chunkZ) - 30 + 5);
+            }
+            stationLevitatorTodo.remove(coord);
+        }
+    }
+
+    private Map<BlockPos, Map<String, Object>> makeEquipmentMap(int x, int z, List<BuildingPart> parts, int lowestY,
+                                                                Transform transform) {
+        int y = lowestY;
+        // We need the parts again to load the equipment data
+        Map<BlockPos, Map<String, Object>> equipment = new HashMap<>();
+        for (BuildingPart part : parts) {
+            for (Map.Entry<BlockPos, Map<String, Object>> entry : part.getTeInfo().entrySet()) {
+                BlockPos relative = entry.getKey();
+                equipment.put(new BlockPos(x*16, y, z*16).add(transform.transform(relative)), entry.getValue());
+            }
+            y += part.getSliceCount();
+        }
+        return equipment;
     }
 
     public ChunkPrimer generatePrimer(int chunkX, int chunkZ) {

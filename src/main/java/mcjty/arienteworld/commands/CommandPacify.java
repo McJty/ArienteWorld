@@ -9,12 +9,10 @@ import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.City;
 import mcjty.arienteworld.cities.CityTools;
-import mcjty.arienteworld.dimension.ArienteChunkGenerator;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
 
 public class CommandPacify implements Command<CommandSource> {
 
