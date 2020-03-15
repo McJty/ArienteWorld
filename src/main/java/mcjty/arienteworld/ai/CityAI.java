@@ -961,7 +961,9 @@ public class CityAI implements ICityAI {
             }
         }
         // @dirty?
-        ((GenericTileEntity) te).markDirtyClient();
+//        ((GenericTileEntity) te).markDirtyClient();
+        // @todo 1.15
+        ((GenericTileEntity) te).markDirty();
     }
 
     private static int getMinMax(Random rnd, int min, int max) {

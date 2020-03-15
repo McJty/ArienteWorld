@@ -28,6 +28,7 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.NoiseChunkGenerator;
 import net.minecraft.world.gen.OctavesNoiseGenerator;
 import net.minecraft.world.gen.OverworldGenSettings;
+import net.minecraft.world.gen.WorldGenRegion;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -353,29 +354,33 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
         }
     }
 
-    // @todo 1.15: need to call this somehow?
-    public void populate(int x, int z) {
-        int i = x * 16;
-        int j = z * 16;
-        BlockPos blockpos = new BlockPos(i, 0, j);
+    @Override
+    public void decorate(WorldGenRegion region) {
+        super.decorate(region);
+//        int i = x * 16;
+//        int j = z * 16;
+//        BlockPos blockpos = new BlockPos(i, 0, j);
 
-        this.randomSeed.setSeed(this.world.getSeed());
-        long k = this.randomSeed.nextLong() / 2L * 2L + 1L;
-        long l = this.randomSeed.nextLong() / 2L * 2L + 1L;
-        this.randomSeed.setSeed((long)x * k + (long)z * l ^ this.world.getSeed());
+//        this.randomSeed.setSeed(this.world.getSeed());
+//        long k = this.randomSeed.nextLong() / 2L * 2L + 1L;
+//        long l = this.randomSeed.nextLong() / 2L * 2L + 1L;
+//        this.randomSeed.setSeed((long)x * k + (long)z * l ^ this.world.getSeed());
 
-        Biome biome = this.world.getBiome(blockpos.add(16, 0, 16));
+//        Biome biome = this.world.getBiome(blockpos.add(16, 0, 16));
 //        biome.decorate(this.world, this.randomSeed, new BlockPos(i, 0, j));
 //        WorldEntitySpawner.performWorldGenSpawning(this.world, biome, i + 8, j + 8, 16, 16, this.randomSeed);
 
+        int x = region.getMainChunkX();
+        int z = region.getMainChunkZ();
+
         if (CityTools.isDungeonChunk(x, z)) {
-            fixTileEntities(x, z);
+            fixTileEntities(region, x, z);
         }
 
         if (CityTools.isStationChunk(x, z)) {
             BuildingPart part = CityTools.getStationPart(x, z);
             if (part != null) {
-                fixTileEntities(x, z, Collections.singletonList(part), CityTools.getStationHeight(), false);
+                fixTileEntities(region, x, z, Collections.singletonList(part), CityTools.getStationHeight(), false);
             }
         }
 
@@ -385,32 +390,36 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
                 Pair<String, Transform> part = ArienteLandscapeCity.getBuildingPart(x, z);
                 List<BuildingPart> parts = Collections.singletonList(AssetRegistries.PARTS.get(part.getKey()));
                 Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(x, z, parts, height, part.getValue());
-                fixTileEntities(x, z, true, equipment);
+                fixTileEntities(region, x, z, true, equipment);
             }
         }
     }
 
-    private void fixTileEntities(int x, int z) {
+    private void fixTileEntities(WorldGenRegion region, int x, int z) {
         City city = CityTools.getNearestDungeon(x, z);
         List<BuildingPart> parts = CityTools.getBuildingParts(city, x, z);
         int lowestY = CityTools.getLowestHeight(city, this, x, z);
-        fixTileEntities(x, z, parts, lowestY, false);
+        fixTileEntities(region, x, z, parts, lowestY, false);
     }
 
-    private void fixTileEntities(int chunkX, int chunkZ, List<BuildingPart> parts, int lowestY, boolean landscapeCity) {
+    private void fixTileEntities(WorldGenRegion region, int chunkX, int chunkZ, List<BuildingPart> parts, int lowestY, boolean landscapeCity) {
         Map<BlockPos, Map<String, Object>> equipment = makeEquipmentMap(chunkX, chunkZ, parts, lowestY, Transform.ROTATE_NONE);
-        fixTileEntities(chunkX, chunkZ, landscapeCity, equipment);
+        fixTileEntities(region, chunkX, chunkZ, landscapeCity, equipment);
     }
 
-    private void fixTileEntities(int chunkX, int chunkZ, boolean landscapeCity, Map<BlockPos, Map<String, Object>> equipment) {
+    private void fixTileEntities(WorldGenRegion region, int chunkX, int chunkZ, boolean landscapeCity, Map<BlockPos, Map<String, Object>> equipment) {
         for (int dx = 0 ; dx < 16 ; dx++) {
             for (int dy = 0 ; dy < 256 ; dy++) {
                 for (int dz = 0 ; dz < 16 ; dz++) {
                     BlockPos p = new BlockPos(chunkX*16 + dx, dy, chunkZ*16 + dz);
-                    TileEntity te = world.getTileEntity(p);
+
+                    BlockState state = region.getBlockState(p);
+                    if (state.getBlock().hasTileEntity(state)) {
+                        region.setBlockState(p, state, 3); // Recreate the block on the world so that TE can be made
+                    }
+
+                    TileEntity te = region.getTileEntity(p);
                     if (te instanceof GenericTileEntity) {
-                        BlockState state = world.getBlockState(p);
-                        world.setBlockState(p, state, 3);
                         ((GenericTileEntity) te).markDirtyClient();
                     }
                     if (landscapeCity && te instanceof IStorageTile) {
@@ -426,8 +435,8 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
                         Map<String, Object> map = equipment.get(p);
                         logic.setEntityType(ForgeRegistries.ENTITIES.getValue(new ResourceLocation((String)map.get("mob"))));
                         te.markDirty();
-                        BlockState state = world.getBlockState(p);
                         // @todo 1.15
+//                        BlockState state = region.getBlockState(p);
 //                        world.notifyBlockUpdate(p, state, state, 3);
                     }
                 }
@@ -437,7 +446,7 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
         ChunkPos coord = new ChunkPos(chunkX, chunkZ);
         if (stationLevitatorTodo.containsKey(coord)) {
             BlockPos levitatorPos = stationLevitatorTodo.get(coord);
-            TileEntity te = world.getTileEntity(levitatorPos);
+            TileEntity te = region.getTileEntity(levitatorPos);
             if (te instanceof IElevator) {
                 IElevator elevatorTile = (IElevator) te;
                 ChunkPos center = CityTools.getNearestDungeonCenter(chunkX, chunkZ);
