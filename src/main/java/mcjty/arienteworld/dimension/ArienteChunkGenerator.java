@@ -365,6 +365,11 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
     }
 
     @Override
+    public BiomeProvider getBiomes() {
+        return biomeProvider;
+    }
+
+    @Override
     public void func_225551_a_(WorldGenRegion p_225551_1_, IChunk p_225551_2_) {
         // @todo 1.15
     }

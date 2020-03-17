@@ -179,6 +179,11 @@ public class ArienteChunkGeneratorNew extends NoiseChunkGenerator<OverworldGenSe
         return dungeonGenerator;
     }
 
+    @Override
+    public BiomeProvider getBiomes() {
+        return biomeProvider;
+    }
+
     private NoiseGeneratorPerlin varianceNoise;
     private double[] varianceBuffer = new double[256];
 
