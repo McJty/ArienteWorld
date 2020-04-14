@@ -4,14 +4,12 @@ import mcjty.arienteworld.dimension.features.*;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.GenerationStage;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class BiomeArienteHills extends AbstractArienteBiome {
 

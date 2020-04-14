@@ -1,6 +1,5 @@
 package mcjty.ariente.api;
 
-import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

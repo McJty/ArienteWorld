@@ -1,8 +1,6 @@
 package mcjty.arienteworld.dimension.features;
 
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunk;
 
 import java.util.Random;

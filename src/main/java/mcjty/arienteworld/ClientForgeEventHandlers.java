@@ -1,6 +1,5 @@
 package mcjty.arienteworld;
 
-import mcjty.arienteworld.config.WorldgenConfiguration;
 import mcjty.arienteworld.dimension.DimensionRegister;
 import mcjty.arienteworld.dimension.EditMode;
 import mcjty.arienteworld.dimension.EditModeClient;

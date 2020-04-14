@@ -2,11 +2,8 @@ package mcjty.arienteworld.dimension.features;
 
 import mcjty.arienteworld.biomes.IArienteBiome;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;

@@ -6,8 +6,6 @@ import mcjty.arienteworld.dimension.NoiseGeneratorPerlin;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunk;
 
 import java.util.Random;

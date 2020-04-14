@@ -1,12 +1,5 @@
 package mcjty.arienteworld.biomes.features;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
-import java.util.Random;
-
 public class WorldGenBlueTree {} /* @todo 1.15 extends WorldGenHugeTrees {
 
     public WorldGenBlueTree(int baseHeightIn, int extraRandomHeightIn, BlockState woodMetadataIn, BlockState leavesMetadataIn) {
