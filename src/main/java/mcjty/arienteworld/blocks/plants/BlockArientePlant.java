@@ -1,6 +1,5 @@
 package mcjty.arienteworld.blocks.plants;
 
-import mcjty.lib.McJtyLib;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -37,7 +36,7 @@ public class BlockArientePlant extends BushBlock implements net.minecraftforge.c
     }
 
     public void initModel() {
-        McJtyLib.proxy.initStandardItemModel(this);
+//        McJtyLib.proxy.initStandardItemModel(this);
     }
 
     @Override

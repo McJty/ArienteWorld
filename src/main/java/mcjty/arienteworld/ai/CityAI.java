@@ -830,9 +830,9 @@ public class CityAI implements ICityAI {
         }
 
         if (firstTime) {
-            keyId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId();
-            storageKeyId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId();
-            forcefieldId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId();
+            keyId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId(world);
+            storageKeyId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId(world);
+            forcefieldId = ModSetup.arienteSystem.getSecuritySystem(world).generateKeyId(world);
         }
 
         City city = CityTools.getCity(center);
