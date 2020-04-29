@@ -4,19 +4,19 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class Config {
 
-    private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
+    private static final ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
     static {
-        AIConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
-        WorldgenConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
-        LootConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
+        AIConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
+        WorldgenConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
+        LootConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
 
-        COMMON_CONFIG = COMMON_BUILDER.build();
+        SERVER_CONFIG = SERVER_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
-    public static ForgeConfigSpec COMMON_CONFIG;
+    public static ForgeConfigSpec SERVER_CONFIG;
     public static ForgeConfigSpec CLIENT_CONFIG;
 
 
