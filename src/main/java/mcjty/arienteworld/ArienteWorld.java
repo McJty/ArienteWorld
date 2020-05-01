@@ -8,7 +8,6 @@ import mcjty.arienteworld.setup.ModSetup;
 import mcjty.arienteworld.setup.Registration;
 import mcjty.hologui.api.IHoloGuiHandler;
 import mcjty.lib.base.ModBase;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -57,8 +56,4 @@ public class ArienteWorld implements ModBase {
         return ArienteWorld.MODID;
     }
 
-    @Override
-    public void openManual(PlayerEntity player, int bookindex, String page) {
-        // @todo
-    }
 }
