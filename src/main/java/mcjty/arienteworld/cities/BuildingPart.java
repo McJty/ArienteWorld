@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import mcjty.lib.varia.Logging;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
@@ -98,7 +99,7 @@ public class BuildingPart implements IAsset {
                         try {
                             c = getC(x, y, z);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Logging.logError("Internal error", e);
                         }
                         vs.getSlice().add(c);
                     }

@@ -9,6 +9,7 @@ import mcjty.arienteworld.ai.CityAI;
 import mcjty.arienteworld.ai.CityAISystem;
 import mcjty.arienteworld.cities.*;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.Logging;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -522,7 +523,7 @@ public class EditMode {
                 saveStation(player);
             } catch (FileNotFoundException e) {
                 player.sendMessage(new StringTextComponent(TextFormatting.RED + "Error saving station!"));
-                e.printStackTrace();
+                Logging.logError("Error saving station!", e);
             }
             return;
         }
@@ -534,7 +535,7 @@ public class EditMode {
                 saveLandscapeCityPart(player, generator, cx, cz);
             } catch (FileNotFoundException e) {
                 player.sendMessage(new StringTextComponent(TextFormatting.RED + "Error saving landscape city part!"));
-                e.printStackTrace();
+                Logging.logError("Error saving landscape city part!", e);
             }
 //            player.sendMessage(new StringTextComponent("No city or station can be found!"));
             return;
@@ -548,7 +549,7 @@ public class EditMode {
                     (x, z) -> CityTools.getBuildingParts(city, x, z));
         } catch (FileNotFoundException e) {
             player.sendMessage(new StringTextComponent(TextFormatting.RED + "Error saving city!"));
-            e.printStackTrace();
+            Logging.logError("Error saving city!", e);
         }
     }
 

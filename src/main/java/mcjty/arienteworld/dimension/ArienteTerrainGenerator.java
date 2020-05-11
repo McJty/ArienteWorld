@@ -11,8 +11,6 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import java.util.Random;
 
 public class ArienteTerrainGenerator {
-    private IWorld world;
-    private Random rand;
 
     private double[] depthBuffer = new double[256];
 
@@ -53,8 +51,6 @@ public class ArienteTerrainGenerator {
     }
 
     public void setup(IWorld world, Random rand, BlockState baseBlock) {
-        this.rand = rand;
-        this.world = world;
         this.baseBlock = baseBlock;
         amplified = false;
 

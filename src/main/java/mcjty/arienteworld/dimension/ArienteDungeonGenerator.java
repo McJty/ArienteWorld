@@ -16,12 +16,11 @@ import java.util.Set;
 
 public class ArienteDungeonGenerator {
 
-    private static Set<Character> rotatableChars = null;
+    private static Set<BlockState> rotatableChars = null;
     private boolean initialized = false;
     private IArienteChunkGenerator generator;
 
     private BlockState airChar;
-    private BlockState baseChar;
     private BlockState fillerChar;
     private BlockState cityWallChar;
     private BlockState cityWallTop;
@@ -30,7 +29,7 @@ public class ArienteDungeonGenerator {
         this.generator = generator;
         if (!initialized) {
             airChar = Blocks.AIR.getDefaultState();
-            baseChar = ArienteStuff.marble.getDefaultState();
+//            baseChar = ArienteStuff.marble.getDefaultState();
             fillerChar = ArienteStuff.marble_bricks.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
             cityWallChar = ArienteStuff.marble.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
             cityWallTop = ArienteStuff.marble_smooth.getDefaultState().with(MarbleColor.COLOR, MarbleColor.BLACK);
@@ -47,7 +46,7 @@ public class ArienteDungeonGenerator {
         return cityWallTop;
     }
 
-    public static Set<Character> getRotatableChars() {
+    public static Set<BlockState> getRotatableChars() {
         if (rotatableChars == null) {
             rotatableChars = new HashSet<>();
             addStates(Blocks.ACACIA_STAIRS, rotatableChars);
@@ -75,15 +74,18 @@ public class ArienteDungeonGenerator {
         return rotatableChars;
     }
 
-    private static void addStates(Block block, Set<Character> set) {
-        for (int m = 0; m < 16; m++) {
-            try {
-                BlockState state = block.getDefaultState(); // @todo 1.15 meta getStateFromMeta(m);
-                set.add((char) Block.BLOCK_STATE_IDS.get(state));
-            } catch (Exception e) {
-                // Ignore
-            }
-        }
+    private static void addStates(Block block, Set<BlockState> set) {
+        // @todo, other properties as well...
+        set.add(block.getDefaultState());
+//
+//        for (int m = 0; m < 16; m++) {
+//            try {
+//                BlockState state = block.getDefaultState(); // @todo 1.15 meta getStateFromMeta(m);
+//                set.add((char) Block.BLOCK_STATE_IDS.get(state));
+//            } catch (Exception e) {
+//                // Ignore
+//            }
+//        }
     }
 
     public void generate(int x, int z, IChunk primer) {

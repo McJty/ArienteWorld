@@ -1,5 +1,6 @@
 package mcjty.arienteworld.cities;
 
+import mcjty.lib.varia.Logging;
 import net.minecraft.block.BlockState;
 
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class CompiledPalette {
         try {
             return palette.get(c);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logging.logError("Internal error", e);
             return null;
         }
     }

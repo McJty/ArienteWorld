@@ -39,11 +39,13 @@ public class BlockArientePlant extends BushBlock implements net.minecraftforge.c
 //        McJtyLib.proxy.initStandardItemModel(this);
     }
 
+    @SuppressWarnings({"NullableProblems", "deprecation"})
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return BLACK_BUSH_AABB;
     }
 
+    @SuppressWarnings({"NullableProblems", "deprecation"})
     @Override
     public MaterialColor getMaterialColor(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return MaterialColor.WOOD;
@@ -54,6 +56,7 @@ public class BlockArientePlant extends BushBlock implements net.minecraftforge.c
         return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
         return true;

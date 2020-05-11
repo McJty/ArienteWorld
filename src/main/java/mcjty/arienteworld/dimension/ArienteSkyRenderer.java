@@ -1,12 +1,12 @@
 package mcjty.arienteworld.dimension;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.arienteworld.ArienteWorld;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
@@ -35,11 +35,9 @@ public class ArienteSkyRenderer implements IRenderHandler {
     private int glSkyList2 = -1;
 //    private final VertexFormat vertexBufferFormat;
     private final TextureManager renderEngine;
-    private final EntityRendererManager renderManager;
 
     public ArienteSkyRenderer() {
         Minecraft mc = Minecraft.getInstance();
-        this.renderManager = mc.getRenderManager();
         this.renderEngine = mc.getTextureManager();
         this.vboEnabled = true;
 
@@ -244,8 +242,8 @@ public class ArienteSkyRenderer implements IRenderHandler {
         TextureManager renderEngine = Minecraft.getInstance().getTextureManager();
 
         GlStateManager.enableTexture();
-        GlStateManager.disableFog();
-        GlStateManager.disableAlphaTest();
+        RenderSystem.disableFog();
+        RenderSystem.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(770, 771, 1, 0);
         RenderHelper.disableStandardItemLighting();
@@ -255,7 +253,7 @@ public class ArienteSkyRenderer implements IRenderHandler {
         BufferBuilder renderer = tessellator.getBuffer();
 
         for (int i = 0; i < 6; ++i) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
 
             UV[] uv = faceDown;
             boolean white = true;
@@ -265,26 +263,27 @@ public class ArienteSkyRenderer implements IRenderHandler {
                 renderEngine.bindTexture(sky2);
             } else if (i == 1) {       // North face
                 renderEngine.bindTexture(sky);
-                GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+                RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
                 uv = faceNorth;
             } else if (i == 2) {       // South face
                 renderEngine.bindTexture(sky);
-                GlStateManager.rotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+                RenderSystem.rotatef(-90.0F, 1.0F, 0.0F, 0.0F);
                 uv = faceSouth;
             } else if (i == 3) {       // Up face
-                GlStateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
+                RenderSystem.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
                 uv = faceUp;
                 renderEngine.bindTexture(sky2);
             } else if (i == 4) {       // East face
                 renderEngine.bindTexture(sky);
-                GlStateManager.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
+                RenderSystem.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
                 uv = faceEast;
             } else if (i == 5) {       // West face
                 renderEngine.bindTexture(sky);
-                GlStateManager.rotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+                RenderSystem.rotatef(-90.0F, 0.0F, 0.0F, 1.0F);
                 uv = faceWest;
             }
 
+            //noinspection deprecation
             renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
             int cc = white ? 255 : 0;
             int a = (int) (alpha * 255);
@@ -293,12 +292,12 @@ public class ArienteSkyRenderer implements IRenderHandler {
             renderer.pos(100.0D, -100.0D, 100.0D).tex(uv[2].u, uv[2].v).color(cc, cc, cc, a).endVertex();
             renderer.pos(100.0D, -100.0D, -100.0D).tex(uv[3].u, uv[3].v).color(cc, cc, cc, a).endVertex();
             tessellator.draw();
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
         GlStateManager.depthMask(false);
         GlStateManager.disableTexture();
-        GlStateManager.enableAlphaTest();
+        RenderSystem.enableAlphaTest();
     }
 
 
@@ -309,12 +308,12 @@ public class ArienteSkyRenderer implements IRenderHandler {
         float f1 = (float) vec3d.y;
         float f2 = (float) vec3d.z;
 
-        GlStateManager.color4f(f, f1, f2, 1.0f);
+        RenderSystem.color4f(f, f1, f2, 1.0f);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.depthMask(false);
-        GlStateManager.enableFog();
-        GlStateManager.color4f(f, f1, f2, 1.0f);
+        RenderSystem.enableFog();
+        RenderSystem.color4f(f, f1, f2, 1.0f);
 
         if (vboEnabled) {
             skyVBO.bindBuffer();
@@ -329,8 +328,8 @@ public class ArienteSkyRenderer implements IRenderHandler {
 //            GlStateManager.callList(glSkyList);
         }
 
-        GlStateManager.disableFog();
-        GlStateManager.disableAlphaTest();
+        RenderSystem.disableFog();
+        RenderSystem.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA.param, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA.param, GlStateManager.SourceFactor.ONE.param, GlStateManager.DestFactor.ZERO.param);
         RenderHelper.disableStandardItemLighting();
@@ -338,11 +337,11 @@ public class ArienteSkyRenderer implements IRenderHandler {
 
         if (afloat != null) {
             GlStateManager.disableTexture();
-            GlStateManager.shadeModel(7425);
-            GlStateManager.pushMatrix();
-            GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotatef(MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
-            GlStateManager.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
+            RenderSystem.shadeModel(7425);
+            RenderSystem.pushMatrix();
+            RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            RenderSystem.rotatef(MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
+            RenderSystem.rotatef(90.0F, 0.0F, 0.0F, 1.0F);
             float f6 = afloat[0];
             float f7 = afloat[1];
             float f8 = afloat[2];
@@ -365,11 +364,11 @@ public class ArienteSkyRenderer implements IRenderHandler {
 
         GlStateManager.enableTexture();
         GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA.param, GlStateManager.DestFactor.ONE.param, GlStateManager.SourceFactor.ONE.param, GlStateManager.DestFactor.ZERO.param);
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         float f16 = 1.0F - world.getRainStrength(partialTicks);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, f16);
-        GlStateManager.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotatef(world.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, f16);
+        RenderSystem.rotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+        RenderSystem.rotatef(world.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
         float f17 = 30.0F;
         renderEngine.bindTexture(SUN_TEXTURES);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -412,13 +411,13 @@ public class ArienteSkyRenderer implements IRenderHandler {
             renderSkyTexture(f15);
         }
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableFog();
-        GlStateManager.popMatrix();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableFog();
+        RenderSystem.popMatrix();
         GlStateManager.disableTexture();
-        GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0f);
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0f);
         double d3 = mc.player.getEyePosition(partialTicks).y - world.getHorizonHeight();
 
         if (d3 < 0.0D) {

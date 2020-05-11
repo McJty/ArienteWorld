@@ -1,49 +1,45 @@
 package mcjty.arienteworld.biomes;
 
 import mcjty.arienteworld.setup.Registration;
-import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.INoiseRandom;
-import net.minecraft.world.gen.PerlinNoiseGenerator;
 import net.minecraft.world.gen.layer.traits.IAreaTransformer0;
+import net.minecraftforge.common.util.Lazy;
 
 public enum ArienteBiomeLayer implements IAreaTransformer0 {
 
     INSTANCE;
 
-    private static PerlinNoiseGenerator perlinGen;
+    private static final Lazy<PerlinSeed> PERLIN_SEED = Lazy.of(PerlinSeed::new);
 
-    private static final int CITY_ID = Registry.BIOME.getId(Registration.ARIENTE_CITY.get());
-    private static final int FOREST_ID = Registry.BIOME.getId(Registration.ARIENTE_FOREST.get());
-    private static final int HILLS_ID = Registry.BIOME.getId(Registration.ARIENTE_HILLS.get());
-    private static final int OCEAN_ID = Registry.BIOME.getId(Registration.ARIENTE_OCEAN.get());
-    private static final int PLAINS_ID = Registry.BIOME.getId(Registration.ARIENTE_PLAINS.get());
-    private static final int ROUGH_ID = Registry.BIOME.getId(Registration.ARIENTE_ROUGH.get());
+    private final int cityId = Registry.BIOME.getId(Registration.ARIENTE_CITY.get());
+    private final int forestId = Registry.BIOME.getId(Registration.ARIENTE_FOREST.get());
+    private final int hillsId = Registry.BIOME.getId(Registration.ARIENTE_HILLS.get());
+    private final int oceanId = Registry.BIOME.getId(Registration.ARIENTE_OCEAN.get());
+    private final int plainsId = Registry.BIOME.getId(Registration.ARIENTE_PLAINS.get());
+    private final int roughId = Registry.BIOME.getId(Registration.ARIENTE_ROUGH.get());
 
     @Override
     public int apply(INoiseRandom noise, int x, int z) {
-        double perlinNoise = perlinGen.noiseAt(x * 0.1D, z * 0.00001D, false) * 0.5D + 0.5D;
+        double perlinNoise = PERLIN_SEED.get().getPerlinGen().noiseAt(x * 0.1D, z * 0.00001D, false) * 0.5D + 0.5D;
 
         if (noise.random(9) == 0) {
-            return CITY_ID;
+            return cityId;
         } else if (Math.abs(perlinNoise) < 0.2) {
-            return FOREST_ID;
+            return forestId;
         } else if (Math.abs(perlinNoise) < 0.3) {
-            return HILLS_ID;
+            return hillsId;
         } else if (Math.abs(perlinNoise) < 0.5) {
-            return OCEAN_ID;
+            return oceanId;
         } else if (Math.abs(perlinNoise) < 0.7) {
-            return ROUGH_ID;
+            return roughId;
         } else {
-            return PLAINS_ID;
+            return plainsId;
         }
     }
 
     public static void setSeed(long seed) {
-        if (perlinGen == null) {
-            SharedSeedRandom sharedseedrandom = new SharedSeedRandom(seed);
-            perlinGen = new PerlinNoiseGenerator(sharedseedrandom, 0, 0);
-        }
+        PerlinSeed.setSeed(seed);
     }
 
 }

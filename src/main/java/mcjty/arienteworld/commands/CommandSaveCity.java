@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mcjty.arienteworld.dimension.EditMode;
+import mcjty.lib.varia.Logging;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +27,7 @@ public class CommandSaveCity implements Command<CommandSource> {
         try {
             EditMode.saveCity(player);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logging.logError("Internal error", e);
         }
         return 0;
     }
