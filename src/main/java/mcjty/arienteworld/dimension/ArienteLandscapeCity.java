@@ -151,7 +151,7 @@ public class ArienteLandscapeCity {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!cityChunkCache.containsKey(pos)) {
             // @todo 1.15
-            Set<Biome> biomes = biomesForGeneration.func_225530_a_(chunkX << 4, world.getSeaLevel(), chunkZ << 4, 16);
+            Set<Biome> biomes = biomesForGeneration.getBiomes(chunkX << 4, world.getSeaLevel(), chunkZ << 4, 16);
 //            Biome biome = world.getBiomeManager().getBiome(new BlockPos(pos.getXStart() + 8, world.getSeaLevel(), pos.getZStart() + 8));
 //                biomesForGeneration = world.getBiomeProvider().getBiomes(biomesForGeneration, chunkX * 16, chunkZ * 16, 16, 16);
             cityChunkCache.put(pos, hasCityBiomes(biomes));

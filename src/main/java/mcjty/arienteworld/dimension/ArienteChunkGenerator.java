@@ -370,7 +370,7 @@ public class ArienteChunkGenerator extends NoiseChunkGenerator<OverworldGenSetti
     }
 
     @Override
-    public void func_225551_a_(WorldGenRegion p_225551_1_, IChunk p_225551_2_) {
+    public void generateSurface(WorldGenRegion p_225551_1_, IChunk p_225551_2_) {
         // @todo 1.15
     }
 
