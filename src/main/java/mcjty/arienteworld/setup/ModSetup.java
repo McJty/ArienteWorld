@@ -18,6 +18,7 @@ import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -54,14 +55,16 @@ public class ModSetup extends DefaultModSetup {
         BiomeDictionary.addTypes(Registration.ARIENTE_OCEAN.get(), BiomeDictionary.Type.DEAD, BiomeDictionary.Type.OCEAN);
         BiomeDictionary.addTypes(Registration.ARIENTE_PLAINS.get(), BiomeDictionary.Type.SPARSE);
 
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD)) {
-                biome.addFeature(GenerationStage.Decoration.RAW_GENERATION, Registration.DUNGEON_FEATURE.get()
-                        .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
-                        .withPlacement(Registration.DUNGEON_PLACEMENT.get().configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
-                );
-            }
-        }
+        DeferredWorkQueue.runLater(() -> {
+                    for (Biome biome : ForgeRegistries.BIOMES) {
+                        if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD)) {
+                            biome.addFeature(GenerationStage.Decoration.RAW_GENERATION, Registration.DUNGEON_FEATURE.get()
+                                    .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
+                                    .withPlacement(Registration.DUNGEON_PLACEMENT.get().configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
+                            );
+                        }
+                    }
+                });
 
         readAssets();
     }
