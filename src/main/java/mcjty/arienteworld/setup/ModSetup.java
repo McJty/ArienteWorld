@@ -48,23 +48,23 @@ public class ModSetup extends DefaultModSetup {
         FeatureRegistry.init();
 //        ArienteMessages.registerMessages("arienteWorld");
 
-        BiomeDictionary.addTypes(Registration.ARIENTE_CITY.get(), BiomeDictionary.Type.SPARSE);
-        BiomeDictionary.addTypes(Registration.ARIENTE_FOREST.get(), BiomeDictionary.Type.FOREST);
-        BiomeDictionary.addTypes(Registration.ARIENTE_HILLS.get(), BiomeDictionary.Type.HILLS);
-        BiomeDictionary.addTypes(Registration.ARIENTE_ROUGH.get(), BiomeDictionary.Type.DEAD, BiomeDictionary.Type.HILLS);
-        BiomeDictionary.addTypes(Registration.ARIENTE_OCEAN.get(), BiomeDictionary.Type.DEAD, BiomeDictionary.Type.OCEAN);
-        BiomeDictionary.addTypes(Registration.ARIENTE_PLAINS.get(), BiomeDictionary.Type.SPARSE);
-
         DeferredWorkQueue.runLater(() -> {
-                    for (Biome biome : ForgeRegistries.BIOMES) {
-                        if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD)) {
-                            biome.addFeature(GenerationStage.Decoration.RAW_GENERATION, Registration.DUNGEON_FEATURE.get()
-                                    .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
-                                    .withPlacement(Registration.DUNGEON_PLACEMENT.get().configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
-                            );
-                        }
-                    }
-                });
+            BiomeDictionary.addTypes(Registration.ARIENTE_CITY.get(), BiomeDictionary.Type.SPARSE);
+            BiomeDictionary.addTypes(Registration.ARIENTE_FOREST.get(), BiomeDictionary.Type.FOREST);
+            BiomeDictionary.addTypes(Registration.ARIENTE_HILLS.get(), BiomeDictionary.Type.HILLS);
+            BiomeDictionary.addTypes(Registration.ARIENTE_ROUGH.get(), BiomeDictionary.Type.DEAD, BiomeDictionary.Type.HILLS);
+            BiomeDictionary.addTypes(Registration.ARIENTE_OCEAN.get(), BiomeDictionary.Type.DEAD, BiomeDictionary.Type.OCEAN);
+            BiomeDictionary.addTypes(Registration.ARIENTE_PLAINS.get(), BiomeDictionary.Type.SPARSE);
+
+            for (Biome biome : ForgeRegistries.BIOMES) {
+                if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.OVERWORLD)) {
+                    biome.addFeature(GenerationStage.Decoration.RAW_GENERATION, Registration.DUNGEON_FEATURE.get()
+                            .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG)
+                            .withPlacement(Registration.DUNGEON_PLACEMENT.get().configure(IPlacementConfig.NO_PLACEMENT_CONFIG))
+                    );
+                }
+            }
+        });
 
         readAssets();
     }
@@ -86,7 +86,7 @@ public class ModSetup extends DefaultModSetup {
         AssetRegistries.reset();
         for (String path : Config.ASSETS) {
             if (path.startsWith("/")) {
-                try(InputStream inputstream = ArienteWorld.class.getResourceAsStream(path)) {
+                try (InputStream inputstream = ArienteWorld.class.getResourceAsStream(path)) {
                     AssetRegistries.load(inputstream, path);
                 } catch (IOException ex) {
                     throw new UncheckedIOException(ex);

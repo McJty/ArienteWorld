@@ -7,7 +7,6 @@ import mcjty.arienteworld.config.Config;
 import mcjty.arienteworld.setup.ModSetup;
 import mcjty.arienteworld.setup.Registration;
 import mcjty.hologui.api.IHoloGuiHandler;
-import mcjty.lib.base.ModBase;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -20,7 +19,7 @@ import java.util.function.Supplier;
 
 
 @Mod(ArienteWorld.MODID)
-public class ArienteWorld implements ModBase {
+public class ArienteWorld {
     public static final String MODID = "arienteworld";
     public static final String ARIENTE_MODID = "ariente";
 
@@ -50,10 +49,4 @@ public class ArienteWorld implements ModBase {
             }
         });
     }
-
-    @Override
-    public String getModId() {
-        return ArienteWorld.MODID;
-    }
-
 }
