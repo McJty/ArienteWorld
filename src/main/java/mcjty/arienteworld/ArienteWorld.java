@@ -4,13 +4,13 @@ package mcjty.arienteworld;
 import mcjty.ariente.api.IArienteWorld;
 import mcjty.arienteworld.apiimpl.ArienteWorldImplementation;
 import mcjty.arienteworld.config.Config;
+import mcjty.arienteworld.setup.ClientSetup;
 import mcjty.arienteworld.setup.ModSetup;
 import mcjty.arienteworld.setup.Registration;
 import mcjty.hologui.api.IHoloGuiHandler;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -37,7 +37,8 @@ public class ArienteWorld {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SERVER_CONFIG);
         Registration.register();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent event) -> setup.init(event));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
     }
 
