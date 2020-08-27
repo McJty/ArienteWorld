@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem on servers
+
 0.0.31-alpha:
 - Fixed a client-side problem on servers
 - Started working on a HUGE new dungeon. Not finished!

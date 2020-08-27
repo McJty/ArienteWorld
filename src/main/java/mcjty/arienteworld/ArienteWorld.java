@@ -8,6 +8,8 @@ import mcjty.arienteworld.setup.ClientSetup;
 import mcjty.arienteworld.setup.ModSetup;
 import mcjty.arienteworld.setup.Registration;
 import mcjty.hologui.api.IHoloGuiHandler;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -38,8 +40,10 @@ public class ArienteWorld {
         Registration.register();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::init);
+        });
     }
 
     private void processIMC(final InterModProcessEvent event) {
